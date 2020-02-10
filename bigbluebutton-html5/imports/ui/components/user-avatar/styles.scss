@@ -41,7 +41,7 @@
     left: auto;
     bottom: var(--user-indicators-offset);
     right: var(--user-indicators-offset);
-    border: 1.5px solid transparent;
+    // border: 1.5px solid var(--user-list-bg);
     border-radius: 50%;
     background-color: var(--user-indicator-voice-bg);
     color: var(--user-avatar-text);
@@ -136,7 +136,7 @@
 .noVoice {
   &:after {
     content: "";
-    background-color: transparent;
+    background-color: #03213F;
     top: 1.375rem;
     left: 1.375rem;
     right: auto;

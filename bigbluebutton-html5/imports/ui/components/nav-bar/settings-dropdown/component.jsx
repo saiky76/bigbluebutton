@@ -296,6 +296,7 @@ class SettingsDropdown extends PureComponent {
             ghost
             circle
             hideLabel
+            color="primary"
             className={styles.btn}
 
             // FIXME: Without onClick react proptypes keep warning
