@@ -262,11 +262,10 @@ public class Meeting {
 	public void setEndTime(long t) {
 		endTime = t;
 	}
-	
-	public boolean isRunning() {
-		return ! users.isEmpty();
+	public boolean isRunning()  {
+		return (endTime == 0 || System.currentTimeMillis() < endTime);
 	}
-	
+
 	public Boolean isBreakout() {
 	  return isBreakout;
 	}
