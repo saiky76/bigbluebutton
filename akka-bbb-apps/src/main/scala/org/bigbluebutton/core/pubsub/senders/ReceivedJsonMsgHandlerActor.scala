@@ -164,6 +164,8 @@ class ReceivedJsonMsgHandlerActor(
         routeGenericMsg[EndAllBreakoutRoomsMsg](envelope, jsonNode)
       case TransferUserToMeetingRequestMsg.NAME =>
         routeGenericMsg[TransferUserToMeetingRequestMsg](envelope, jsonNode)
+      case RemoveOfflineUserFromBreakoutCmdMsg.NAME =>
+        routeGenericMsg[RemoveOfflineUserFromBreakoutCmdMsg](envelope, jsonNode)
 
       // Layout
       case GetCurrentLayoutReqMsg.NAME =>
