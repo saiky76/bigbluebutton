@@ -307,6 +307,7 @@ class App extends Component {
     const {
       actionsbar,
       intl,
+      talkers,
     } = this.props;
 
     const {
@@ -320,7 +321,7 @@ class App extends Component {
         aria-label={intl.formatMessage(intlMessages.actionsBarLabel)}
         aria-hidden={this.shouldAriaHide()}
       >
-        <ActionsBarContainer toggleChatLayout={isMobileBrowser ? !toggleChatLayout : toggleChatLayout} />
+        <ActionsBarContainer toggleChatLayout={isMobileBrowser ? !toggleChatLayout : toggleChatLayout} talkers={talkers} />
       </section>
     );
   }

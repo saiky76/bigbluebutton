@@ -210,12 +210,12 @@ class VideoListItem extends Component {
             playsInline
           />
           {/* {videoIsReady && this.renderFullscreenButton()} */}
-          <span className={cx({
+          {/* <span className={cx({
                   [styles.userName]: true
                 })}
                 >
                   {user.name}
-                </span>
+                </span> */}
         </div>
 
            {/* <div className={styles.info}>

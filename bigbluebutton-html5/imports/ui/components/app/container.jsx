@@ -31,6 +31,9 @@ import NavBarContainer from '../nav-bar/container';
 import ActionsBarContainer from '../actions-bar/container';
 import MediaContainer from '../media/container';
 
+import VoiceUsers from '/imports/api/voice-users';
+import VoiceService from '/imports/ui/components/nav-bar/talking-indicator/service';
+import PresenterService from '/imports/ui/components/actions-bar/service';
 const propTypes = {
   navbar: PropTypes.node,
   actionsbar: PropTypes.node,
@@ -108,7 +111,36 @@ export default injectIntl(withModalMounter(withTracker(({ intl, baseControls, mo
   }).fetch();
 
   const { current_presentation: hasPresentation } = MediaService.getPresentationInfo();
+  const talkers = {};
+  const meetingId = Auth.meetingID;
+  const usersTalking = VoiceUsers.find({ meetingId, joined: true, spoke: true }, {
+    fields: {
+      callerName: 1,
+      talking: 1,
+      color: 1,
+      startTime: 1,
+      voiceUserId: 1,
+      muted: 1,
+      intId: 1,
+    },
+  }).fetch().sort(VoiceService.sortVoiceUsers);
 
+  if (usersTalking) {
+    for (let i = 0; i < (usersTalking.length <= 2 ? usersTalking.length : 2); i += 1) {
+      const {
+        callerName, talking, color, voiceUserId, muted, intId,
+      } = usersTalking[i];
+if( PresenterService.getPresenter().userId != intId ) {  
+      talkers[`${intId}`] = {
+        color,
+        talking,
+        voiceUserId,
+        muted,
+        callerName,
+      };
+    }
+    }
+  }
   return {
     captions: CaptionsService.isCaptionsActive() ? <CaptionsContainer /> : null,
     fontSize: getFontSize(),
@@ -136,6 +168,7 @@ export default injectIntl(withModalMounter(withTracker(({ intl, baseControls, mo
     isThereCurrentPresentation: Presentations.findOne({ meetingId: Auth.meetingID, current: true },
       { fields: {} }),
     handleNetworkConnection: () => updateNavigatorConnection(navigator.connection),
+    talkers,
   };
 })(AppContainer)));
 
