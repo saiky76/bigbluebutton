@@ -224,6 +224,13 @@ case class EjectUserFromMeetingCmdMsg(header: BbbClientMsgHeader, body: EjectUse
 case class EjectUserFromMeetingCmdMsgBody(userId: String, ejectedBy: String)
 
 /**
+ * Sent from client to remove offline user from break out room
+ */
+object RemoveOfflineUserFromBreakoutCmdMsg { val NAME = "RemoveOfflineUserFromBreakoutCmdMsg" }
+case class RemoveOfflineUserFromBreakoutCmdMsg(header: BbbClientMsgHeader, body: RemoveOfflineUserFromBreakoutCmdMsgBody) extends StandardMsg
+case class RemoveOfflineUserFromBreakoutCmdMsgBody(email: String, name: String, breakoutId: String)
+
+/**
  * Sent from client to lock user in meeting.
  */
 object LockUserInMeetingCmdMsg { val NAME = "LockUserInMeetingCmdMsg" }
