@@ -26,7 +26,7 @@ export default function joinedUsersChanged({ body }) {
   });
 
   const usersMapped = breakoutRoom.users.filter(user => { 
-    return (ejectedUsers.find(e => e.id === user.userId) == undefined)
+    return (ejectedUsers.find(e => e.id === user.email) == undefined)
   }).map(u =>  ({userId: u.userId, username: u.username, email: u.email, redirectToHtml5JoinURL: u.redirectToHtml5JoinURL, 
               insertedTime: u.insertedTime}))
 

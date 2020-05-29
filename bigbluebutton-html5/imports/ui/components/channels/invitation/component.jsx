@@ -49,11 +49,11 @@ class BreakoutRoomInvitation extends Component {
 
   componentDidMount() {
     // use dummy old data on mount so it works if no data changes
-    this.checkBreakouts({ breakouts: [] });
+    //this.checkBreakouts({ breakouts: [] });
   }
 
   componentDidUpdate(oldProps) {
-    this.checkBreakouts(oldProps);
+    //this.checkBreakouts(oldProps);
   }
 
   checkBreakouts(oldProps) {

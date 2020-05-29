@@ -137,6 +137,10 @@ const getBreakoutMeetingUserId = (email, name, breakoutId) =>
     email: email,
     name: name});
 
+  const removeOfflineUserFromBreakoutRoom = (email, name, breakoutId) => {
+    makeCall('removeOfflineUserFromBreakout', email, name, breakoutId);
+  };
+
 
 const closeBreakoutPanel = () => Session.set('openPanel', 'userlist');
 
@@ -250,5 +254,6 @@ export default {
   getBreakoutMeetingUserId,
   getUnassignedUsersInMasterChannel,
   getCurrentMeeting,
-  getUserNameAndGroupForDisplayRoomName
+  getUserNameAndGroupForDisplayRoomName,
+  removeOfflineUserFromBreakoutRoom
 };
