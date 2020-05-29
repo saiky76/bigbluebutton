@@ -39,17 +39,6 @@ class ActionsBar extends PureComponent {
     };
 
   }
-  componentDidUpdate(prevProps, prevState) {
-    const { talkers } = this.props;
-    const { sideavatars } = this.state;
-
- Object.keys(talkers).map((id) => {
-  
-  sideavatars.push(talkers[`${id}`]);
-
-});
-    
-  }
   
   render() {
     const {
@@ -81,10 +70,36 @@ class ActionsBar extends PureComponent {
       isVideoStreamTransmitting,
       isSharingWebCam,
       presenter,
+      talkers,
+      users,
     } = this.props;
 
     const { sideavatars } = this.state;
-
+    Object.keys(talkers).map((id) => {
+  
+    if( (sideavatars.length >= 1 && sideavatars[0].intId != id) || sideavatars.length == 0)   
+     {
+      sideavatars.push(talkers[`${id}`]);
+      if( sideavatars.length>2 ){
+        sideavatars.shift();
+      }
+    }
+    });
+    for (let i = 0; i < sideavatars.length; i++) {
+      let a = 0;
+      for (let j = 0; j < users.length; j++) {
+        if( sideavatars[i].intId == users[j].intId ){
+          a++;
+        }
+      }   
+      if( a!=1 ){
+        if( i==0 )
+        { sideavatars.shift(); }
+        else if(i==1)
+        { sideavatars.pop(); }
+      }
+    }
+    
     const actionBarClasses = {};
 
     let joinIcon = '';

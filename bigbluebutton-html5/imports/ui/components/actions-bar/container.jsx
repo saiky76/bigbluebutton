@@ -14,6 +14,7 @@ import CaptionsService from '/imports/ui/components/captions/service';
 import ChannelsService from '/imports/ui/components/channels/service';
 import Settings from '/imports/ui/services/settings';
 import { Session } from 'meteor/session';
+import UsersService from '/imports/ui/components/user-list/service';
 import {
   shareScreen,
   unshareScreen,
@@ -73,6 +74,7 @@ export default withModalMounter(withTracker(({ mountModal }) => ({
   isThereCurrentPresentation: Presentations.findOne({ meetingId: Auth.meetingID, current: true },
     { fields: {} }),
   allowExternalVideo: Meteor.settings.public.externalVideoPlayer.enabled,
-  validateMeetingIsBreakout: ChannelsService.validateMeetingIsBreakout
+  validateMeetingIsBreakout: ChannelsService.validateMeetingIsBreakout,
+  users:UsersService.getUsers(),
 
 }))(injectIntl(ActionsBarContainer)));
