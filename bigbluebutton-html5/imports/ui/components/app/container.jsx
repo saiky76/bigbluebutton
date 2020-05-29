@@ -113,6 +113,17 @@ export default injectIntl(withModalMounter(withTracker(({ intl, baseControls, mo
   const { current_presentation: hasPresentation } = MediaService.getPresentationInfo();
   const talkers = {};
   const meetingId = Auth.meetingID;
+  const allJoined = VoiceUsers.find({ meetingId, joined: true }, {
+    fields: {
+      callerName: 1,
+      talking: 1,
+      color: 1,
+      startTime: 1,
+      voiceUserId: 1,
+      muted: 1,
+      intId: 1,
+    },
+  }).fetch().sort(VoiceService.sortVoiceUsers);
   const usersTalking = VoiceUsers.find({ meetingId, joined: true, spoke: true }, {
     fields: {
       callerName: 1,
@@ -126,11 +137,11 @@ export default injectIntl(withModalMounter(withTracker(({ intl, baseControls, mo
   }).fetch().sort(VoiceService.sortVoiceUsers);
 
   if (usersTalking) {
-    for (let i = 0; i < (usersTalking.length <= 2 ? usersTalking.length : 2); i += 1) {
+    for (let i = 0; i < (usersTalking.length <= 3 ? usersTalking.length : 3); i += 1) {
       const {
         callerName, talking, color, voiceUserId, muted, intId,
       } = usersTalking[i];
-if( PresenterService.getPresenter().userId != intId ) {  
+if( (PresenterService.getPresenter() && PresenterService.getPresenter().userId != intId) || !PresenterService.getPresenter()) {  
       talkers[`${intId}`] = {
         color,
         talking,
@@ -170,6 +181,7 @@ if( PresenterService.getPresenter().userId != intId ) {
       { fields: {} }),
     handleNetworkConnection: () => updateNavigatorConnection(navigator.connection),
     talkers,
+    allJoined,
   };
 })(AppContainer)));
 

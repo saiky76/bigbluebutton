@@ -75,6 +75,5 @@ export default withModalMounter(withTracker(({ mountModal }) => ({
     { fields: {} }),
   allowExternalVideo: Meteor.settings.public.externalVideoPlayer.enabled,
   validateMeetingIsBreakout: ChannelsService.validateMeetingIsBreakout,
-  users:UsersService.getUsers(),
 
 }))(injectIntl(ActionsBarContainer)));

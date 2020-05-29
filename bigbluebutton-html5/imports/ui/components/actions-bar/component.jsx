@@ -71,7 +71,7 @@ class ActionsBar extends PureComponent {
       isSharingWebCam,
       presenter,
       talkers,
-      users,
+      allJoined,
     } = this.props;
 
     const { sideavatars } = this.state;
@@ -84,11 +84,12 @@ class ActionsBar extends PureComponent {
         sideavatars.shift();
       }
     }
+    this.setState({ sideavatars: sideavatars })
     });
     for (let i = 0; i < sideavatars.length; i++) {
       let a = 0;
-      for (let j = 0; j < users.length; j++) {
-        if( sideavatars[i].intId == users[j].intId ){
+      for (let j = 0; j < allJoined.length; j++) {
+        if( sideavatars[i].intId == allJoined[j].intId ){
           a++;
         }
       }   
@@ -98,6 +99,7 @@ class ActionsBar extends PureComponent {
         else if(i==1)
         { sideavatars.pop(); }
       }
+      this.setState({ sideavatars: sideavatars })
     }
     
     const actionBarClasses = {};
