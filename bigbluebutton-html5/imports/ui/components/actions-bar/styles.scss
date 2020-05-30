@@ -54,15 +54,17 @@
   align-self: center;
   align-items: center;
  
-  :first-child {
+  :nth-child(1) {
     //margin-top: 0.5rem;
     height: 4.2rem;
     width: 4.2rem;
+    margin: 0rem -1rem 0rem 0rem;
   }
-  :last-child {
+  :nth-child(3) {
     //margin-top: 0.5rem;
     height: 4.2rem;
     width: 4.2rem;
+    margin: 0rem 0rem 0rem -1rem;
   }
 }
 
@@ -164,14 +166,14 @@
     //margin-top: 0.5rem;
     height: 5.3rem;
     width: 5.3rem;
+    z-index: 1;
+    margin: 0rem;
   }
 }
 
 .presenteravatar{
   
-  :nth-child() {
-    //margin-top: 0.5rem;
+    z-index: 1;
     height: 4.2rem;
     width: 4.2rem;
   }
-}
