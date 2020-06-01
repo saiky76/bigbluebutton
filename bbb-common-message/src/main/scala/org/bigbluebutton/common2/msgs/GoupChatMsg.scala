@@ -5,7 +5,7 @@ object GroupChatAccess {
   val PRIVATE = "PRIVATE_ACCESS"
 }
 case class FileObject(fileId: String, fileName: String)
-case class MessageObject(message: String, fileObj: Option[FileObject] = None)
+case class MessageObject(message: String, fileObj: Option[FileObject] = None, senderEmail: String, senderGroup: String)
 case class GroupChatUser(id: String, name: String)
 
 case class GroupChatMsgFromUser(correlationId: String, sender: GroupChatUser, color: String, messageObj: MessageObject)
