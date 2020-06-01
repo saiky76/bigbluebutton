@@ -15,7 +15,7 @@
 .dropdown {
   
   align-self: center;
-  position: absolute !important;
+  position: static !important;
   // padding-top: 2%;
   right: 0;
   left: 80%;
@@ -27,13 +27,14 @@
 }
 
 .dropdownContent {
-  top: var(--user-manage-menu-top);
+  position: inherit;
+  // top: var(--user-manage-menu-top);
   right: var(--user-manage-menu-right);
   left: auto;
   width: var(--user-manage-menu-width);
 
   [dir="rtl"] & {
-    top: var(--user-manage-menu-top);
+    // top: var(--user-manage-menu-top);
     right: -1rem;
   }
 
@@ -104,7 +105,7 @@
 .channelName {
   @extend %flex-column;
   justify-content: center;
-  padding: 1% 0% 1% 13%;
+  padding: 3% 0% 3% 13%;
   width: 80%;
 }
 
@@ -196,9 +197,7 @@
   @extend %flex-column;
   display: flex;
   flex-direction: row;
-  padding-left: 11%;
-  height: 1rem;
-  margin: 0.5rem 0 0.5rem 0;
+  padding: 3% 0% 3% 11%;
 }
 
 .unassigned {
@@ -216,8 +215,8 @@
 }
 
 .moderator {
-  margin: 0.5rem 0 0.5rem 0;
   color: #ffffff;
+  padding-left: 1rem;
   @include mq($small-only) {
   color: #A5A8B4;
   }
@@ -225,9 +224,9 @@
 
 .createBreakouts {
   color: #36a1ff;
-  padding-left: 11%;
-  margin: 0.5rem 0 0.5rem 0;
+  padding: 5% 0% 5% 11%;
   cursor: pointer;
+  font-size: var(--font-size-13px);
 }
 
 button{

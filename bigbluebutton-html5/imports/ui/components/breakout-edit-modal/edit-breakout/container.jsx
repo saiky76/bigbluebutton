@@ -17,6 +17,7 @@ export default withTracker((props) => ({
                                     sendInvitation: ActionsBarService.sendInvitation,
     getUsersNotAssigned: ActionsBarService.getUsersNotAssigned,
     removeUser: UserListService.removeUser,
+    removeOfflineUserFromBreakoutRoom: ChannelsService.removeOfflineUserFromBreakoutRoom,
     getBreakoutMeetingUserId : ChannelsService.getBreakoutMeetingUserId
     
 }))(EditBreakout);

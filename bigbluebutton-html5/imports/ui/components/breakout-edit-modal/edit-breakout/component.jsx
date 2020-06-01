@@ -28,7 +28,7 @@ class EditBreakout extends Component {
   render() {
     const {breakoutRoomUsers, unassignedUsersInMasterChannel,name} = this.props;
       return( <div className="form-group">
-        <div className={styles.name}><b>{name} </b>  </div>
+        <div className={styles.name}>Edit {name}   </div>
         <div className={styles.userList}>
         {breakoutRoomUsers.map((u,idx) => 
           <div  className={styles.Join}>
@@ -123,17 +123,24 @@ class EditBreakout extends Component {
       removeUser,
       getBreakoutMeetingUserId,
       breakoutId,
-      closeModal
+      closeModal,
+      removeOfflineUserFromBreakoutRoom
     } = this.props;
 
     //The userIds here are from the parent meeting. We need to get the corresponding user from the 
     //break out room. 
     this.uncheckedUsers.map((user) => {
-    let breakoutUser = getBreakoutMeetingUserId(user.email, user.name, breakoutId);
-    if(breakoutUser){
-      console.log(`Removing user to channel: ${breakoutUser.userId}`);
-      removeUser(breakoutUser.userId, breakoutId);
-      }
+      let breakoutUser = getBreakoutMeetingUserId(user.email, user.name, breakoutId);
+      if(breakoutUser){
+        console.log(`Removing user to channel: ${breakoutUser.userId}`);
+        removeUser(breakoutUser.userId, breakoutId);
+      }else{
+          //this could happen when the breakout user is offline. In this case there is no reason to eject user from break out room
+          //We only need to remove him from users field in BreakoutRoom table. So sending a command message to master meeting is
+          //sufficient
+          removeOfflineUserFromBreakoutRoom(user.email, user.name, breakoutId);
+
+        }
     });
 
     this.checkedUsers.map(user => {

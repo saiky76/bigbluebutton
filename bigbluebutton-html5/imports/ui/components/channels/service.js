@@ -137,6 +137,10 @@ const getBreakoutMeetingUserId = (email, name, breakoutId) =>
     email: email,
     name: name});
 
+  const removeOfflineUserFromBreakoutRoom = (email, name, breakoutId) => {
+    makeCall('removeOfflineUserFromBreakout', email, name, breakoutId);
+  };
+
 
 const closeBreakoutPanel = () => Session.set('openPanel', 'userlist');
 
@@ -215,8 +219,11 @@ const isUserInBreakoutRoom = (joinedUsers) => {
 //Only to be called in the master channel
 const getUnassignedUsersInMasterChannel = (allUsers) => {
   //Get all breakout users in the system (offline and online - no harm for now)
+  let nonModerators = allUsers.filter(u => {
+    return (u.role !== "MODERATOR")
+  })
   let breakoutUsers =  getUsersFromBreakouts(getBreakouts());
-  return  allUsers.filter(u => {
+  return  nonModerators.filter(u => {
       return (breakoutUsers.find(bu => bu.userId == u.userId) == undefined);
   });
 }
@@ -247,5 +254,6 @@ export default {
   getBreakoutMeetingUserId,
   getUnassignedUsersInMasterChannel,
   getCurrentMeeting,
-  getUserNameAndGroupForDisplayRoomName
+  getUserNameAndGroupForDisplayRoomName,
+  removeOfflineUserFromBreakoutRoom
 };
