@@ -42,6 +42,7 @@
   .talkingIndicator {
     align-self: center;
     min-width: 3rem;
+    max-width: 20rem;
   }
 }
 
@@ -49,22 +50,38 @@
   display: flex;
   flex-direction: row;
   justify-content : center;
-  img {
-    height: 5.5rem;
-    width: 5.5rem;
-  }
-  :first-child {
+  flex-wrap: wrap;
+  align-self: center;
+  align-items: center;
+ 
+  :nth-child(1) {
     //margin-top: 0.5rem;
-    height: 4.5rem;
-    width: 4.5rem;
+    height: 4.2rem;
+    width: 4.2rem;
+    margin: 0rem -1rem 0rem 0rem;
   }
-  :last-child {
+  :nth-child(3) {
     //margin-top: 0.5rem;
-    height: 4.5rem;
-    width: 4.5rem;
+    height: 4.2rem;
+    width: 4.2rem;
+    margin: 0rem 0rem 0rem -1rem;
   }
 }
-
+.dummy{
+  display: flex;
+  flex-direction: row;
+  justify-content : center;
+  flex-wrap: wrap;
+  align-self: center;
+  align-items: center;
+ 
+  :nth-child(1) {
+    //margin-top: 0.5rem;
+    height: 4.2rem;
+    width: 4.2rem;
+    margin: 0rem ;
+  }
+}
 .dummy2 {
   display: flex;
   flex-direction: row;
@@ -157,13 +174,20 @@
   }
 }
 
-.videoContainer {
-  flex: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  overflow: hidden;
-  width: 5.5rem;
-  height: 5.5rem;
+.video{
+
+  :nth-child(n) {
+    //margin-top: 0.5rem;
+    height: 5.3rem;
+    width: 5.3rem;
+    z-index: 1;
+    margin: 0rem;
+  }
 }
+
+.presenteravatar{
+  
+    z-index: 1;
+    height: 4.2rem;
+    width: 4.2rem;
+  }
