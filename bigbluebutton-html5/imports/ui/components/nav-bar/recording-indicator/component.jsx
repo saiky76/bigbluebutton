@@ -6,6 +6,10 @@ import PropTypes from 'prop-types';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import { styles } from './styles';
 
+import browser from 'browser-detect';
+
+const BROWSER_RESULTS = browser();
+const isMobileBrowser = BROWSER_RESULTS.mobile || BROWSER_RESULTS.os.includes('Android');
 const intlMessages = defineMessages({
   notificationRecordingStart: {
     id: 'app.notification.recordingStart',
@@ -177,8 +181,11 @@ class RecordingIndicator extends PureComponent {
               </span>
             ) : null
           }
-          {recording
-            ? <span aria-hidden>{humanizeSeconds(time)}</span> : <span>{recordTitle}</span>}
+          {recording 
+            ? <span aria-hidden>{humanizeSeconds(time)}</span>
+             : 
+              !isMobileBrowser ? <span>{recordTitle}</span> : null
+              }
         </div>
       </div>
     );
