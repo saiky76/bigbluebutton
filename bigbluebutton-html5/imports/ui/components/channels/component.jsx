@@ -274,23 +274,6 @@ class Channels extends PureComponent {
     );
   }
 
-  // renderChannelAvatar(channelName) {
-  //   const roomIcon = channelName.toLowerCase().slice(0, 2);
-
-  //   return (
-  //     <ChannelAvatar className={styles.channelAvatar}>
-  //       {roomIcon}
-  //     </ChannelAvatar>
-  //   );
-  // }
-
-  // toggleUserList(id) {
-  //   const { channelId } = this.state;
-
-  //   (channelId == id)
-  //     ? this.setState({ channelId: '' })
-  //     : this.setState({ channelId: id });
-  // }
 
   newCreateBreakouts() {
     const { mountModal } = this.props;
@@ -454,7 +437,10 @@ class Channels extends PureComponent {
     const isBreakOutMeeting = meetingIsBreakout();
     return (
       breakoutRooms.map(breakout => (
+        
         <div>
+
+          {isBreakOutMeeting ? null :
            <ChannelDropdown
         {...{
           breakout,   
@@ -470,6 +456,7 @@ class Channels extends PureComponent {
           isUserActiveInBreakoutroom
         }}
       />
+        }
   
 
     <div className={styles.breakoutUsersList}>
@@ -491,11 +478,6 @@ class Channels extends PureComponent {
 
   )));
   }
-
-  getDropdownMenuParent() {
-    return findDOMNode(this.dropdown);
-  }
-
 
   editBreakoutRoom(breakoutId, usersToRemove, usersToAdd) {
     const {
