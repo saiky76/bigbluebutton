@@ -1,17 +1,14 @@
-import React, { PureComponent } from 'react';
-import { defineMessages } from 'react-intl';
+import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { findDOMNode } from 'react-dom';
-import UserAvatar from '/imports/ui/components/user-avatar/component';
-import Icon from '/imports/ui/components/icon/component';
 import Dropdown from '/imports/ui/components/dropdown/component';
 import DropdownTrigger from '/imports/ui/components/dropdown/trigger/component';
 import DropdownContent from '/imports/ui/components/dropdown/content/component';
 import DropdownList from '/imports/ui/components/dropdown/list/component';
 import DropdownListItem from '/imports/ui/components/dropdown/list/item/component';
-import DropdownListSeparator from '/imports/ui/components/dropdown/list/separator/component';
 import lockContextContainer from '/imports/ui/components/lock-viewers/context/container';
 import ChannelAvatar from './../channelAvatar/component';
+import BreakoutEditModalContainer from '/imports/ui/components/breakout-edit-modal/container';
 
 import _ from 'lodash';
 import { Session } from 'meteor/session';
@@ -19,9 +16,6 @@ import { styles } from './../styles';
 
 
 const propTypes = {
-  compact: PropTypes.bool.isRequired,
-  user: PropTypes.shape({}).isRequired,
-  normalizeEmojiName: PropTypes.func.isRequired,
   getScrollContainerRef: PropTypes.func.isRequired,
 };
 const ROLE_MODERATOR = Meteor.settings.public.user.role_moderator;
@@ -53,9 +47,9 @@ class ChannelDropdown extends PureComponent {
     this.onActionsShow = this.onActionsShow.bind(this);
     this.onActionsHide = this.onActionsHide.bind(this);
     this.getDropdownMenuParent = this.getDropdownMenuParent.bind(this);
-    this.renderUserAvatar = this.renderUserAvatar.bind(this);
     this.resetMenuState = this.resetMenuState.bind(this);
-    this.makeDropdownItem = this.makeDropdownItem.bind(this);
+    this.joinBreakoutRoom = this.joinBreakoutRoom.bind(this);
+    this.launchEditRoom = this.launchEditRoom.bind(this);
   }
 
   componentWillMount() {
@@ -71,15 +65,18 @@ class ChannelDropdown extends PureComponent {
     Session.set('dropdownOpen', true);
     const { getScrollContainerRef } = this.props;
     const dropdown = this.getDropdownMenuParent();
-    const scrollContainer = getScrollContainerRef;
+    const scrollContainer = getScrollContainerRef();
 
+    console.log("dropdown: ", dropdown);
+    console.log("scrollContainer: ", scrollContainer);
+    
     if (dropdown && scrollContainer) {
       const dropdownTrigger = dropdown.children[0];
       console.log("dropdownTrigger is found" );
       this.setState({
         isActionsOpen: true,
         dropdownVisible: false,
-        dropdownOffset: dropdownTrigger.offsetTop - scrollContainer.scrollTop,
+        dropdownOffset: dropdownTrigger.offsetTop - scrollContainer.scrollTop,        
         dropdownDirection: 'top',
       });
 
@@ -96,7 +93,7 @@ class ChannelDropdown extends PureComponent {
       showNestedOptions: false,
     });
 
-    const scrollContainer = getScrollContainerRef;
+    const scrollContainer = getScrollContainerRef();
     scrollContainer.removeEventListener('scroll', this.handleScroll, false);
 
     if (callback) {
@@ -112,22 +109,6 @@ class ChannelDropdown extends PureComponent {
     return findDOMNode(this.dropdown);
   }
 
-  makeDropdownItem(key, label, onClick, icon = null, iconRight = null) {
-    const { getEmoji } = this.props;
-    return (
-      <DropdownListItem
-        {...{
-          key,
-          label,
-          onClick,
-          icon,
-          iconRight,
-        }}
-        className={key === getEmoji ? styles.emojiSelected : null}
-        data-test={key}
-      />
-    );
-  }
 
   resetMenuState() {
     return this.setState({
@@ -157,7 +138,7 @@ class ChannelDropdown extends PureComponent {
       const dropdownTrigger = dropdown.children[0];
       const dropdownContent = dropdown.children[1];
 
-      const scrollContainer = getScrollContainerRef;
+      const scrollContainer = getScrollContainerRef();
 
       const nextState = {
         dropdownVisible: true,
@@ -169,13 +150,11 @@ class ChannelDropdown extends PureComponent {
       );
 
       if (!isDropdownVisible) {
-       
         const { offsetTop, offsetHeight } = dropdownTrigger;
         const offsetPageTop = (offsetTop + offsetHeight) - scrollContainer.scrollTop;
 
         nextState.dropdownOffset = window.innerHeight - offsetPageTop;
         nextState.dropdownDirection = 'bottom';
-        console.log("nextState.dropdownOffset: ", nextState.dropdownOffset);
       }
 
       this.setState(nextState);
@@ -193,43 +172,7 @@ class ChannelDropdown extends PureComponent {
     return isActionsOpen && !dropdownVisible;
   }
 
-  renderUserAvatar() {
-    const {
-      normalizeEmojiName,
-      user,
-      userInBreakout,
-      breakoutSequence,
-      meetingIsBreakout,
-      voiceUser,
-    } = this.props;
-
-    const { clientType } = user;
-    const isVoiceOnly = clientType === 'dial-in-user';
-
-    const iconUser = user.emoji !== 'none'
-      ? (<Icon iconName={normalizeEmojiName(user.emoji)} />)
-      : user.name.toLowerCase().slice(0, 2);
-
-    const iconVoiceOnlyUser = (<Icon iconName="audio_on" />);
-    const userIcon = isVoiceOnly ? iconVoiceOnlyUser : iconUser;
-
-    return (
-      <UserAvatar
-        moderator={user.role === ROLE_MODERATOR}
-        presenter={user.presenter}
-        talking={voiceUser.isTalking}
-        muted={voiceUser.isMuted}
-        listenOnly={voiceUser.isListenOnly}
-        voice={voiceUser.isVoiceUser}
-        noVoice={!voiceUser.isVoiceUser}
-        color={user.color}
-      >
-        {userIcon}
-      </UserAvatar>
-    );
-  }
-
-
+  
   renderMenuItems(breakout) {
     const {
       amIModerator,
@@ -238,8 +181,7 @@ class ChannelDropdown extends PureComponent {
       getUsersNotAssigned,
       users,
       exitAudio,
-      isBreakOutMeeting, 
-      compact 
+      isBreakOutMeeting
     } = this.props;
 
     const {
@@ -276,6 +218,43 @@ class ChannelDropdown extends PureComponent {
 
     return this.menuItems;
   }
+  
+  launchEditRoom(breakoutId,name) {
+    const { mountModal } = this.props;
+    return mountModal(<BreakoutEditModalContainer breakoutId={breakoutId} name={name} />);
+  }
+
+  joinBreakoutRoom(breakoutId) {
+    Session.set('lastBreakoutOpened', breakoutId);
+    const { requestJoinURL, breakoutRoomUser, isUserActiveInBreakoutroom } = this.props;
+    const { waiting } = this.state;
+
+    const breakoutUser = breakoutRoomUser(breakoutId);
+    if (!breakoutUser && !waiting) {
+      // This should only be the case for a moderator in master channel
+      console.log('Adding the users to assigned users in the backend');
+      this.setState(
+        {
+          waiting: true,
+          requestedBreakoutId: breakoutId,
+        },
+        () => requestJoinURL(breakoutId),
+      );
+    }
+    // I am a break out room user and I am not active in it
+    if (breakoutUser && !isUserActiveInBreakoutroom(Auth.userID)) {
+      window.open(breakoutUser.redirectToHtml5JoinURL, '_blank');
+
+      this.setState(
+        {
+          waiting: false,
+        },
+      );
+    }
+    return null;
+  }
+
+
 
 
   renderChannelAvatar(channelName) {
@@ -314,7 +293,7 @@ class ChannelDropdown extends PureComponent {
             keepOpen={true}        
             onShow={this.onActionsShow}
             onHide={this.onActionsHide}
-            className={userItemContentsStyle}
+            //className={userItemContentsStyle}
             className={styles.dropdown}
             autoFocus={false}
             aria-haspopup="true"
@@ -322,23 +301,24 @@ class ChannelDropdown extends PureComponent {
             aria-relevant="additions"
           >
             <DropdownTrigger tabIndex={0}>
-
               {isBreakOutMeeting ? null :
-                <div className={styles.channelName}>
-                  <div className={styles.channelWrapper}>
-                    {this.renderChannelAvatar(breakout.name)}
-                    <span >{breakout.name}</span>
-                  </div>
-                </div>}
+              <div className={styles.channelName}>
+                <div className={styles.channelWrapper} cursor="pointer"> 
+                  {this.renderChannelAvatar(breakout.name)}
+                <span className={styles.unassigned}>{breakout.name}</span>
+              </div>
+              </div>}
             </DropdownTrigger>
+
             <DropdownContent
-                style={{
-                    visibility: dropdownVisible ? 'visible' : 'hidden',
-                    // visibility: 'hidden',
-                    [dropdownDirection]: `${dropdownOffset}px`
-                }}
-                className={styles.dropdownContent}
-                placement={`right ${dropdownDirection}`}
+                
+                 placement= "bottom"
+                // style={{
+                //     visibility: dropdownVisible ? 'visible' : 'hidden',
+                //     [dropdownDirection]: `${dropdownOffset}px`
+                // }}
+                // className={styles.dropdownContent}
+                // placement={`right ${dropdownDirection}`}
                 >
               <DropdownList>
                 {

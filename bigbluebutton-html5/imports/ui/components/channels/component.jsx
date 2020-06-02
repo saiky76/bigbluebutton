@@ -21,7 +21,7 @@ import DropdownList from '/imports/ui/components/dropdown/list/component';
 import DropdownListItem from '/imports/ui/components/dropdown/list/item/component';
 import ChannelAvatar from './channelAvatar/component';
 import ChannelDropdown from './dropdown/component';
-import BreakoutEditModalContainer from '/imports/ui/components/breakout-edit-modal/container';
+
 import { findDOMNode } from 'react-dom';
 
 
@@ -103,8 +103,6 @@ class Channels extends PureComponent {
   constructor(props) {
     super(props);
     this.getBreakoutURL = this.getBreakoutURL.bind(this);
-    this.joinBreakoutRoom = this.joinBreakoutRoom.bind(this);
-    this.editBreakoutRoom = this.editBreakoutRoom.bind(this);
     this.renderBreakoutRooms = this.renderBreakoutRooms.bind(this);
     this.transferUserToBreakoutRoom = this.transferUserToBreakoutRoom.bind(this);
     this.renderUserActions = this.renderUserActions.bind(this);
@@ -113,6 +111,7 @@ class Channels extends PureComponent {
     this.onActionsShow = this.onActionsShow.bind(this);
     this.onActionsHide = this.onActionsHide.bind(this);
     this.newCreateBreakouts = this.newCreateBreakouts.bind(this);
+    this.editBreakoutRoom = this.editBreakoutRoom.bind(this);
     this.state = {
       requestedBreakoutId: '',
       waiting: false,
@@ -186,35 +185,7 @@ class Channels extends PureComponent {
     return null;
   }
 
-  joinBreakoutRoom(breakoutId) {
-    Session.set('lastBreakoutOpened', breakoutId);
-    const { requestJoinURL, breakoutRoomUser, isUserActiveInBreakoutroom } = this.props;
-    const { waiting } = this.state;
 
-    const breakoutUser = breakoutRoomUser(breakoutId);
-    if (!breakoutUser && !waiting) {
-      // This should only be the case for a moderator in master channel
-      console.log('Adding the users to assigned users in the backend');
-      this.setState(
-        {
-          waiting: true,
-          requestedBreakoutId: breakoutId,
-        },
-        () => requestJoinURL(breakoutId),
-      );
-    }
-    // I am a break out room user and I am not active in it
-    if (breakoutUser && !isUserActiveInBreakoutroom(Auth.userID)) {
-      window.open(breakoutUser.redirectToHtml5JoinURL, '_blank');
-
-      this.setState(
-        {
-          waiting: false,
-        },
-      );
-    }
-    return null;
-  }
 
 
   getBreakoutURL(breakoutId) {
@@ -265,100 +236,6 @@ class Channels extends PureComponent {
     this.setState({ joinedAudioOnly: false, breakoutId });
   }
 
-  // renderMenuItems(breakout) {
-  //   const {
-  //     amIModerator,
-  //     isMeteorConnected,
-  //     getUsersByMeeting,
-  //     getUsersNotAssigned,
-  //     users,
-  //     exitAudio,
-  //   } = this.props;
-
-  //   const {
-  //     channelId,
-  //   } = this.state;
-  //   const isBreakOutMeeting = meetingIsBreakout();
-
-  //   this.menuItems = _.compact([
-  //     (isMeteorConnected && !isBreakOutMeeting ? (
-  //       <DropdownListItem
-  //         key={this.clearStatusId}
-  //         icon="application"
-  //         label="Join Room"
-  //         onClick={() => {
-  //           this.joinBreakoutRoom(breakout.breakoutId);
-  //           exitAudio();
-  //         }}
-  //       />) : null
-  //     ),
-
-  //     ((isMeteorConnected && amIModerator && !isBreakOutMeeting) ? (
-  //       <DropdownListItem
-  //         key={this.muteAllId}
-  //         icon="rooms"
-  //         label="Edit Room"
-  //         onClick={() => {
-  //           this.launchEditRoom(breakout.breakoutId, breakout.name);
-  //         }}
-  //       />) : null),
-
-    
-
-  //   ]);
-
-  //   return this.menuItems;
-  // }
-
-  // renderMenuItems() {
-  //   const {
-  //     amIModerator,
-  //     isMeteorConnected,
-  //     getUsersByMeeting,
-  //     getUsersNotAssigned,
-  //     users,
-  //     exitAudio,
-  //   } = this.props;
-
-  //   const {
-  //     channelId,
-  //   } = this.state;
-  //   const isBreakOutMeeting = meetingIsBreakout();
-
-  //   this.menuItems = _.compact([
-  //     (isMeteorConnected && !isBreakOutMeeting ? (
-  //       <DropdownListItem
-  //         key={this.clearStatusId}
-  //         icon="application"
-  //         label="Join Room"
-  //         onClick={() => {
-  //           this.joinBreakoutRoom('444');
-  //           exitAudio();
-  //         }}
-  //       />) : null
-  //     ),
-
-  //     ((isMeteorConnected && amIModerator && !isBreakOutMeeting) ? (
-  //       <DropdownListItem
-  //         key={this.muteAllId}
-  //         icon="rooms"
-  //         label="Edit Room"
-  //         onClick={() => {
-  //           this.launchEditRoom('444', 'hello');
-  //         }}
-  //       />) : null),
-
-    
-
-  //   ]);
-
-  //   return this.menuItems;
-  // }
-
-  launchEditRoom(breakoutId,name) {
-    const { mountModal } = this.props;
-    return mountModal(<BreakoutEditModalContainer breakoutId={breakoutId} name={name} />);
-  }
 
 
   channelOptions(breakout) {
@@ -567,93 +444,52 @@ class Channels extends PureComponent {
       voiceUser,
       amIModerator,
       isMeteorConnected,
+      mountModal,
+      breakoutRoomUser,
+      requestJoinURL,
+      isUserActiveInBreakoutroom
 
     } = this.props;
 
-    const {
-      channelId,
-    } = this.state;
-
-     
-
-
     const isBreakOutMeeting = meetingIsBreakout();
-    const { isChannelOptionsOpen } = this.state;
-    // const contents =  isBreakOutMeeting ? null :
-    //   <div className={styles.channelName}>
-    //     <div className={styles.channelWrapper}>
-    //       {this.renderChannelAvatar('hello')}
-    //       <span >{'hello'}</span>
-    //     </div>
-    //   </div>
-    
     return (
       breakoutRooms.map(breakout => (
         <div>
            <ChannelDropdown
         {...{
-          breakout,         
-          compact,          
-          getScrollContainerRef:this.refScrollContainer,
-          normalizeEmojiName,          
-          user,
+          breakout,   
+          getScrollContainerRef:this.getScrollContainerRef,
           voiceUser,
           amIModerator,
           isMeteorConnected,
           exitAudio,
-          isBreakOutMeeting 
+          isBreakOutMeeting, 
+          mountModal,
+          breakoutRoomUser,
+          requestJoinURL,
+          isUserActiveInBreakoutroom
         }}
       />
   
-          {/* <Dropdown
-            ref={(ref) => { this.dropdown = ref; }}
-            keepOpen={true}        
-            onShow={this.onActionsShow}
-            onHide={this.onActionsHide}
-            // className={userItemContentsStyle}
-            className={styles.dropdown}
-            autoFocus={false}
-            aria-haspopup="true"
-            aria-live="assertive"
-            aria-relevant="additions"
-          >
-            <DropdownTrigger tabIndex={0}>
 
-              {isBreakOutMeeting ? null :
-                <div className={styles.channelName}>
-                  <div className={styles.channelWrapper}>
-                    {this.renderChannelAvatar(breakout.name)}
-                    <span >{breakout.name}</span>
-                  </div>
-                </div>}
-            </DropdownTrigger>
-            <DropdownContent>
-              <DropdownList>
-                {
-                   this.renderMenuItems(breakout)
-                }
-              </DropdownList>
-            </DropdownContent>
-          </Dropdown> */}
-
-<div className={styles.breakoutUsersList}>
-<UserParticipantsContainer
-  {...{
-    compact,
-    intl,
-    currentUser,
-    setEmojiStatus,
-    roving,
-    requestUserInformation,
-    meetingIdentifier: breakout.breakoutId,
-    isbreakoutRoomUser,
-  }}
-/>
-</div>
-</div>
+    <div className={styles.breakoutUsersList}>
+    <UserParticipantsContainer
+      {...{
+        compact,
+        intl,
+        currentUser,
+        setEmojiStatus,
+        roving,
+        requestUserInformation,
+        meetingIdentifier: breakout.breakoutId,
+        isbreakoutRoomUser,
+      }}
+    />
+    </div>
+    </div>
        
 
-      )));
+  )));
   }
 
   getDropdownMenuParent() {
