@@ -9,6 +9,7 @@ import DropdownListItem from '/imports/ui/components/dropdown/list/item/componen
 import lockContextContainer from '/imports/ui/components/lock-viewers/context/container';
 import ChannelAvatar from './../channelAvatar/component';
 import BreakoutEditModalContainer from '/imports/ui/components/breakout-edit-modal/container';
+import Auth from '/imports/ui/services/auth';
 
 import _ from 'lodash';
 import { Session } from 'meteor/session';
