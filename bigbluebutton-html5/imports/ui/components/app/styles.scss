@@ -33,6 +33,8 @@
 
   @include mq($small-only) {
     background-color: #0f4c81;
+    padding: 0;
+    height: auto;
   }
 }
 

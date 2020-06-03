@@ -1,7 +1,7 @@
 @import "/imports/ui/stylesheets/variables/_all";
 @import "/imports/ui/stylesheets/mixins/_scrollable";
 @import "/imports/ui/stylesheets/mixins/_indicators";
-@import "/imports/ui/components/user-list/styles";
+@import "/imports/ui/components/user-list/styles.scss";
 @import "/imports/ui/components/user-list/user-list-content/styles";
 @import "/imports/ui/stylesheets/variables/_all";
 @import "/client/stylesheets/fonts.css";
@@ -12,18 +12,49 @@
   --user-manage-menu-width : 12rem;
 }
 
+
+// .dropdown {
+//   position: static;
+// }
+
+.userListItem {
+  @extend %list-item;
+  flex-flow: column;
+  flex-shrink: 0;
+}
+.usertListItemWithMenu {
+  @include highContrastOutline();
+  outline-style: solid;
+  background-color: var(--list-item-bg-hover);
+
+  &:focus {
+    outline-style: solid;
+    outline-color: transparent !important;
+  }
+}
+
+
+
+
 .dropdown {
   
-  align-self: center;
-  position: static !important;
+  position: static;
+  cursor: pointer;
+  // @extend %list-item;
+  // flex-flow: column;
+  // flex-shrink: 0;
+
+  // align-self: center;
+  // position: absolute !important;
+  // position: static;
   // padding-top: 2%;
-  right: 0;
-  left: 80%;
+  // right: 0;
+  // left: 80%;
   
-  [dir="rtl"] & {
-    left: 0;
-    right: auto;
-  }
+  // [dir="rtl"] & {
+  //   left: 0;
+  //   right: auto;
+  // }
 }
 
 .dropdownContent {
@@ -158,13 +189,13 @@
 
 .channelWrapper {
   display: grid;
-  grid-template-columns: 10% 90% 5%;
+  grid-template-columns: 10% 90%;
   justify-content: center;
   align-items: center;
 
   .brekout {
     color: #ffffff;
-    padding-left: 1.5rem;
+    // padding-left: 1.5rem;
     @include mq($small-only) {
       color: #A5A8B4;
     }
