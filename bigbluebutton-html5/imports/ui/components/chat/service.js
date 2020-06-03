@@ -92,6 +92,7 @@ const reduceGroupMessages = (previous, current) => {
     color: current.color,
     time: current.timestamp,
   }];
+
   if (!lastMessage || !currentMessage.chatId === PUBLIC_GROUP_CHAT_ID) {
     return previous.concat(currentMessage);
   }
@@ -229,6 +230,8 @@ const sendGroupMessage = (messageObj) => {
   groupChatMsgFromUser.messageObj = {
     message: messageObj.message,
     fileObj: fileData,
+    senderEmail: messageObj.senderEmail,
+    senderGroup: messageObj.senderGroup
   };
   const currentClosedChats = Storage.getItem(CLOSED_CHAT_LIST_KEY);
 
@@ -329,6 +332,8 @@ const sendCrossGroupMessage = (messageObj, targetMeetingId, senderGroupName) => 
   groupChatMsgFromUser.messageObj = {
     message: messageObject.message,
     fileObj: fileData,
+    senderEmail: messageObj.senderEmail,
+    senderGroup: messageObj.senderGroup
   };
  
 
