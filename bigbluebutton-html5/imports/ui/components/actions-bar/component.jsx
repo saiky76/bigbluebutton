@@ -11,6 +11,7 @@ import TalkingIndicatorContainer from '/imports/ui/components/nav-bar/talking-in
 import Auth from '/imports/ui/services/auth';
 import VideoProviderContainer from '/imports/ui/components/video-provider/container';
 import UserAvatar from '/imports/ui/components/user-avatar/component';
+import { Session } from 'meteor/session';
 
 const intlMessages = defineMessages({
   joinAudio: {
@@ -34,10 +35,7 @@ const intlMessages = defineMessages({
 class ActionsBar extends PureComponent {
   constructor() {
     super();
-    this.state = {
-      sideavatars:[],
-    };
-
+    Session.set('sideavatars', [])
   }
   
   render() {
@@ -71,36 +69,30 @@ class ActionsBar extends PureComponent {
       isSharingWebCam,
       presenter,
       talkers,
-      allJoined,
+      voiceUsers,
     } = this.props;
 
-    const { sideavatars } = this.state;
+    let sideavatars = Session.get('sideavatars');
+
+    //Remove presenter and any non existent voice users from sideavatars
+    sideavatars = sideavatars.filter(sa => voiceUsers.find(vu => sa.intId == vu.intId) !== undefined);
+    if(presenter){
+      sideavatars = sideavatars.filter(sa => presenter.intId !== sa.intId);
+    }
+
+    //Now replace any new talkers with existing ones
     Object.keys(talkers).map((id) => {
-  
-    if( (sideavatars.length >= 1 && sideavatars[0].intId != id) || sideavatars.length == 0)   
-     {
-      sideavatars.push(talkers[`${id}`]);
-      if( sideavatars.length>2 ){
-        sideavatars.shift();
-      }
-    }
-    this.setState({ sideavatars: sideavatars })
-    });
-    for (let i = 0; i < sideavatars.length; i++) {
-      let a = 0;
-      for (let j = 0; j < allJoined.length; j++) {
-        if( sideavatars[i].intId == allJoined[j].intId ){
-          a++;
+      if(sideavatars.find(sa => sa.intId == id) == undefined){
+        console.log("Caller being added ", talkers[`${id}`].callerName);
+        sideavatars.push(talkers[`${id}`]);
+        if( sideavatars.length > 2 ){
+          console.log("Removing a user");
+          sideavatars.shift();
         }
-      }   
-      if( a!=1 ){
-        if( i==0 )
-        { sideavatars.shift(); }
-        else if(i==1)
-        { sideavatars.pop(); }
       }
-      this.setState({ sideavatars: sideavatars })
-    }
+    });
+
+    Session.set('sideavatars', sideavatars)
     
     const actionBarClasses = {};
 
@@ -157,6 +149,8 @@ class ActionsBar extends PureComponent {
               isSharingVideo,
               stopExternalVideoShare,
               isMeteorConnected,
+              handleUnshareScreen,
+              isVideoBroadcasting
             }}
             />
           </div>
@@ -170,14 +164,14 @@ class ActionsBar extends PureComponent {
             {/* <img src="https://miro.medium.com/max/560/1*MccriYX-ciBniUzRKAUsAw.png" alt="" /> */}
 
          {  
-         sideavatars[ sideavatars.length>2 ? sideavatars.length-2 : 0 ] ? 
-         <UserAvatar
-           key={`user-avatar-`}
-          // moderator={u.role === 'MODERATOR'}
-           color={sideavatars[ sideavatars.length>2 ? sideavatars.length-2 : 0 ].color}
-           >
-          {sideavatars[ sideavatars.length>2 ? sideavatars.length-2 : 0 ].callerName.slice(0, 2).toLowerCase()}
-         </UserAvatar>  
+         sideavatars[0] ? 
+          <UserAvatar
+            key={`user-avatar-`}
+            // moderator={u.role === 'MODERATOR'}
+            color={sideavatars[0].color}
+            >
+            {sideavatars[0].callerName.slice(0, 2).toLowerCase()}
+          </UserAvatar>  
           :
            null
         }
@@ -205,16 +199,16 @@ class ActionsBar extends PureComponent {
                : null)
             }
             { 
-             sideavatars[sideavatars.length>2 ? sideavatars.length-1 : 1] ? 
-             <UserAvatar
-             key={`user-avatar-`}
-            // moderator={u.role === 'MODERATOR'}
-             color={sideavatars[sideavatars.length>2 ? sideavatars.length-1 : 1].color}
-            >
-            {sideavatars[ sideavatars.length>2 ? sideavatars.length-1 : 1 ].callerName.slice(0, 2).toLowerCase()}
-            </UserAvatar> 
-           : 
-           null
+             sideavatars[1] ? 
+              <UserAvatar
+              key={`user-avatar-`}
+              // moderator={u.role === 'MODERATOR'}
+              color={sideavatars[1].color}
+              >
+              {sideavatars[1].callerName.slice(0, 2).toLowerCase()}
+              </UserAvatar> 
+            : 
+            null
            }
             {/* <img src="https://miro.medium.com/max/560/1*MccriYX-ciBniUzRKAUsAw.png" alt="" /> */}
           </div>

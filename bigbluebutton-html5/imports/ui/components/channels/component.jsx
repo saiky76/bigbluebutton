@@ -324,8 +324,6 @@ class Channels extends PureComponent {
     this.setState({ joinedAudioOnly: false, breakoutId });
   }
 
-
-
   channelOptions(breakout) {
     const { isChannelOptionsOpen, dropdownDirection, dropdownOffset } = this.state;
     console.log(dropdownOffset);
