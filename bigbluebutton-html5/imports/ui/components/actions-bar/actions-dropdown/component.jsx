@@ -182,7 +182,10 @@ class ActionsDropdown extends PureComponent {
   }
 
   handlePresentationClick() {
-    const { mountModal } = this.props;
+    const { mountModal, handleUnshareScreen, isVideoBroadcasting } = this.props;
+    if(isVideoBroadcasting){
+      handleUnshareScreen();
+    }
     mountModal(<PresentationUploaderContainer />);
   }
 

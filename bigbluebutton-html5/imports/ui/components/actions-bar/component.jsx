@@ -157,6 +157,8 @@ class ActionsBar extends PureComponent {
               isSharingVideo,
               stopExternalVideoShare,
               isMeteorConnected,
+              handleUnshareScreen,
+              isVideoBroadcasting
             }}
             />
           </div>
