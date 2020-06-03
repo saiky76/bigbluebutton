@@ -210,6 +210,11 @@ const getBreakoutsNoTime = () => Breakouts.find(
 
 const getBreakoutUserIsIn = userId => Breakouts.findOne({ 'joinedUsers.userId': new RegExp(`^${userId}`) }, { fields: { sequence: 1 } });
 
+const getBreakoutNameByUserId = userId => Breakouts.find(
+  { 'users.userId': userId },
+  { fields: { name: 1 } },
+).fetch();
+
 const isUserInBreakoutRoom = (joinedUsers) => {
   const userId = Auth.userID;
 
@@ -255,5 +260,6 @@ export default {
   getUnassignedUsersInMasterChannel,
   getCurrentMeeting,
   getUserNameAndGroupForDisplayRoomName,
-  removeOfflineUserFromBreakoutRoom
+  removeOfflineUserFromBreakoutRoom,
+  getBreakoutNameByUserId
 };

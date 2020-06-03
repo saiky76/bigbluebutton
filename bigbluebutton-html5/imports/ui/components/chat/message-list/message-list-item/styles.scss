@@ -5,6 +5,45 @@
 :root {
   --systemMessage-background-color: #fefefe;
   --systemMessage-border-color: rgb(231, 236, 241);
+  --user-manage-menu-top : 1.5rem;
+  --user-manage-menu-right : 1rem;
+  --user-manage-menu-width : 13rem;
+}
+
+.dropdown {
+  position: static;
+  left: auto;
+  // top: 48%;
+  [dir="rtl"] & {
+    left: 0;
+    right: auto;
+  }
+}
+
+.shareButton {
+  padding: 0.45rem 0.5rem;
+  i {
+    color: #000000 !important;
+  }
+}
+
+.dropdownContent {
+  position: fixed;
+  top: 10%;
+  right: 1%;
+  // top: var(--user-manage-menu-top);
+  // right: var(--user-manage-menu-right);
+  // left: auto;
+  width: var(--user-manage-menu-width);
+
+  [dir="rtl"] & {
+    top: var(--user-manage-menu-top);
+    right: -1rem;
+  }
+
+  @include mq($small-only) {
+    width: 100vw;
+  }
 }
 
 .item {
@@ -169,13 +208,15 @@
   word-wrap: break-word;
 
   align-self: flex-start;
-  max-width: 93rem;
+  max-width: 98%;
   background: #FFFFFF;
   border-radius:  0px 20px 20px 20px;
   line-height: var(--font-size-21px);
   padding: var(--font-size-10px);
   letter-spacing: 0.1px;
-
+  @include mq($small-only) {
+    max-width: 92%;
+  }
 }
 .messageright, .hyperlinkright {
   flex: 1;
@@ -186,10 +227,13 @@
   word-wrap: break-word;
 
   align-self: flex-start;
-  max-width: 93rem;
+  max-width: 98%;
   background:linear-gradient(0deg, #BCD7EF, #BCD7EF);
   border-radius: 0px 20px 20px 20px;
   padding: var(--font-size-10px);
+  @include mq($small-only) {
+    max-width: 92%;
+  }
 }
 
 .timeleft {
@@ -296,4 +340,10 @@
   & + .message {
     margin-top: 0;
   }
+}
+
+.messageWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
