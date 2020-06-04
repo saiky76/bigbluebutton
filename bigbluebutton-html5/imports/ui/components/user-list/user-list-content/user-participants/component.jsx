@@ -54,21 +54,12 @@ class UserParticipants extends Component {
 
     this.userRefs = [];
 
-    this.getScrollContainerRef = this.getScrollContainerRef.bind(this);
     this.rove = this.rove.bind(this);
     this.changeState = this.changeState.bind(this);
     this.getUsers = this.getUsers.bind(this);
   }
 
-  componentDidMount() {
-    const { compact } = this.props;
-    if (!compact) {
-      this.refScrollContainer.addEventListener(
-        'keydown',
-        this.rove,
-      );
-    }
-  }
+  componentDidMount() {}
 
   shouldComponentUpdate(nextProps, nextState) {
     const isPropsEqual = _.isEqual(this.props, nextProps);
@@ -87,13 +78,7 @@ class UserParticipants extends Component {
     }
   }
 
-  componentWillUnmount() {
-    this.refScrollContainer.removeEventListener('keydown', this.rove);
-  }
-
-  getScrollContainerRef() {
-    return this.refScrollContainer;
-  }
+  componentWillUnmount() {}
 
   getUsers() {
     const {
@@ -106,6 +91,7 @@ class UserParticipants extends Component {
       breakoutRoomUsers,
       onlyModerators,
       allModerators,
+      getScrollContainerRef,
       unassignedUsersInMasterChannel
     } = this.props;
 
@@ -154,7 +140,7 @@ class UserParticipants extends Component {
               currentUser
             }}
             user={u}
-            getScrollContainerRef={this.getScrollContainerRef}
+            getScrollContainerRef={getScrollContainerRef}
           />
         </div>
       </CSSTransition>
@@ -184,18 +170,12 @@ class UserParticipants extends Component {
 
     return (
       <div className={styles.userListColumn}>
-        <div
-          className={styles.scrollableList}
-          tabIndex={0}
-          ref={(ref) => { this.refScrollContainer = ref; }}
-        >
           <div className={styles.list}>
             <TransitionGroup ref={(ref) => { this.refScrollItems = ref; }}>
               {this.getUsers()}
             </TransitionGroup>
           </div>
         </div>
-      </div>
     );
   }
 }

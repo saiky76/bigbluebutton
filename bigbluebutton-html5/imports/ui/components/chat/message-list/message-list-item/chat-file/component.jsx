@@ -5,6 +5,7 @@ import styles from './styles';
 import Button from '../../../../button/component';
 import Icon from '/imports/ui/components/icon/component';
 import Auth from '/imports/ui/services/auth';
+import { meetingIsBreakout, getParentMeetingId } from '/imports/ui/components/app/service';
 
 const propTypes = {
   text: PropTypes.string,
@@ -22,9 +23,11 @@ export default class ChatFileUploaded extends PureComponent {
     const {
       file,
     } = this.props;
+    const isbreakoutMeeting = meetingIsBreakout();
+    const meetingId = isbreakoutMeeting ? getParentMeetingId(Auth.meetingID) : Auth.meetingID;
 
     const uri = `https://${window.document.location.hostname}/bigbluebutton/file/download/`
-      + `${file.fileId}/${file.fileName}/${Auth.meetingID}`;
+      + `${file.fileId}/${file.fileName}/${meetingId}`;
 
     window.open(uri);
   }

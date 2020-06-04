@@ -81,11 +81,11 @@ object GroupChatApp {
 
     val sender = GroupChatUser(SystemUser.ID, SystemUser.ID)
     val h1 = GroupChatMsgFromUser(correlationId = "cor1", sender = sender,
-      color = "red", MessageObject("Hello Foo!"))
+      color = "red", MessageObject("Hello Foo!", None, "foo@foo.com", "foogroup"))
     val h2 = GroupChatMsgFromUser(correlationId = "cor2", sender = sender,
-      color = "red", MessageObject("Hello Bar!"))
+      color = "red", MessageObject("Hello Bar!", None, "foo@foo.com", "foogroup"))
     val h3 = GroupChatMsgFromUser(correlationId = "cor3", sender = sender,
-      color = "red", MessageObject("Hello Baz!"))
+      color = "red", MessageObject("Hello Baz!", None, "foo@foo.com", "foogroup"))
     val state1 = addH(state, SystemUser.ID, liveMeeting, h1)
     val state2 = addH(state1, SystemUser.ID, liveMeeting, h2)
     val state3 = addH(state2, SystemUser.ID, liveMeeting, h3)

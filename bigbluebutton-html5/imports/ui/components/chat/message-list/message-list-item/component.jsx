@@ -4,7 +4,7 @@ import { FormattedTime, defineMessages, injectIntl } from 'react-intl';
 import _ from 'lodash';
 import Auth from '/imports/ui/services/auth';
 import UserAvatar from '/imports/ui/components/user-avatar/component';
-import Message from './message/component';
+import MessageContainer from './message/container';
 
 import { styles } from './styles';
 
@@ -76,13 +76,14 @@ class MessageListItem extends Component {
         {messages.map(message => (
           message.text !== ''
             ? (
-              <Message
+              <MessageContainer
                 className={(message.id ? styles.systemMessage : null)}
                 key={_.uniqueId('id-')}
                 text={message.text}
                 time={message.time}
                 chatAreaId={chatAreaId}
                 handleReadMessage={handleReadMessage}
+                systemMessage={true}
               />
             ) : null
         ))}
@@ -91,7 +92,7 @@ class MessageListItem extends Component {
   }
 
   render() {
-    const {
+    let {
       user,
       messages,
       time,
@@ -101,15 +102,30 @@ class MessageListItem extends Component {
       handleReadMessage,
       scrollArea,
       intl,
+      isBreakoutMeeting,
+      getBreakoutNameByUserId,
     } = this.props;
 
     const dateTime = new Date(time);
-
+    let moderator = {
+      userId: 'Moderator',
+      color: 'rgb(48, 63, 159)',
+      isModerator: true,
+      isOnline: true,
+      name: 'Moderator',
+    }
     const regEx = /<a[^>]+>/i;
 
     if (!user) {
-      return this.renderSystemMessage();
+      if((messages[0].color) == undefined){
+        return this.renderSystemMessage();
+      }
+      else{
+        user = moderator;
+      }
     }
+
+    const breakoutMeeting = getBreakoutNameByUserId(user.userId);
 
     return (
       <div>
@@ -130,6 +146,13 @@ class MessageListItem extends Component {
                 <div className={styles.metaleft}>
                   <div className={user.isOnline ? styles.names : styles.logout}>
                     <span className={styles.name}>{user.name}</span>
+                    {(isBreakoutMeeting) ?
+                      null
+                    :
+                      ((user.isModerator) ? 
+                        <span>(Moderator)</span>
+                    : <span>{(breakoutMeeting !== []) ? breakoutMeeting.name : null}</span>)
+                    }
                     {user.isOnline
                       ? null
                       : (
@@ -144,9 +167,10 @@ class MessageListItem extends Component {
                 </div>
                 <div className={styles.messagesleft}>
                   {messages.map(message => (
-                    <Message
+                    <MessageContainer
                       className={styles.messageleft}
                       key={message.id}
+                      messageId={message.id}
                       text={message.text}
                       time={message.time}
                       file={message.fileData}
@@ -174,9 +198,10 @@ class MessageListItem extends Component {
                   </div>
                   <div className={styles.messagesright}>
                     {messages.map(message => (
-                      <Message
+                      <MessageContainer
                         className={styles.messageright}
                         key={message.id}
+                        messageId={message.id}
                         text={message.text}
                         time={message.time}
                         file={message.fileData}
@@ -193,7 +218,7 @@ class MessageListItem extends Component {
               </div>
             </div>
           )
-}
+        }
       </div>
     );
   }

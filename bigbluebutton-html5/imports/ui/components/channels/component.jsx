@@ -1,6 +1,7 @@
 import React, { Fragment, PureComponent } from 'react';
 import browser from 'browser-detect';
 import PropTypes from 'prop-types';
+import { findDOMNode } from 'react-dom';
 import Assign from '/imports/ui/components/breakout-create-modal/assign-to-breakouts/container';
 import { withModalMounter } from '/imports/ui/components/modal/service';
 import BreakoutCreateModalContainer from '/imports/ui/components/breakout-create-modal/container';
@@ -21,9 +22,6 @@ import DropdownList from '/imports/ui/components/dropdown/list/component';
 import DropdownListItem from '/imports/ui/components/dropdown/list/item/component';
 import ChannelAvatar from './channelAvatar/component';
 import ChannelDropdown from './dropdown/component';
-
-import { findDOMNode } from 'react-dom';
-
 
 const ROLE_MODERATOR = Meteor.settings.public.user.role_moderator;
 
@@ -75,6 +73,10 @@ const intlMessages = defineMessages({
 });
 
 class Channels extends PureComponent {
+
+  static checkIfDropdownIsVisible(contentOffSetTop, contentOffsetHeight) {
+    return (contentOffSetTop + contentOffsetHeight) < window.innerHeight;
+  }
   static sortById(a, b) {
     if (a.userId > b.userId) {
       return 1;
@@ -121,6 +123,7 @@ class Channels extends PureComponent {
       hideUsers: true,
       isChannelOptionsOpen: false,
       channelId: '',
+      dropdownVisible: false,
     };
   }
 
@@ -138,13 +141,95 @@ class Channels extends PureComponent {
     this.refScrollContainer.removeEventListener('keydown', this.rove);
   }
 
+  getDropdownMenuParent() {
+    return findDOMNode(this.dropdown);
+  }
+
+  isDropdownActivedByUser() {
+    const { isChannelOptionsOpen, dropdownVisible } = this.state;
+
+    return isChannelOptionsOpen && !dropdownVisible;
+  }
+
+  checkDropdownDirection() {
+    if (this.isDropdownActivedByUser()) {
+      const dropdown = this.getDropdownMenuParent();
+      const dropdownTrigger = dropdown.children[0];
+      const dropdownContent = dropdown.children[1];
+
+      const scrollContainer = this.getScrollContainerRef();
+
+      const nextState = {
+        dropdownVisible: true,
+      };
+
+      const isDropdownVisible = Channels.checkIfDropdownIsVisible(
+        dropdownContent.offsetTop,
+        dropdownContent.offsetHeight,
+      );
+      
+      if (!isDropdownVisible) {
+        const { offsetTop, offsetHeight } = dropdownTrigger;
+        
+        const offsetPageTop = (offsetTop + offsetHeight) - scrollContainer.scrollTop;
+
+        nextState.dropdownOffset = window.innerHeight - offsetPageTop;
+        nextState.dropdownDirection = 'bottom';
+      }
+
+      this.setState(nextState);
+    }
+  }
+
   onActionsShow() {
+    Session.set('dropdownOpen', true);
+    const dropdown = this.getDropdownMenuParent();
+    const scrollContainer = this.getScrollContainerRef();
+
+    if (dropdown && scrollContainer) {
+      this.resetMenuState();
+      const dropdownTrigger = dropdown.children[0];
+      const list = findDOMNode(this.list);
+      const children = [].slice.call(list.children);
+      children.find(child => child.getAttribute('role') === 'menuitem').focus();
+
+      this.setState({
+        isChannelOptionsOpen: true,
+        dropdownVisible: false,
+        dropdownOffset: dropdownTrigger.offsetTop - scrollContainer.scrollTop,
+        dropdownDirection: 'top',
+      });
+
+      scrollContainer.addEventListener('scroll', this.handleScroll, false);
+    }
+  }
+
+  onActionsHide(callback) {
     this.setState({
-      isChannelOptionsOpen: true,
+      isChannelOptionsOpen: false,
+      dropdownVisible: false,
+    });
+
+    const scrollContainer = this.getScrollContainerRef();
+    scrollContainer.removeEventListener('scroll', this.handleScroll, false);
+
+    if (callback) {
+      return callback;
+    }
+
+    return Session.set('dropdownOpen', false);
+  }
+
+  resetMenuState() {
+    return this.setState({
+      isChannelOptionsOpen: false,
+      dropdownOffset: 0,
+      dropdownDirection: 'top',
+      dropdownVisible: false,
     });
   }
 
-  onActionsHide() {
+  handleScroll() {
     this.setState({
       isChannelOptionsOpen: false,
     });
@@ -165,6 +250,7 @@ class Channels extends PureComponent {
       waiting,
       requestedBreakoutId,
     } = this.state;
+    this.checkDropdownDirection();
 
     if (breakoutRooms.length <= 0) closeBreakoutPanel();
 
@@ -236,10 +322,10 @@ class Channels extends PureComponent {
     this.setState({ joinedAudioOnly: false, breakoutId });
   }
 
-
-
   channelOptions(breakout) {
-    const { isChannelOptionsOpen } = this.state;
+    const { isChannelOptionsOpen, dropdownDirection, dropdownOffset } = this.state;
+    console.log(dropdownOffset);
+    
     return (
       <Dropdown
         ref={(ref) => { this.dropdown = ref; }}
@@ -261,10 +347,18 @@ class Channels extends PureComponent {
           />
         </DropdownTrigger>
         <DropdownContent
+          style={{
+            //dropdownOffset need to be set properly
+            [dropdownDirection]: `${dropdownOffset}px`,
+          }}
           className={styles.dropdownContent}
-          placement="right top"
+          placement={`right ${dropdownDirection}`}
         >
-          <DropdownList>
+          <DropdownList
+            ref={(ref) => { this.list = ref; }}
+            getDropdownMenuParent={this.getDropdownMenuParent}
+            onActionsHide={this.onActionsHide}
+          >
             {
               this.renderMenuItems(breakout)
             }
@@ -298,7 +392,8 @@ class Channels extends PureComponent {
     const { channelId, hideUsers } = this.state;
     const isBreakOutMeeting = meetingIsBreakout();
     const isModerator = currentUser.role === ROLE_MODERATOR;
-    const otherUsers = isModerator ? "Unassigned users" : "Other groups";
+    const otherUsers = isModerator ? "Unassigned" : "Learning group";
+    const scrollContainer = this.getScrollContainerRef();
 
     return (
 
@@ -368,6 +463,7 @@ class Channels extends PureComponent {
                         roving,
                         requestUserInformation,
                         meetingIdentifier: Auth.meetingID,
+                        getScrollContainerRef: scrollContainer,
                       }}
                     />
                   </div>
@@ -378,8 +474,12 @@ class Channels extends PureComponent {
             {this.renderBreakoutRooms()}
 
           {isBreakOutMeeting ? null :
-            <div className={styles.allModerators}>
+          <div>
+            <div className={styles.contentWrapper}>
+              {this.renderChannelAvatar("Moderator")}
               <div className={styles.moderator}>Moderator(s)</div>
+            </div>
+            <div className={styles.allModerators}>
               <UserParticipantsContainer
                 {...{
                   compact,
@@ -390,9 +490,11 @@ class Channels extends PureComponent {
                   requestUserInformation,
                   meetingIdentifier: Auth.meetingID,
                   onlyModerators: true,
+                  getScrollContainerRef: scrollContainer,
                 }}
               />
             </div>
+          </div>
           }
 
           </div>
@@ -435,6 +537,7 @@ class Channels extends PureComponent {
     } = this.props;
 
     const isBreakOutMeeting = meetingIsBreakout();
+    const scrollContainer = this.getScrollContainerRef();
     return (
       breakoutRooms.map(breakout => (
         
@@ -470,6 +573,7 @@ class Channels extends PureComponent {
         requestUserInformation,
         meetingIdentifier: breakout.breakoutId,
         isbreakoutRoomUser,
+        getScrollContainerRef: scrollContainer,
       }}
     />
     </div>

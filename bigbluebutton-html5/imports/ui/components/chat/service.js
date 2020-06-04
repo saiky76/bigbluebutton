@@ -53,7 +53,7 @@ const mapGroupMessage = (message) => {
     sender: null,
   };
 
-  if (message.sender !== SYSTEM_CHAT_TYPE || message.sender !== 'SYSTEM') {
+  if (message.sender !== 'SYSTEM') {
     const sender = Users.findOne({ userId: message.sender },
       {
         fields: {
@@ -92,6 +92,7 @@ const reduceGroupMessages = (previous, current) => {
     color: current.color,
     time: current.timestamp,
   }];
+
   if (!lastMessage || !currentMessage.chatId === PUBLIC_GROUP_CHAT_ID) {
     return previous.concat(currentMessage);
   }
@@ -118,6 +119,15 @@ const getPublicGroupMessages = () => {
   }, { sort: ['timestamp'] }).fetch();
   return publicGroupMessages;
 };
+
+const getMessageObject = (messageId) => {
+  
+  return GroupChatMsg.findOne({
+    meetingId: Auth.meetingID,
+    chatId: PUBLIC_GROUP_CHAT_ID,
+    id: messageId,
+  })
+}
 
 const getPrivateGroupMessages = () => {
   const chatID = Session.get('idChatOpen');
@@ -220,6 +230,8 @@ const sendGroupMessage = (messageObj) => {
   groupChatMsgFromUser.messageObj = {
     message: messageObj.message,
     fileObj: fileData,
+    senderEmail: messageObj.senderEmail,
+    senderGroup: messageObj.senderGroup
   };
   const currentClosedChats = Storage.getItem(CLOSED_CHAT_LIST_KEY);
 
@@ -248,13 +260,14 @@ const getCrossChatTargetMeetings = () => {
 /*+++++++++++++++++++++++++++++++++++++++++*/
   //TO BE CALLED FROM UI LAYER
 
-  // console.log("sending message to room0");
   
   // let rooms = getCrossChatTargetMeetings();
-  // const currentUser = Users.findOne({ userId: Auth.userID }, { fields: { role: 1} })
-  // console.log("sending message to room1");
+  const getCurrentUser = () => {
+    return(
+      Users.findOne({ userId: Auth.userID }, { fields: { role: 1} })
+    )
+  } 
   // if(rooms && rooms.length > 0){
-  //   console.log("sending message to room2");
   //   let room = rooms.shift();
   //   return sendCrossGroupMessage(messageObj, room.meetingId, currentUser.role == ROLE_MODERATOR ? 'Moderator' : room.meetingName);
   // }
@@ -269,10 +282,11 @@ const sendCrossGroupMessage = (messageObj, targetMeetingId, senderGroupName) => 
   let destinationChatId = PUBLIC_GROUP_CHAT_ID;
 
   const receiverId = { id: chatID };
+  const messageObject = messageObj.message;
 
-  const fileData = (messageObj.fileId) ? ({
-    fileId: messageObj.fileId,
-    fileName: messageObj.fileName,
+  const fileData = (messageObject.fileObj != null) ? ({
+    fileId: messageObject.fileObj.fileId,
+    fileName: messageObject.fileObj.fileName,
   }) : undefined;
 
   let user = getUser(Auth.userID);
@@ -296,7 +310,6 @@ const sendCrossGroupMessage = (messageObj, targetMeetingId, senderGroupName) => 
       }
     }
   }else{
-    console.log("sending message to master");
     let breakoutRoom = ChannelsService.getBreakout(Auth.meetingID);
     let mainChannelUser = breakoutRoom.users.find(u => u.email == user.email && u.username == user.name);
     if(mainChannelUser){
@@ -317,8 +330,10 @@ const sendCrossGroupMessage = (messageObj, targetMeetingId, senderGroupName) => 
   };
 
   groupChatMsgFromUser.messageObj = {
-    message: messageObj.message,
+    message: messageObject.message,
     fileObj: fileData,
+    senderEmail: messageObj.senderEmail,
+    senderGroup: messageObj.senderGroup
   };
  
 
@@ -550,4 +565,8 @@ export default {
   maxTimestampReducer,
   getLastMessageTimestampFromChatList,
   UnsentMessagesCollection,
+  getCrossChatTargetMeetings,
+  getMessageObject,
+  getCurrentUser,
+  sendCrossGroupMessage,
 };
