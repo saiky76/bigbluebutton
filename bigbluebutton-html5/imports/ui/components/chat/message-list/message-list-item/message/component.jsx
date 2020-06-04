@@ -10,6 +10,8 @@ import DropdownList from '/imports/ui/components/dropdown/list/component';
 import DropdownListItem from '/imports/ui/components/dropdown/list/item/component';
 import styles from '../styles';
 
+import MessageDropdown from '../dropdown/component';
+
 const propTypes = {
   text: PropTypes.string.isRequired,
   time: PropTypes.number.isRequired,
@@ -52,9 +54,8 @@ export default class MessageListItem extends PureComponent {
     };
     this.meetingName = _.uniqueId('meeting-item-');
 
-    this.onActionsShow = this.onActionsShow.bind(this);
-    this.onActionsHide = this.onActionsHide.bind(this);
-    this.renderMenuItems = this.renderMenuItems.bind(this);
+
+    
     this.renderSharableOption = this.renderSharableOption.bind(this);
 
     this.ticking = false;
@@ -62,26 +63,6 @@ export default class MessageListItem extends PureComponent {
     this.handleMessageInViewport = _.debounce(this.handleMessageInViewport.bind(this), 50);
   }
 
-  onActionsShow() {
-    const {scrollArea} = this.props;
-    this.setState({
-      isUserOptionsOpen: true,
-    });
-
-    scrollArea.addEventListener('scroll', this.handleScroll, false);
-  }
-
-  onActionsHide() {
-    this.setState({
-      isUserOptionsOpen: false,
-    });
-  }
-
-  handleScroll() {
-    this.setState({
-      isUserOptionsOpen: false,
-    });
-  }
 
   componentDidMount() {
     this.listenToUnreadMessages();
@@ -185,43 +166,12 @@ export default class MessageListItem extends PureComponent {
     });
   }
 
-  makeDropdownListItem (meeting){
-    const {getMessageObj, messageId, sendCrossGroupMsg, currentUser} = this.props;
-    const messageObj = getMessageObj(messageId);
-    
-    return(
-      <DropdownListItem
-        key={this.meetingName}
-        icon="application"
-        label={meeting.meetingName}
-        onClick={() => {
-          sendCrossGroupMsg(messageObj, meeting.meetingId, currentUser.role == ROLE_MODERATOR ? 'Moderator' : meeting.meetingName)
-        }}
-      />
-    )
-  }
 
-  renderMenuItems() {
-    const {
-      targetMeetings
-    } = this.props;
 
-    this.menuItems = _.compact([
-      (<DropdownListItem
-          label="Share message to "
-        />
-      ),
-      // (<DropdownListSeparator key={_.uniqueId('list-separator-')} />)
-    ])
-    targetMeetings.map(meeting => {
-      this.menuItems.push(this.makeDropdownListItem(meeting))
-    })
-    
-    return this.menuItems;
-  }
-
+  
   renderSharableOption() {
-    const { intl, text, file, userid, className, systemMessage, } = this.props;
+    const { intl, text, file, userid, className, systemMessage,getMessageObj,messageId, 
+      sendCrossGroupMsg, currentUser, targetMeetings, scrollArea } = this.props;
     const { isUserOptionsOpen } = this.state;
 
     return ((systemMessage) ? 
@@ -231,44 +181,23 @@ export default class MessageListItem extends PureComponent {
         className={className}
       /> :
       (<div>
-        <Dropdown
-          ref={(ref) => { this.dropdown = ref; }}
-          autoFocus={false}
-          isOpen={isUserOptionsOpen}
-          onShow={this.onActionsShow}
-          onHide={this.onActionsHide}
-          className={styles.dropdown}
-        >
-          <DropdownTrigger tabIndex={0}>
-            {(file != null)
-            ? (
-              <div>
-                <ChatFileUploaded
-                  text={text}
-                  file={file}
-                  id={userid}
-                />
-              </div>
-            )
-            : (
-              <p
-                ref={(ref) => { this.text = ref; }}
-                dangerouslySetInnerHTML={{ __html: text }}
-                className={className}
-              />
-            )}
-          </DropdownTrigger>
-          <DropdownContent
-            className={styles.dropdownContent}
-            placement=""
-          >
-            <DropdownList>
-              {
-                this.renderMenuItems()
-              }
-            </DropdownList>
-          </DropdownContent>
-        </Dropdown>
+
+      <MessageDropdown
+        {...{
+          text, 
+          file,
+          userid,
+          className,
+          getMessageObj, 
+          messageId, 
+          sendCrossGroupMsg, 
+          currentUser,
+          targetMeetings,
+          scrollArea
+
+        }}
+      />
+        
       </div>)
     );
   }

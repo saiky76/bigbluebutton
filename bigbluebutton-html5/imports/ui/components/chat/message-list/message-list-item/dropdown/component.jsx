@@ -6,22 +6,20 @@ import DropdownTrigger from '/imports/ui/components/dropdown/trigger/component';
 import DropdownContent from '/imports/ui/components/dropdown/content/component';
 import DropdownList from '/imports/ui/components/dropdown/list/component';
 import DropdownListItem from '/imports/ui/components/dropdown/list/item/component';
-import lockContextContainer from '/imports/ui/components/lock-viewers/context/container';
-import ChannelAvatar from './../channelAvatar/component';
-import BreakoutEditModalContainer from '/imports/ui/components/breakout-edit-modal/container';
-import Auth from '/imports/ui/services/auth';
+import lockContextContainer from '/imports/ui/components/lock-viewers/context/container'
+import ChatFileUploaded from '../chat-file/component';;
 
 import _ from 'lodash';
 import { Session } from 'meteor/session';
-import { styles } from './../styles';
+import { styles } from './styles';
 
 
 const propTypes = {
-  getScrollContainerRef: PropTypes.func.isRequired,
+  //getScrollContainerRef: PropTypes.func.isRequired,
 };
 const ROLE_MODERATOR = Meteor.settings.public.user.role_moderator;
 
-class ChannelDropdown extends PureComponent {
+class MessageDropdown extends PureComponent {
   /**
    * Return true if the content fit on the screen, false otherwise.
    *
@@ -30,7 +28,12 @@ class ChannelDropdown extends PureComponent {
    * @return True if the content fit on the screen, false otherwise.
    */
   static checkIfDropdownIsVisible(contentOffSetTop, contentOffsetHeight, scrollTop) {
-    //return (contentOffSetTop + contentOffsetHeight) < window.innerHeight;
+    // return (contentOffSetTop + contentOffsetHeight) < window.innerHeight;
+    console.log("contentOffSetTop" , contentOffSetTop);
+    console.log("our height" , contentOffsetHeight);
+    console.log("window height" , window.innerHeight);
+    console.log("scrollAreaInnerHeight" , scrollTop);
+    
     return (scrollTop) > 0;
   }
 
@@ -50,9 +53,9 @@ class ChannelDropdown extends PureComponent {
     this.onActionsHide = this.onActionsHide.bind(this);
     this.getDropdownMenuParent = this.getDropdownMenuParent.bind(this);
     this.resetMenuState = this.resetMenuState.bind(this);
-    this.joinBreakoutRoom = this.joinBreakoutRoom.bind(this);
-    this.launchEditRoom = this.launchEditRoom.bind(this);
+    this.renderMenuItems = this.renderMenuItems.bind(this);
   }
+
 
   componentWillMount() {
     this.title = _.uniqueId('dropdown-title-');
@@ -65,12 +68,9 @@ class ChannelDropdown extends PureComponent {
 
   onActionsShow() {
     Session.set('dropdownOpen', true);
-    const { getScrollContainerRef } = this.props;
+    const { scrollArea } = this.props;
     const dropdown = this.getDropdownMenuParent();
-    const scrollContainer = getScrollContainerRef();
-
-    console.log("dropdown: ", dropdown);
-    console.log("scrollContainer: ", scrollContainer);
+    const scrollContainer = scrollArea;
     
     if (dropdown && scrollContainer) {
       const dropdownTrigger = dropdown.children[0];
@@ -78,7 +78,8 @@ class ChannelDropdown extends PureComponent {
       this.setState({
         isActionsOpen: true,
         dropdownVisible: false,
-        dropdownOffset: dropdownTrigger.offsetTop + 100,        
+        // dropdownOffset: dropdownTrigger.offsetTop - scrollContainer.scrollTop,  
+        dropdownOffset: dropdownTrigger.offsetTop - 150, 
         dropdownDirection: 'top',
       });
 
@@ -87,7 +88,7 @@ class ChannelDropdown extends PureComponent {
   }
 
   onActionsHide(callback) {
-    const { getScrollContainerRef } = this.props;
+    const { scrollArea } = this.props;
 
     this.setState({
       isActionsOpen: false,
@@ -95,7 +96,7 @@ class ChannelDropdown extends PureComponent {
       showNestedOptions: false,
     });
 
-    const scrollContainer = getScrollContainerRef();
+    const scrollContainer = scrollArea;
     scrollContainer.removeEventListener('scroll', this.handleScroll, false);
 
     if (callback) {
@@ -134,29 +135,27 @@ class ChannelDropdown extends PureComponent {
    * Check if the dropdown is visible, if so, check if should be draw on top or bottom direction.
    */
   checkDropdownDirection() {
-    const { getScrollContainerRef } = this.props;
+    const { scrollArea } = this.props;
     if (this.isDropdownActivedByUser()) {
       const dropdown = this.getDropdownMenuParent();
       const dropdownTrigger = dropdown.children[0];
-      const dropdownContent = dropdown.children[1];
 
-      const scrollContainer = getScrollContainerRef();
+      const scrollContainer = scrollArea;
 
       const nextState = {
         dropdownVisible: true,
       };
 
-      const isDropdownVisible = ChannelDropdown.checkIfDropdownIsVisible(
-        dropdownContent.offsetTop,
-        dropdownContent.offsetHeight,
-        scrollContainer.scrollTop
+      const isDropdownVisible = MessageDropdown.checkIfDropdownIsVisible(
+        dropdownTrigger.offsetTop,
+        dropdownTrigger.offsetHeight,
+        scrollArea.scrollTop
       );
 
       if (!isDropdownVisible) {
-        // const { offsetTop, offsetHeight } = dropdownTrigger;
         // const offsetPageTop = (offsetTop + offsetHeight) - scrollContainer.scrollTop;
-
         // nextState.dropdownOffset = window.innerHeight - offsetPageTop;
+        nextState.dropdownOffset = dropdownTrigger.offsetTop -150;
         nextState.dropdownDirection = 'bottom';
       }
 
@@ -176,112 +175,16 @@ class ChannelDropdown extends PureComponent {
   }
 
   
-  renderMenuItems(breakout) {
-    const {
-      amIModerator,
-      isMeteorConnected,
-      getUsersByMeeting,
-      getUsersNotAssigned,
-      users,
-      exitAudio,
-      isBreakOutMeeting
-    } = this.props;
-
-    const {
-      channelId,
-    } = this.state;
-    // const isBreakOutMeeting = meetingIsBreakout();
-
-    this.menuItems = _.compact([
-      (isMeteorConnected && !isBreakOutMeeting ? (
-        <DropdownListItem
-          key={this.clearStatusId}
-          icon="application"
-          label="Join Room"
-          onClick={() => {
-            this.joinBreakoutRoom(breakout.breakoutId);
-            exitAudio();
-          }}
-        />) : null
-      ),
-
-      ((isMeteorConnected && amIModerator && !isBreakOutMeeting) ? (
-        <DropdownListItem
-          key={this.muteAllId}
-          icon="rooms"
-          label="Edit Room"
-          onClick={() => {
-            this.launchEditRoom(breakout.breakoutId, breakout.name);
-          }}
-        />) : null),
-
-    
-
-    ]);
-
-    return this.menuItems;
-  }
-  
-  launchEditRoom(breakoutId,name) {
-    const { mountModal } = this.props;
-    return mountModal(<BreakoutEditModalContainer breakoutId={breakoutId} name={name} />);
-  }
-
-  joinBreakoutRoom(breakoutId) {
-    Session.set('lastBreakoutOpened', breakoutId);
-    const { requestJoinURL, breakoutRoomUser, isUserActiveInBreakoutroom } = this.props;
-    const { waiting } = this.state;
-
-    const breakoutUser = breakoutRoomUser(breakoutId);
-    if (!breakoutUser && !waiting) {
-      // This should only be the case for a moderator in master channel
-      console.log('Adding the users to assigned users in the backend');
-      this.setState(
-        {
-          waiting: true,
-          requestedBreakoutId: breakoutId,
-        },
-        () => requestJoinURL(breakoutId),
-      );
-    }
-    // I am a break out room user and I am not active in it
-    if (breakoutUser && !isUserActiveInBreakoutroom(Auth.userID)) {
-      window.open(breakoutUser.redirectToHtml5JoinURL, '_blank');
-
-      this.setState(
-        {
-          waiting: false,
-        },
-      );
-    }
-    return null;
-  }
-
-
-
-
-  renderChannelAvatar(channelName) {
-    const roomIcon = channelName.toLowerCase().slice(0, 2);
-
-    return (
-      <ChannelAvatar className={styles.channelAvatar}>
-        {roomIcon}
-      </ChannelAvatar>
-    );
-  }
 
   render() {
-    const {
-     breakout
-    } = this.props;
+
+    const {text, file, userid, className} = this.props;
 
     const {
       isActionsOpen,
       dropdownVisible,
       dropdownDirection,
-      dropdownOffset,
-      showNestedOptions,
-      isBreakOutMeeting
+      dropdownOffset
     } = this.state;
 
     const userItemContentsStyle = {};
@@ -291,7 +194,8 @@ class ChannelDropdown extends PureComponent {
     userItemContentsStyle[styles.usertListItemWithMenu] = isActionsOpen;
 
     return (
-          <Dropdown
+
+       <Dropdown
             ref={(ref) => { this.dropdown = ref; }}
             keepOpen={isActionsOpen}        
             onShow={this.onActionsShow}
@@ -302,36 +206,84 @@ class ChannelDropdown extends PureComponent {
             aria-haspopup="true"
             aria-live="assertive"
             aria-relevant="additions"
-          >
-            <DropdownTrigger tabIndex={0}>
-              {isBreakOutMeeting ? null :
-
-              <div className={styles.contentWrapper} cursor="pointer">
-                  {this.renderChannelAvatar(breakout.name)}
-                  <div className={styles.moderator}>{breakout.name}</div>
-              </div>}
-            </DropdownTrigger>
-
-            <DropdownContent
-                
-                //  placement= "bottom"
-                style={{
+        >
+          <DropdownTrigger tabIndex={0}>
+            {(file != null)
+            ? (
+              <div>
+                <ChatFileUploaded
+                  text={text}
+                  file={file}
+                  id={userid}
+                />
+              </div>
+            )
+            : (
+              <p
+                ref={(ref) => { this.text = ref; }}
+                dangerouslySetInnerHTML={{ __html: text }}
+                className={className}
+              />
+            )}
+          </DropdownTrigger>
+          <DropdownContent
+             style={{
                     visibility: dropdownVisible ? 'visible' : 'hidden',
+                    // [dropdownDirection]: `${dropdownOffset}px`
                     left: `${dropdownOffset}px`
                 }}
                 // className={styles.dropdownContent}
-                placement={`bottom`}
-                >
-              <DropdownList>
-                {
-                   this.renderMenuItems(breakout)
-                }
-              </DropdownList>
-            </DropdownContent>
-          </Dropdown> 
-    );
+                // placement={`right ${dropdownDirection}`}
+                // placement={`top left`}
+                placement={`${dropdownDirection} left`}
+                
+          >
+            <DropdownList>
+              {
+                this.renderMenuItems()
+              }
+            </DropdownList>
+          </DropdownContent>
+        </Dropdown>
+       );
   }
+
+  renderMenuItems() {
+    const {
+      targetMeetings
+    } = this.props;
+
+    this.menuItems = _.compact([
+      (<DropdownListItem
+          label="Share message to "
+        />
+      ),
+      // (<DropdownListSeparator key={_.uniqueId('list-separator-')} />)
+    ])
+    targetMeetings.map(meeting => {
+      this.menuItems.push(this.makeDropdownListItem(meeting))
+    })
+    
+    return this.menuItems;
+  
 }
 
-ChannelDropdown.propTypes = propTypes;
-export default lockContextContainer(ChannelDropdown);
+makeDropdownListItem (meeting){
+  const {getMessageObj, messageId, sendCrossGroupMsg, currentUser} = this.props;
+  const messageObj = getMessageObj(messageId);
+  
+  return(
+    <DropdownListItem
+      key={this.meetingName}
+      icon="application"
+      label= {meeting.meetingName}
+      onClick={() => {
+        sendCrossGroupMsg(messageObj, meeting.meetingId, currentUser.role == ROLE_MODERATOR ? 'Moderator' : meeting.meetingName)
+      }}
+    />
+  )
+}
+}
+
+MessageDropdown.propTypes = propTypes;
+export default lockContextContainer(MessageDropdown);

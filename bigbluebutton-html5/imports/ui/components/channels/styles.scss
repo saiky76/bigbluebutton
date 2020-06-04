@@ -40,6 +40,9 @@
   
   position: static;
   cursor: pointer;
+  &:focus {
+    outline: 0;
+  }
   // @extend %list-item;
   // flex-flow: column;
   // flex-shrink: 0;
@@ -229,6 +232,11 @@
   display: flex;
   flex-direction: row;
   padding: 3% 0% 3% 11%;
+  border-style: none;
+
+  &:focus {
+    outline: 0;
+  }
 }
 
 .unassigned {
@@ -251,6 +259,7 @@
   @include mq($small-only) {
   color: #A5A8B4;
   }
+  border-style: none;
 }
 
 .createBreakouts {
