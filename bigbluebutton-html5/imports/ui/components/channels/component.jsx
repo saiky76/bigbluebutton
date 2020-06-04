@@ -23,8 +23,6 @@ import DropdownListItem from '/imports/ui/components/dropdown/list/item/componen
 import ChannelAvatar from './channelAvatar/component';
 import ChannelDropdown from './dropdown/component';
 
-
-
 const ROLE_MODERATOR = Meteor.settings.public.user.role_moderator;
 
 const intlMessages = defineMessages({
