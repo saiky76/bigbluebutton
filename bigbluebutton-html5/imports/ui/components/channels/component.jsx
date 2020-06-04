@@ -539,6 +539,7 @@ class Channels extends PureComponent {
     } = this.props;
 
     const isBreakOutMeeting = meetingIsBreakout();
+    const scrollContainer = this.getScrollContainerRef();
     return (
       breakoutRooms.map(breakout => (
         
@@ -574,6 +575,7 @@ class Channels extends PureComponent {
         requestUserInformation,
         meetingIdentifier: breakout.breakoutId,
         isbreakoutRoomUser,
+        getScrollContainerRef: scrollContainer,
       }}
     />
     </div>
