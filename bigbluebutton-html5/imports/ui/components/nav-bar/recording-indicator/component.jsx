@@ -184,7 +184,7 @@ class RecordingIndicator extends PureComponent {
           {recording 
             ? <span aria-hidden>{humanizeSeconds(time)}</span>
              : 
-              !isMobileBrowser ? <span>{recordTitle}</span> : null
+               <span>{recordTitle}</span> 
               }
         </div>
       </div>
@@ -205,11 +205,11 @@ class RecordingIndicator extends PureComponent {
           ? <span className={styles.presentationTitleSeparator} aria-hidden />
           : null}
         <div className={styles.recordingIndicator}>
-          {showButton
+          {showButton && !isMobileBrowser
             ? recordingButton
             : null}
 
-          {showButton ? null : (
+          {showButton && !isMobileBrowser ? null : (
             <Tooltip
               title={`${intl.formatMessage(recording
                 ? intlMessages.notificationRecordingStart
