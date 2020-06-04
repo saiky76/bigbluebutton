@@ -178,7 +178,7 @@ class MessageDropdown extends PureComponent {
 
   render() {
 
-    const {text, file, userid, className} = this.props;
+    const {text, file, userid, className, targetMeetings} = this.props;
 
     const {
       isActionsOpen,
@@ -193,22 +193,9 @@ class MessageDropdown extends PureComponent {
     userItemContentsStyle[styles.userListItem] = !isActionsOpen;
     userItemContentsStyle[styles.usertListItemWithMenu] = isActionsOpen;
 
-    return (
-
-       <Dropdown
-            ref={(ref) => { this.dropdown = ref; }}
-            keepOpen={isActionsOpen}        
-            onShow={this.onActionsShow}
-            onHide={this.onActionsHide}
-            className={userItemContentsStyle}
-            className={styles.dropdown}
-            autoFocus={false}
-            aria-haspopup="true"
-            aria-live="assertive"
-            aria-relevant="additions"
-        >
-          <DropdownTrigger tabIndex={0}>
-            {(file != null)
+      if(targetMeetings && targetMeetings.length == 0){
+        return(
+          (file != null)
             ? (
               <div>
                 <ChatFileUploaded
@@ -224,28 +211,64 @@ class MessageDropdown extends PureComponent {
                 dangerouslySetInnerHTML={{ __html: text }}
                 className={className}
               />
-            )}
-          </DropdownTrigger>
-          <DropdownContent
-             style={{
-                    visibility: dropdownVisible ? 'visible' : 'hidden',
-                    // [dropdownDirection]: `${dropdownOffset}px`
-                    left: `${dropdownOffset}px`
-                }}
-                // className={styles.dropdownContent}
-                // placement={`right ${dropdownDirection}`}
-                // placement={`top left`}
-                placement={`${dropdownDirection} left`}
-                
+            )
+        );
+      }else{
+      
+        return (
+        <Dropdown
+              ref={(ref) => { this.dropdown = ref; }}
+              keepOpen={isActionsOpen}        
+              onShow={this.onActionsShow}
+              onHide={this.onActionsHide}
+              className={userItemContentsStyle}
+              className={styles.dropdown}
+              autoFocus={false}
+              aria-haspopup="true"
+              aria-live="assertive"
+              aria-relevant="additions"
           >
-            <DropdownList>
-              {
-                this.renderMenuItems()
-              }
-            </DropdownList>
-          </DropdownContent>
-        </Dropdown>
+            <DropdownTrigger tabIndex={0}>
+              {(file != null)
+              ? (
+                <div>
+                  <ChatFileUploaded
+                    text={text}
+                    file={file}
+                    id={userid}
+                  />
+                </div>
+              )
+              : (
+                <p
+                  ref={(ref) => { this.text = ref; }}
+                  dangerouslySetInnerHTML={{ __html: text }}
+                  className={className}
+                />
+              )}
+            </DropdownTrigger>
+            <DropdownContent
+              style={{
+                      visibility: dropdownVisible ? 'visible' : 'hidden',
+                      // [dropdownDirection]: `${dropdownOffset}px`
+                      left: `${dropdownOffset}px`
+                  }}
+                  // className={styles.dropdownContent}
+                  // placement={`right ${dropdownDirection}`}
+                  // placement={`top left`}
+                  placement={`${dropdownDirection} left`}
+                  
+            >
+              <DropdownList>
+                {this.renderMenuItems()}
+              </DropdownList>
+
+            </DropdownContent>
+            }
+          </Dropdown>
        );
+     }
+    
   }
 
   renderMenuItems() {

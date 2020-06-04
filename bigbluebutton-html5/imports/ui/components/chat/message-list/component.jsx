@@ -251,7 +251,7 @@ class MessageList extends Component {
             />
           ))}
         </div>
-        {this.renderUnreadNotification()}
+        {/* {this.renderUnreadNotification()} */}
       </div>
     );
   }
