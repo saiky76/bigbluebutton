@@ -33,10 +33,19 @@ const validIOSVersion = () => {
   return true;
 };
 
+function getParentMeetingId(breakoutId) {
+  const meeting = Breakouts.findOne({breakoutId: breakoutId}, 
+    { fields: {parentMeetingId: 1}}
+  )
+
+  return meeting.parentMeetingId;
+}
+
 export {
   getFontSize,
   meetingIsBreakout,
   isMeetingBreakout,
   getBreakoutRooms,
   validIOSVersion,
+  getParentMeetingId,
 };
