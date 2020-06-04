@@ -10,8 +10,8 @@ import flat from 'flat';
 import addVoiceUser from '/imports/api/voice-users/server/modifiers/addVoiceUser';
 
 const COLOR_LIST = [
-  '#800000', '#FF0000', '#00FF00', '#00FFFF', '#C0C0C0','#0000FF', "#7b1fa2", "#303f9f",
-  '#88B04B', '#6B5B95', '#92A8D1', '#FF6F61', '#1a237e', '#CCFF33', '#1565c0',
+  '#800000', '#00FF00', '#00FF00', '#C0C0C0','#0000FF', "#7b1fa2", "#303f9f",
+  '#88B04B', '#6B5B95', '#92A8D1', '#FF6F61', '#1a237e', '#1565c0',
   '#990066', '#0277bd', '#766F57', '#A9754F', '#E94B3C', '#2E4A62', '#485167', '#BD3D3A'
 ];
 

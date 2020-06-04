@@ -72,7 +72,7 @@ class Assign extends Component {
     let newChannels = [];
     for (let i = 0; i < numberOfRooms; i++) {
      let a=i+1;
-      newChannels[i]={name:meetingName + " Room " + a, userId:[]};
+      newChannels[i]={name:meetingName + " " + a, userId:[]};
     }
 
     let refreshedUsers = users.map(user => {
