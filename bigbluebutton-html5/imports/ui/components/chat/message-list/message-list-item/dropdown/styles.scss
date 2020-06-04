@@ -1,0 +1,65 @@
+@import "/imports/ui/stylesheets/variables/_all";
+@import "/imports/ui/stylesheets/mixins/_scrollable";
+@import "/imports/ui/stylesheets/mixins/_indicators";
+@import "/imports/ui/components/user-list/styles.scss";
+@import "/imports/ui/components/user-list/user-list-content/styles";
+@import "/imports/ui/stylesheets/variables/_all";
+@import "/client/stylesheets/fonts.css";
+
+
+
+.dropdown {
+  
+   position: static;
+  // position: absolute !important;
+  cursor: pointer;
+  // @extend %list-item;
+  // flex-flow: column;
+  // flex-shrink: 0;
+
+  // align-self: center;
+  // position: absolute !important;
+  // position: static;
+  // padding-top: 2%;
+  // right: 0;
+  // left: 80%;
+  
+  // [dir="rtl"] & {
+  //   left: 0;
+  //   right: auto;
+  // }
+}
+
+.userListItem {
+  @extend %list-item;
+  flex-flow: column;
+  flex-shrink: 0;
+}
+.usertListItemWithMenu {
+  @include highContrastOutline();
+  outline-style: solid;
+  background-color: var(--list-item-bg-hover);
+
+  &:focus {
+    outline-style: solid;
+    outline-color: transparent !important;
+  }
+}
+
+.dropdownContent {
+  position: inherit;
+  // top: var(--user-manage-menu-top);
+  right: var(--user-manage-menu-right);
+  left: auto;
+  width: var(--user-manage-menu-width);
+
+  [dir="rtl"] & {
+    // top: var(--user-manage-menu-top);
+    right: -1rem;
+  }
+
+  @include mq($small-only) {
+    width: 100vw;
+  }
+}
+ 
