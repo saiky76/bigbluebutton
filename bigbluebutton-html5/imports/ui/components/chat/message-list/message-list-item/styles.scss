@@ -209,6 +209,7 @@
 
   align-self: flex-start;
   max-width: 98%;
+  min-width: fit-content;
   background: #FFFFFF;
   border-radius:  0px 20px 20px 20px;
   line-height: var(--font-size-21px);
@@ -227,6 +228,7 @@
  // word-wrap: break-word;
   align-self: flex-start;
   max-width: 98%;
+  min-width: fit-content;
   background:linear-gradient(0deg, #BCD7EF, #BCD7EF);
   border-radius: 0px 20px 20px 20px;
   padding: var(--font-size-10px);
