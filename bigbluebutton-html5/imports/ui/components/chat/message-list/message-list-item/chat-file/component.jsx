@@ -23,15 +23,13 @@ export default class ChatFileUploaded extends PureComponent {
     const {
       file,
     } = this.props;
-    const isbreakoutMeeting = meetingIsBreakout();
-    const meetingId = isbreakoutMeeting ? getParentMeetingId(Auth.meetingID) : Auth.meetingID;
-
+    
     const uri = `https://${window.document.location.hostname}/bigbluebutton/file/download/`
-      + `${file.fileId}/${file.fileName}/${meetingId}`;
-
+    + `${file.fileId}/${file.fileName}/${file.meetingId}`;
+    
     window.open(uri);
   }
-
+  
   render() {
     const {
       text,

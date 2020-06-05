@@ -238,6 +238,7 @@ const sendGroupMessage = (messageObj) => {
   const fileData = (messageObj.fileId) ? ({
     fileId: messageObj.fileId,
     fileName: messageObj.fileName,
+    meetingId: Auth.meetingID,
   }) : undefined;
 
   groupChatMsgFromUser.messageObj = {
@@ -300,6 +301,7 @@ const sendCrossGroupMessage = (messageObj, targetMeetingId, senderGroupName) => 
   const fileData = (messageObject.fileObj != null) ? ({
     fileId: messageObject.fileObj.fileId,
     fileName: messageObject.fileObj.fileName,
+    meetingId: messageObject.fileObj.meetingId,
   }) : undefined;
 
   let user = getUser(Auth.userID);
