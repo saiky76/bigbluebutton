@@ -242,6 +242,8 @@ class MessageList extends Component {
               messages={message.content}
               user={message.sender}
               time={message.time}
+              senderEmail={message.senderEmail}
+              senderGroup={message.senderGroup}
               chatAreaId={id}
               currentUserId={currentUserId}
               lastReadMessageTime={lastReadMessageTime}
