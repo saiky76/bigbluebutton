@@ -97,15 +97,14 @@ class MessageListItem extends Component {
       messages,
       time,
       chatAreaId,
-      currentUserId,
       lastReadMessageTime,
       handleReadMessage,
       scrollArea,
       intl,
       isBreakoutMeeting,
-      getBreakoutNameByUserId,
       senderEmail,
-      senderGroup
+      senderGroup,
+      currentUser
     } = this.props;
 
     const dateTime = new Date(time);
@@ -126,13 +125,12 @@ class MessageListItem extends Component {
         user = moderator;
       }
     }
-
-    const breakoutMeeting = getBreakoutNameByUserId(user.userId);
+    const groupName = user.isModerator ? "Moderator" : senderGroup;
 
     return (
       <div>
         {' '}
-        {(user.userId !== Auth.userID) ? (
+        {(senderEmail !== currentUser.email) ? (
           <div className={styles.item}>
             <div className={styles.wrapperleft} ref={(ref) => { this.item = ref; }}>
               <div className={styles.avatarWrapper}>
@@ -150,10 +148,11 @@ class MessageListItem extends Component {
                     <span className={styles.name}>{user.name}</span>
                     {(isBreakoutMeeting) ?
                       null
-                    :
-                      ((user.isModerator) ? 
-                        <span>(Moderator)</span>
-                    : <span>{(breakoutMeeting !== []) ? breakoutMeeting.name : null}</span>)
+                    : (groupName ? 
+                        <span>{"("}{groupName}{")"}</span>
+                        : null
+                      )
+                    
                     }
                     {user.isOnline
                       ? null

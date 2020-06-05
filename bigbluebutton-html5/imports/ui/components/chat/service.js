@@ -8,6 +8,7 @@ import Storage from '/imports/ui/services/storage/session';
 import { makeCall } from '/imports/ui/services/api';
 import ChannelsService from '/imports/ui/components/channels/service';
 import _ from 'lodash';
+import Breakouts from '/imports/api/breakouts';
 
 const CHAT_CONFIG = Meteor.settings.public.chat;
 const GROUPING_MESSAGES_WINDOW = CHAT_CONFIG.grouping_messages_window;
@@ -31,7 +32,7 @@ const UnsentMessagesCollection = new Mongo.Collection(null);
 // session for closed chat list
 const CLOSED_CHAT_LIST_KEY = 'closedChatList';
 
-const getUser = userId => Users.findOne({ userId });
+const getUser = (userId) => Users.findOne({ userId });
 
 const getWelcomeProp = () => Meetings.findOne({ meetingId: Auth.meetingID },
   { fields: { welcomeProp: 1 } });
@@ -60,7 +61,7 @@ const mapGroupMessage = (message) => {
     const sender = Users.findOne({ userId: message.sender },
       {
         fields: {
-          color: 1, role: 1, name: 1, connectionStatus: 1, userId: 1,
+          color: 1, role: 1, name: 1, connectionStatus: 1, userId: 1, email:1,
         },
       });
     const {
@@ -69,6 +70,7 @@ const mapGroupMessage = (message) => {
       name,
       connectionStatus,
       userId,
+      email,
     } = sender;
 
     const mappedSender = {
@@ -77,6 +79,7 @@ const mapGroupMessage = (message) => {
       name,
       isOnline: connectionStatus === CONNECTION_STATUS_ONLINE,
       userId,
+      email,
     };
 
     mappedMessage.sender = mappedSender;
@@ -97,8 +100,6 @@ const reduceGroupMessages = (previous, current) => {
   }];
   currentMessage.senderEmail =  current.message.senderEmail;
   currentMessage.senderGroup = current.message.senderGroup;
-  // currentMessage.senderEmail =  "test@email.com";
-  // currentMessage.senderGroup = "rose scital";
 
   if (!lastMessage || !currentMessage.chatId === PUBLIC_GROUP_CHAT_ID) {
     return previous.concat(currentMessage);
@@ -199,6 +200,8 @@ const lastReadMessageTime = (receiverID) => {
   return UnreadMessages.get(chatType);
 };
 
+const getBreakoutByUser = userid => Breakouts.findOne({ "users.userId": userid });
+
 const sendGroupMessage = (messageObj) => {
 
   const chatID = Session.get('idChatOpen') || PUBLIC_CHAT_ID;
@@ -209,6 +212,9 @@ const sendGroupMessage = (messageObj) => {
   const { fullname: senderName, userID: senderUserId } = Auth;
   const receiverId = { id: chatID };
 
+  const currentUser = getUser(Auth.userID);
+  const breakout = getBreakoutByUser(Auth.userID);
+  
   if (!isPublicChat) {
     const privateChat = GroupChat.findOne({ users: { $all: [chatID, senderUserId] } },
       { fields: { chatId: 1 } });
@@ -237,8 +243,8 @@ const sendGroupMessage = (messageObj) => {
   groupChatMsgFromUser.messageObj = {
     message: messageObj.message,
     fileObj: fileData,
-    senderEmail: messageObj.senderEmail,
-    senderGroup: messageObj.senderGroup
+    senderEmail: currentUser.email,
+    senderGroup: breakout ? breakout.name : null
   };
   const currentClosedChats = Storage.getItem(CLOSED_CHAT_LIST_KEY);
 
