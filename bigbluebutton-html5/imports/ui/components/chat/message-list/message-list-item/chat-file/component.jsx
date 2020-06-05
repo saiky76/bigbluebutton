@@ -6,6 +6,7 @@ import Button from '../../../../button/component';
 import Icon from '/imports/ui/components/icon/component';
 import Auth from '/imports/ui/services/auth';
 import { meetingIsBreakout, getParentMeetingId } from '/imports/ui/components/app/service';
+// import { Document, Page, pdfjs } from "react-pdf";
 
 const propTypes = {
   text: PropTypes.string,
@@ -31,6 +32,9 @@ export default class ChatFileUploaded extends PureComponent {
 
     window.open(uri);
   }
+  // componentDidMount() {
+  //   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+  // }
 
   render() {
     const {
@@ -39,13 +43,20 @@ export default class ChatFileUploaded extends PureComponent {
       id,
     } = this.props;
 
+    const isbreakoutMeeting = meetingIsBreakout();
+    const meetingId = isbreakoutMeeting ? getParentMeetingId(Auth.meetingID) : Auth.meetingID;
+
+    const uri = `https://${window.document.location.hostname}/bigbluebutton/file/download/`
+      + `${file.fileId}/${file.fileName}/${meetingId}`;
+
     // const ext = file.fileName.split('.').pop();
     return (
       <div className={(id == Auth.userID) ? styles.senderFileWrapper : styles.fileWrapper}>
         <div className={styles.wrapper}>
-          <div className={styles.extensionBox}>
-            <img src={`https://${window.document.location.hostname}/html5client/resources/images/File_Image.png`} alt="" />
-          </div>
+           <div className={styles.extensionBox}>
+            <img src={uri} alt="" />
+            {/* <Document file = {uri} /> */}
+          </div>          
           <span className={styles.fileName}>{file.fileName}</span>
           <Button
             hideLabel
@@ -68,6 +79,7 @@ export default class ChatFileUploaded extends PureComponent {
       </div>
     );
   }
+
 }
 
 ChatFileUploaded.propTypes = propTypes;
