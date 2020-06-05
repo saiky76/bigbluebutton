@@ -51,6 +51,9 @@ const mapGroupMessage = (message) => {
     content: message.content,
     time: message.timestamp,
     sender: null,
+    senderEmail: message.senderEmail,
+    senderGroup: message.senderGroup
+
   };
 
   if (message.sender !== 'SYSTEM') {
@@ -90,8 +93,12 @@ const reduceGroupMessages = (previous, current) => {
     text: current.message.message,
     fileData: current.message.fileObj,
     color: current.color,
-    time: current.timestamp,
+    time: current.timestamp
   }];
+  currentMessage.senderEmail =  current.message.senderEmail;
+  currentMessage.senderGroup = current.message.senderGroup;
+  // currentMessage.senderEmail =  "test@email.com";
+  // currentMessage.senderGroup = "rose scital";
 
   if (!lastMessage || !currentMessage.chatId === PUBLIC_GROUP_CHAT_ID) {
     return previous.concat(currentMessage);

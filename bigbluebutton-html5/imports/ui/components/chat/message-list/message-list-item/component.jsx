@@ -104,6 +104,8 @@ class MessageListItem extends Component {
       intl,
       isBreakoutMeeting,
       getBreakoutNameByUserId,
+      senderEmail,
+      senderGroup
     } = this.props;
 
     const dateTime = new Date(time);
