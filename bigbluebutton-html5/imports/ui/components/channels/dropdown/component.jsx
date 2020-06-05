@@ -319,7 +319,7 @@ class ChannelDropdown extends PureComponent {
                     visibility: dropdownVisible ? 'visible' : 'hidden',
                     left: `${dropdownOffset}px`
                 }}
-                // className={styles.dropdownContent}
+                 className={styles.dropdownContent}
                 placement={`bottom`}
                 >
               <DropdownList>
