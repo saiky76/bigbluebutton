@@ -65,8 +65,8 @@
   // top: var(--user-manage-menu-top);
   right: var(--user-manage-menu-right);
   left: auto;
-  width: var(--user-manage-menu-width);
-
+ // width: var(--user-manage-menu-width);
+  width: max-content;
   [dir="rtl"] & {
     // top: var(--user-manage-menu-top);
     right: -1rem;
