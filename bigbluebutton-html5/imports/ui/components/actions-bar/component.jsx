@@ -158,7 +158,7 @@ class ActionsBar extends PureComponent {
       {toggleChatLayout ? null :
         <div className={styles.liveActions}>
           <div className={!toggleChatLayout ?
-             sideavatars.length > 0 ? styles.dummy1 : styles.dummy
+             sideavatars.length > 0 && presenter ? styles.dummy1 : styles.dummy
               : styles.dummy2}>
 
             {/* <img src="https://miro.medium.com/max/560/1*MccriYX-ciBniUzRKAUsAw.png" alt="" /> */}
