@@ -309,6 +309,8 @@ const sendCrossGroupMessage = (messageObj, targetMeetingId, senderGroupName) => 
 
   let senderUserId = null;
   let senderName = null;
+  let senderEmail = null;
+  let senderGroup = null;
   
   if (isMasterChannel(meeting)){
     //let breakout = ChannelsService.findBreakouts().map(breakout => breakout).shift();
@@ -320,14 +322,17 @@ const sendCrossGroupMessage = (messageObj, targetMeetingId, senderGroupName) => 
       if(breakoutUser){
         senderName = user.name;
         senderUserId = breakoutUser.userId;
+        senderEmail = breakoutUser.email;
       }
     }
   }else{
     let breakoutRoom = ChannelsService.getBreakout(Auth.meetingID);
+    senderGroup = breakoutRoom.name;
     let mainChannelUser = breakoutRoom.users.find(u => u.email == user.email && u.username == user.name);
     if(mainChannelUser){
       senderName = mainChannelUser.username;
       senderUserId =  mainChannelUser.userId;
+      senderEmail = mainChannelUser.email;
     }else{
       console.log("cannot find master channel user in targetMeetingId: " + targetMeetingId);
     }
@@ -345,8 +350,8 @@ const sendCrossGroupMessage = (messageObj, targetMeetingId, senderGroupName) => 
   groupChatMsgFromUser.messageObj = {
     message: messageObject.message,
     fileObj: fileData,
-    senderEmail: messageObj.senderEmail,
-    senderGroup: messageObj.senderGroup
+    senderEmail: senderEmail,
+    senderGroup: senderGroup
   };
  
 

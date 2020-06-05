@@ -154,13 +154,13 @@ class MessageListItem extends Component {
                       )
                     
                     }
-                    {user.isOnline
+                    {/* {user.isOnline
                       ? null
                       : (
                         <span className={styles.offline}>
                           {`(${intl.formatMessage(intlMessages.offline)})`}
                         </span>
-                      )}
+                      )} */}
                   </div>
                   <time className={styles.timeleft} dateTime={dateTime}>
                     <FormattedTime value={dateTime} />
@@ -181,6 +181,7 @@ class MessageListItem extends Component {
                       lastReadMessageTime={lastReadMessageTime}
                       handleReadMessage={handleReadMessage}
                       scrollArea={scrollArea}
+                      isBreakoutMeeting={isBreakoutMeeting}
                     />
                   ))}
                 </div>
@@ -212,6 +213,7 @@ class MessageListItem extends Component {
                         lastReadMessageTime={lastReadMessageTime}
                         handleReadMessage={handleReadMessage}
                         scrollArea={scrollArea}
+                        isBreakoutMeeting={isBreakoutMeeting}
                       />
                     ))}
                   </div>
