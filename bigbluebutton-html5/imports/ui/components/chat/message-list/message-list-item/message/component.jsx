@@ -171,7 +171,7 @@ export default class MessageListItem extends PureComponent {
   
   renderSharableOption() {
     const { intl, text, file, userid, className, systemMessage,getMessageObj,messageId, 
-      sendCrossGroupMsg, currentUser, targetMeetings, scrollArea } = this.props;
+      sendCrossGroupMsg, currentUser, targetMeetings, scrollArea, isBreakoutMeeting } = this.props;
     const { isUserOptionsOpen } = this.state;
 
     return ((systemMessage) ? 
@@ -193,8 +193,8 @@ export default class MessageListItem extends PureComponent {
           sendCrossGroupMsg, 
           currentUser,
           targetMeetings,
-          scrollArea
-
+          scrollArea,
+          isBreakoutMeeting
         }}
       />
         

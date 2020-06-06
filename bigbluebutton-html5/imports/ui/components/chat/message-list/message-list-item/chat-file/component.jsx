@@ -5,8 +5,6 @@ import styles from './styles';
 import Button from '../../../../button/component';
 import Icon from '/imports/ui/components/icon/component';
 import Auth from '/imports/ui/services/auth';
-import { meetingIsBreakout, getParentMeetingId } from '/imports/ui/components/app/service';
-// import { Document, Page, pdfjs } from "react-pdf";
 
 const propTypes = {
   text: PropTypes.string,
@@ -24,18 +22,12 @@ export default class ChatFileUploaded extends PureComponent {
     const {
       file,
     } = this.props;
-    const isbreakoutMeeting = meetingIsBreakout();
-    const meetingId = isbreakoutMeeting ? getParentMeetingId(Auth.meetingID) : Auth.meetingID;
-
+    
     const uri = `https://${window.document.location.hostname}/bigbluebutton/file/download/`
-      + `${file.fileId}/${file.fileName}/${meetingId}`;
-
+    + `${file.fileId}/${file.fileName}/${file.meetingId}`;
+    
     window.open(uri);
   }
-  // componentDidMount() {
-  //   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-  // }
-
   render() {
     const {
       text,
@@ -43,11 +35,8 @@ export default class ChatFileUploaded extends PureComponent {
       id,
     } = this.props;
 
-    const isbreakoutMeeting = meetingIsBreakout();
-    const meetingId = isbreakoutMeeting ? getParentMeetingId(Auth.meetingID) : Auth.meetingID;
-
     const uri = `https://${window.document.location.hostname}/bigbluebutton/file/download/`
-      + `${file.fileId}/${file.fileName}/${meetingId}`;
+      + `${file.fileId}/${file.fileName}/${file.meetingId}`;
 
     // const ext = file.fileName.split('.').pop();
     return (
@@ -55,7 +44,6 @@ export default class ChatFileUploaded extends PureComponent {
         <div className={styles.wrapper}>
            <div className={styles.extensionBox}>
             <img src={uri} alt="" />
-            {/* <Document file = {uri} /> */}
           </div>          
           <span className={styles.fileName}>{file.fileName}</span>
           <Button

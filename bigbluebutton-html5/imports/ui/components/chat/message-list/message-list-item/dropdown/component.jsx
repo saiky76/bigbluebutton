@@ -292,16 +292,21 @@ class MessageDropdown extends PureComponent {
 }
 
 makeDropdownListItem (meeting){
-  const {getMessageObj, messageId, sendCrossGroupMsg, currentUser} = this.props;
+  const {getMessageObj, messageId, sendCrossGroupMsg, currentUser, isBreakoutMeeting} = this.props;
   const messageObj = getMessageObj(messageId);
   
+  const senderGroupName = isBreakoutMeeting ? meeting.meetingName 
+    : (
+      currentUser.role == ROLE_MODERATOR ? 'Moderator' : null
+    )
+
   return(
     <DropdownListItem
       key={this.meetingName}
       icon="application"
       label= {meeting.meetingName}
       onClick={() => {
-        sendCrossGroupMsg(messageObj, meeting.meetingId, currentUser.role == ROLE_MODERATOR ? 'Moderator' : meeting.meetingName)
+        sendCrossGroupMsg(messageObj, meeting.meetingId, senderGroupName)
       }}
     />
   )

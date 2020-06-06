@@ -15,11 +15,6 @@ import Auth from '/imports/ui/services/auth';
 import UserParticipantsContainer from '/imports/ui/components/user-list/user-list-content/user-participants/container';
 import UserOptionsContainer from '/imports/ui/components/user-list/user-list-content/user-participants//user-options/container';
 import { meetingIsBreakout } from '/imports/ui/components/app/service';
-import Dropdown from '/imports/ui/components/dropdown/component';
-import DropdownTrigger from '/imports/ui/components/dropdown/trigger/component';
-import DropdownContent from '/imports/ui/components/dropdown/content/component';
-import DropdownList from '/imports/ui/components/dropdown/list/component';
-import DropdownListItem from '/imports/ui/components/dropdown/list/item/component';
 import ChannelAvatar from './channelAvatar/component';
 import ChannelDropdown from './dropdown/component';
 
@@ -104,19 +99,13 @@ class Channels extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.getBreakoutURL = this.getBreakoutURL.bind(this);
     this.renderBreakoutRooms = this.renderBreakoutRooms.bind(this);
     this.transferUserToBreakoutRoom = this.transferUserToBreakoutRoom.bind(this);
-    this.renderUserActions = this.renderUserActions.bind(this);
     this.returnBackToMeeeting = this.returnBackToMeeeting.bind(this);
     this.getScrollContainerRef = this.getScrollContainerRef.bind(this);
-    this.onActionsShow = this.onActionsShow.bind(this);
-    this.onActionsHide = this.onActionsHide.bind(this);
     this.newCreateBreakouts = this.newCreateBreakouts.bind(this);
     this.editBreakoutRoom = this.editBreakoutRoom.bind(this);
     this.state = {
-      requestedBreakoutId: '',
-      waiting: false,
       joinedAudioOnly: false,
       breakoutId: '',
       breakOutWindowRefs: new Map(),
@@ -141,172 +130,14 @@ class Channels extends PureComponent {
     this.refScrollContainer.removeEventListener('keydown', this.rove);
   }
 
-  getDropdownMenuParent() {
-    return findDOMNode(this.dropdown);
-  }
-
-  isDropdownActivedByUser() {
-    const { isChannelOptionsOpen, dropdownVisible } = this.state;
-
-    return isChannelOptionsOpen && !dropdownVisible;
-  }
-
-  checkDropdownDirection() {
-    if (this.isDropdownActivedByUser()) {
-      const dropdown = this.getDropdownMenuParent();
-      const dropdownTrigger = dropdown.children[0];
-      const dropdownContent = dropdown.children[1];
-
-      const scrollContainer = this.getScrollContainerRef();
-
-      const nextState = {
-        dropdownVisible: true,
-      };
-
-      const isDropdownVisible = Channels.checkIfDropdownIsVisible(
-        dropdownContent.offsetTop,
-        dropdownContent.offsetHeight,
-      );
-      
-      if (!isDropdownVisible) {
-        const { offsetTop, offsetHeight } = dropdownTrigger;
-        
-        const offsetPageTop = (offsetTop + offsetHeight) - scrollContainer.scrollTop;
-
-        nextState.dropdownOffset = window.innerHeight - offsetPageTop;
-        nextState.dropdownDirection = 'bottom';
-      }
-
-      this.setState(nextState);
-    }
-  }
-
-  onActionsShow() {
-    Session.set('dropdownOpen', true);
-    const dropdown = this.getDropdownMenuParent();
-    const scrollContainer = this.getScrollContainerRef();
-
-    if (dropdown && scrollContainer) {
-      this.resetMenuState();
-      const dropdownTrigger = dropdown.children[0];
-      const list = findDOMNode(this.list);
-      const children = [].slice.call(list.children);
-      children.find(child => child.getAttribute('role') === 'menuitem').focus();
-
-      this.setState({
-        isChannelOptionsOpen: true,
-        dropdownVisible: false,
-        dropdownOffset: dropdownTrigger.offsetTop - scrollContainer.scrollTop,
-        dropdownDirection: 'top',
-      });
-
-      scrollContainer.addEventListener('scroll', this.handleScroll, false);
-    }
-  }
-
-  onActionsHide(callback) {
-    this.setState({
-      isChannelOptionsOpen: false,
-      dropdownVisible: false,
-    });
-
-    const scrollContainer = this.getScrollContainerRef();
-    scrollContainer.removeEventListener('scroll', this.handleScroll, false);
-
-    if (callback) {
-      return callback;
-    }
-
-    return Session.set('dropdownOpen', false);
-  }
-
-  resetMenuState() {
-    return this.setState({
-      isChannelOptionsOpen: false,
-      dropdownOffset: 0,
-      dropdownDirection: 'top',
-      dropdownVisible: false,
-    });
-  }
-
-  handleScroll() {
-    this.setState({
-      isChannelOptionsOpen: false,
-    });
-  }
 
   getScrollContainerRef() {
     return this.refScrollContainer;
   }
 
-  componentDidUpdate() {
-    const {
-      breakoutRoomUser,
-      breakoutRooms,
-      closeBreakoutPanel,
-    } = this.props;
-
-    const {
-      waiting,
-      requestedBreakoutId,
-    } = this.state;
-    this.checkDropdownDirection();
-
-    if (breakoutRooms.length <= 0) closeBreakoutPanel();
-
-    if (waiting) {
-      const breakoutUser = breakoutRoomUser(requestedBreakoutId);
-
-      if (!breakoutUser) return;
-      if (breakoutUser.redirectToHtml5JoinURL !== '') {
-        window.open(breakoutUser.redirectToHtml5JoinURL, '_blank');
-        _.delay(() => this.setState({ waiting: false }), 1000);
-      }
-    }
-  }
-
   getBreakoutChannelJoinURL(breakoutId) {
     const hasUser = breakoutRoomUser(breakoutId);
     if (hasUser) { return redirectToHtml5JoinURL; }
-    return null;
-  }
-
-
-
-
-  getBreakoutURL(breakoutId) {
-    Session.set('lastBreakoutOpened', breakoutId);
-    const { requestJoinURL, breakoutRoomUser } = this.props;
-    const { waiting } = this.state;
-
-
-    const hasUser = breakoutRoomUser(breakoutId);
-    if (!hasUser && !waiting) {
-      this.setState(
-        {
-          waiting: true,
-          requestedBreakoutId: breakoutId,
-        },
-        () => requestJoinURL(breakoutId),
-      );
-    }
-
-
-    if (hasUser && (breakOutWindowRefs.get(breakoutId) == null || breakOutWindowRefs.get(breakoutId).closed)) {
-      const windowRef = window.open(hasUser.redirectToHtml5JoinURL, '_blank');
-
-      // TODO:  Validate if this a deep copy or plain shallow
-      let updatedWindowMap = new Map(breakOutWindowRefs);
-
-      updatedWindowMap = updatedWindowMap.set(breakoutId, windowRef);
-      console.log(`ref map size${updatedWindowMap.size}`);
-      this.setState(
-        {
-          waiting: false,
-          breakOutWindowRefs: updatedWindowMap,
-        },
-      );
-    }
     return null;
   }
 
@@ -321,53 +152,6 @@ class Channels extends PureComponent {
     transferUserToMeeting(breakoutId, meetingId);
     this.setState({ joinedAudioOnly: false, breakoutId });
   }
-
-  channelOptions(breakout) {
-    const { isChannelOptionsOpen, dropdownDirection, dropdownOffset } = this.state;
-    console.log(dropdownOffset);
-    
-    return (
-      <Dropdown
-        ref={(ref) => { this.dropdown = ref; }}
-        autoFocus={false}
-        isOpen={isChannelOptionsOpen}
-        onShow={this.onActionsShow}
-        onHide={this.onActionsHide}
-        className={styles.dropdown}
-      >
-        <DropdownTrigger tabIndex={0}>
-          <Button
-            label={breakout.name}
-            icon="more"
-            color="default"
-            hideLabel
-            className={styles.optionsButton}
-            size="sm"
-            onClick={() => null}
-          />
-        </DropdownTrigger>
-        <DropdownContent
-          style={{
-            //dropdownOffset need to be set properly
-            [dropdownDirection]: `${dropdownOffset}px`,
-          }}
-          className={styles.dropdownContent}
-          placement={`right ${dropdownDirection}`}
-        >
-          <DropdownList
-            ref={(ref) => { this.list = ref; }}
-            getDropdownMenuParent={this.getDropdownMenuParent}
-            onActionsHide={this.onActionsHide}
-          >
-            {
-              this.renderMenuItems(breakout)
-            }
-          </DropdownList>
-        </DropdownContent>
-      </Dropdown>
-    );
-  }
-
 
   newCreateBreakouts() {
     const { mountModal } = this.props;
@@ -607,90 +391,6 @@ class Channels extends PureComponent {
         sendInvitation(breakoutId, user.userId);
       }
     });
-  }
-
-  renderUserActions(breakoutId, joinedUsers, number) {
-    const {
-      isMicrophoneUser,
-      amIModerator,
-      intl,
-      isUserInBreakoutRoom,
-      exitAudio,
-    } = this.props;
-
-    const {
-      joinedAudioOnly,
-      breakoutId: stateBreakoutId,
-      requestedBreakoutId,
-      waiting,
-    } = this.state;
-
-    const moderatorJoinedAudio = isMicrophoneUser && amIModerator;
-    const disable = waiting && requestedBreakoutId !== breakoutId;
-    const audioAction = joinedAudioOnly
-      ? () => {
-        this.returnBackToMeeeting(breakoutId);
-        return logger.debug({
-          logCode: 'breakoutroom_return_main_audio',
-          extraInfo: { logType: 'user_action' },
-        }, 'Returning to main audio (breakout room audio closed)');
-      }
-      : () => {
-        this.transferUserToBreakoutRoom(breakoutId);
-        return logger.debug({
-          logCode: 'breakoutroom_join_audio_from_main_room',
-          extraInfo: { logType: 'user_action' },
-        }, 'joining breakout room audio (main room audio closed)');
-      };
-    return (
-      <div className={styles.breakoutActions}>
-        {isUserInBreakoutRoom(joinedUsers)
-          ? (
-            <span className={styles.alreadyConnected}>
-              {intl.formatMessage(intlMessages.alreadyConnected)}
-            </span>
-          )
-          : (
-            <Button
-              label={intl.formatMessage(intlMessages.breakoutJoin)}
-              aria-label={`${intl.formatMessage(intlMessages.breakoutJoin)} ${number}`}
-              onClick={() => {
-                this.getBreakoutURL(breakoutId);
-                exitAudio();
-                logger.debug({
-                  logCode: 'breakoutroom_join',
-                  extraInfo: { logType: 'user_action' },
-                }, 'joining breakout room closed audio in the main room');
-              }
-              }
-              disabled={disable}
-              className={styles.joinButton}
-            />
-          )
-        }
-        {
-          moderatorJoinedAudio
-            ? [
-              ('|'),
-              (
-                <Button
-                  label={
-                    moderatorJoinedAudio
-                      && stateBreakoutId === breakoutId
-                      && joinedAudioOnly
-                      ? intl.formatMessage(intlMessages.breakoutReturnAudio)
-                      : intl.formatMessage(intlMessages.breakoutJoinAudio)
-                  }
-                  className={styles.button}
-                  key={`join-audio-${breakoutId}`}
-                  onClick={audioAction}
-                />
-              ),
-            ]
-            : null
-        }
-      </div>
-    );
   }
 }
 //Channels.propTypes = PropTypes;

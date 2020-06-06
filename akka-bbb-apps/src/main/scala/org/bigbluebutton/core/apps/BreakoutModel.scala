@@ -32,8 +32,8 @@ case class BreakoutModel(
     rooms.values find (r => r.externalId == externalId)
   }
 
-  def findWithParentIdAndEmail(parentId: String, assignedUserEmail: String): Option[BreakoutRoom2x] = {
-    rooms.values find (r => {
+  def findWithParentIdAndEmail(parentId: String, assignedUserEmail: String): Iterable[BreakoutRoom2x] = {
+    rooms.values.filter(r => {
       r.parentId == parentId && r.assignedUsers.exists(user => user.email == assignedUserEmail)
     })
   }

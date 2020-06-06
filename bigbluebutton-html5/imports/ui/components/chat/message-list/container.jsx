@@ -31,7 +31,7 @@ export default withTracker(({ chatId }) => {
     isMeteorConnected: Meteor.status().connected,
     amIModerator,
     isBreakoutMeeting,
-    getBreakoutNameByUserId: userId => ChannelService.getBreakoutNameByUserId(userId),
+    currentUser: ChatService.getUser(Auth.userID),
 
   };
 })(ChatContainer);
