@@ -40,7 +40,7 @@ import { is } from 'useragent';
 const chat_min_width = CHAT_MIN_WIDTH;
 const chat_max_width = CHAT_MAX_WIDTH;
 
-const MOBILE_MEDIA = 'only screen and (max-width: 40em)';
+const MOBILE_MEDIA = 'only screen and (max-width: 53em)';
 const APP_CONFIG = Meteor.settings.public.app;
 const DESKTOP_FONT_SIZE = APP_CONFIG.desktopFontSize;
 const MOBILE_FONT_SIZE = APP_CONFIG.mobileFontSize;
@@ -113,7 +113,7 @@ const defaultProps = {
   locale: 'en',
 };
 
-const LAYERED_BREAKPOINT = 640;
+const LAYERED_BREAKPOINT = 848;
 const isLayeredView = window.matchMedia(`(max-width: ${LAYERED_BREAKPOINT}px)`);
 
 const BROWSER_RESULTS = browser();
