@@ -43,6 +43,8 @@ class ChannelDropdown extends PureComponent {
       dropdownDirection: 'top',
       dropdownVisible: false,
       showNestedOptions: false,
+      requestedBreakoutId: '',
+      waiting: false,
     };
 
     this.handleScroll = this.handleScroll.bind(this);
@@ -59,8 +61,29 @@ class ChannelDropdown extends PureComponent {
     this.seperator = _.uniqueId('action-separator-');
   }
 
+
   componentDidUpdate() {
     this.checkDropdownDirection();
+    const {
+      breakoutRoomUser,
+    } = this.props;
+
+    const {
+      waiting,
+      requestedBreakoutId,
+    } = this.state;
+
+    //This code is only relevant for Moderator. Remember, only moderator ask to get breakout joinurl
+    //and also at the same time automatically joins
+    if (waiting) {
+      const breakoutUser = breakoutRoomUser(requestedBreakoutId);
+
+      if (!breakoutUser) return;
+      if (breakoutUser.redirectToHtml5JoinURL !== '') {
+        window.open(breakoutUser.redirectToHtml5JoinURL, '_blank');
+        _.delay(() => this.setState({ waiting: false }), 1000);
+      }
+    }
   }
 
   onActionsShow() {
@@ -68,13 +91,9 @@ class ChannelDropdown extends PureComponent {
     const { getScrollContainerRef } = this.props;
     const dropdown = this.getDropdownMenuParent();
     const scrollContainer = getScrollContainerRef();
-
-    console.log("dropdown: ", dropdown);
-    console.log("scrollContainer: ", scrollContainer);
     
     if (dropdown && scrollContainer) {
       const dropdownTrigger = dropdown.children[0];
-      console.log("dropdownTrigger is found" );
       this.setState({
         isActionsOpen: true,
         dropdownVisible: false,
@@ -233,6 +252,7 @@ class ChannelDropdown extends PureComponent {
     const { waiting } = this.state;
 
     const breakoutUser = breakoutRoomUser(breakoutId);
+
     if (!breakoutUser && !waiting) {
       // This should only be the case for a moderator in master channel
       console.log('Adding the users to assigned users in the backend');
@@ -244,8 +264,8 @@ class ChannelDropdown extends PureComponent {
         () => requestJoinURL(breakoutId),
       );
     }
-    // I am a break out room user and I am not active in it
-    if (breakoutUser && !isUserActiveInBreakoutroom(Auth.userID)) {
+    //I am a break out room user and I am not active in it
+    if (breakoutUser && !isUserActiveInBreakoutroom(Auth.userID, breakoutId)) {
       window.open(breakoutUser.redirectToHtml5JoinURL, '_blank');
 
       this.setState(

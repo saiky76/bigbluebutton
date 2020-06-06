@@ -128,7 +128,10 @@ const getUserNameAndGroupForDisplayRoomName = () => {
 // 3)  In that break out room, the user needs to show up in joined_users field. This can be done in 2 ways.
 // 3.1) If the name and email match
 // 3.2) User id matches the pattern in joined users
-const isUserActiveInBreakoutroom = userId => Breakouts.findOne({ 'joinedUsers.userId': new RegExp(`^${userId}`) });
+const isUserActiveInAnyBreakoutroom = userId => Breakouts.findOne({ 'joinedUsers.userId': new RegExp(`^${userId}`) });
+
+const isUserActiveInBreakoutroom = (userId, breakoutId) => 
+  Breakouts.findOne({ 'joinedUsers.userId': new RegExp(`^${userId}`), 'breakoutId' : breakoutId });
 
 const getBreakoutMeetingUserId = (email, name, breakoutId) => 
   Users.findOne({
