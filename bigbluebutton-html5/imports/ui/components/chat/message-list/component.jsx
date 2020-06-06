@@ -215,7 +215,7 @@ class MessageList extends Component {
 
   render() {
     const {
-      messages, intl, id, lastReadMessageTime, handleReadMessage, currentUserId, isBreakoutMeeting, getBreakoutNameByUserId
+      messages, intl, id, lastReadMessageTime, handleReadMessage, currentUserId, isBreakoutMeeting, getBreakoutNameByUserId, currentUser
     } = this.props;
 
     const {
@@ -242,6 +242,7 @@ class MessageList extends Component {
               messages={message.content}
               user={message.sender}
               time={message.time}
+              currentUser={currentUser}
               senderEmail={message.senderEmail}
               senderGroup={message.senderGroup}
               chatAreaId={id}
@@ -249,7 +250,6 @@ class MessageList extends Component {
               lastReadMessageTime={lastReadMessageTime}
               scrollArea={scrollArea}
               isBreakoutMeeting={isBreakoutMeeting}
-              getBreakoutNameByUserId={getBreakoutNameByUserId}
             />
           ))}
         </div>
