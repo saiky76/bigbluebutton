@@ -10,6 +10,7 @@ import browser from 'browser-detect';
 import Button from '/imports/ui/components/button/component';
 const BROWSER_RESULTS = browser();
 const isMobileBrowser = BROWSER_RESULTS.mobile || BROWSER_RESULTS.os.includes('Android');
+const isLandScapeView = window.orientation === 90 || window.orientation === -90;
 const propTypes = {
   activeChats: PropTypes.arrayOf(String).isRequired,
   compact: PropTypes.bool,
@@ -52,7 +53,7 @@ class UserList extends PureComponent {
             ?
             ( 
              (!isMobileBrowser) ? <CustomLogo CustomLogoUrl = {CustomLogoUrl} /> 
-             :
+             : (isLandScapeView ? null :
              <Button
              onClick = {() => {
                 Session.set('idChatOpen', '');
@@ -66,7 +67,7 @@ class UserList extends PureComponent {
              className={ styles.close }
              color="default"
            />
-             )
+             ))
           :
           null
         }

@@ -17,6 +17,8 @@ import browser from 'browser-detect';
 
 const BROWSER_RESULTS = browser();
 const isMobileBrowser = BROWSER_RESULTS.mobile || BROWSER_RESULTS.os.includes('Android');
+const isLandScapeView = window.orientation === 90 || window.orientation === -90;
+
 const ROLE_MODERATOR = Meteor.settings.public.user.role_moderator;
 const intlMessages = defineMessages({
   toggleUserListLabel: {
@@ -102,7 +104,7 @@ class NavBar extends PureComponent {
       <div className={styles.navbar}>
         <div className={styles.top}>
           <div className={styles.left}>
-         { isMobileBrowser  ?
+         { (isMobileBrowser && !isLandScapeView)  ?
              <Button
               data-test="chatButton"
               className={styles.master}

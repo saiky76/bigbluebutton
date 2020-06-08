@@ -5,6 +5,8 @@ import styles from './styles';
 import Button from '../../../../button/component';
 import Icon from '/imports/ui/components/icon/component';
 import Auth from '/imports/ui/services/auth';
+import { meetingIsBreakout, getParentMeetingId } from '/imports/ui/components/app/service';
+// import { Document, Page, pdfjs } from "react-pdf";
 
 const propTypes = {
   text: PropTypes.string,
@@ -28,6 +30,10 @@ export default class ChatFileUploaded extends PureComponent {
     
     window.open(uri);
   }
+  // componentDidMount() {
+  //   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+  // }
+
   render() {
     const {
       text,
@@ -44,6 +50,7 @@ export default class ChatFileUploaded extends PureComponent {
         <div className={styles.wrapper}>
            <div className={styles.extensionBox}>
             <img src={uri} alt="" />
+            {/* <Document file = {uri} /> */}
           </div>          
           <span className={styles.fileName}>{file.fileName}</span>
           <Button

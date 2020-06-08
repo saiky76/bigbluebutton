@@ -31,6 +31,9 @@
   @include mq($small-only) {
     width: 100vw;
   }
+  @include mq($landscape) {
+    width: var(--user-manage-menu-width);
+  }
 }
 
 .optionsButton{

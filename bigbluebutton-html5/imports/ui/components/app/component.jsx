@@ -31,15 +31,6 @@ import Button from '/imports/ui/components/button/component';
 import ActionsBarContainer from '../actions-bar/container';
 import { is } from 'useragent';
 
-
-// Variables for resizing chat.
-  const CHAT_MIN_WIDTH =  window.innerWidth * 0.58;
-// // // const CHAT_MAX_WIDTH = DEFAULT_PANEL_WIDTH;
-  const CHAT_MAX_WIDTH =  window.innerWidth * 0.8;
-
-const chat_min_width = CHAT_MIN_WIDTH;
-const chat_max_width = CHAT_MAX_WIDTH;
-
 const MOBILE_MEDIA = 'only screen and (max-width: 53em)';
 const APP_CONFIG = Meteor.settings.public.app;
 const DESKTOP_FONT_SIZE = APP_CONFIG.desktopFontSize;
@@ -118,6 +109,14 @@ const isLayeredView = window.matchMedia(`(max-width: ${LAYERED_BREAKPOINT}px)`);
 
 const BROWSER_RESULTS = browser();
 const isMobileBrowser = BROWSER_RESULTS.mobile || BROWSER_RESULTS.os.includes('Android');
+const isLandScapeView = window.orientation === 90 || window.orientation === -90;
+
+const chat_min_width = (isMobileBrowser && isLandScapeView) ? 0.56 : 0.58;
+const chat_max_width = (isMobileBrowser && isLandScapeView) ? 0.7 : 0.8;
+
+// Variables for resizing chat.
+  const CHAT_MIN_WIDTH =  window.innerWidth * chat_min_width;
+  const CHAT_MAX_WIDTH =  window.innerWidth * chat_max_width;
 
 class App extends Component {
   constructor() {
@@ -446,7 +445,7 @@ class App extends Component {
             }
             <div className={styles.panelContainer}>
               <div className={styles.presentationPanel}>
-               { isMobileBrowser && Session.get('openPanel') !== 'userlist' ? 
+               { isMobileBrowser && Session.get('openPanel') == '' ? 
                <div className={styles.togglechat} > 
                <Button
                     onClick={()=>{
@@ -493,7 +492,7 @@ class App extends Component {
 
              ( (openPanel == 'chat')
                ?
-               (enableResize) ? null : this.renderChat()
+               (enableResize) ? this.renderChatResizable() : this.renderChat()
               :
                null)
                }

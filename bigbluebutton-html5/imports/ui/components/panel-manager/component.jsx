@@ -12,6 +12,7 @@ import Resizable from 're-resizable';
 import { styles } from '/imports/ui/components/app/styles';
 import _ from 'lodash';
 import Button from '/imports/ui/components/button/component';
+import browser from 'browser-detect';
 
 const intlMessages = defineMessages({
   chatLabel: {
@@ -40,20 +41,24 @@ const propTypes = {
   openPanel: PropTypes.string.isRequired,
 };
 
+const BROWSER_RESULTS = browser();
+const isMobileBrowser = BROWSER_RESULTS.mobile || BROWSER_RESULTS.os.includes('Android');
+const isLandScapeView = window.orientation === 90 || window.orientation === -90;
+
 const default_panel_width = 59;
 const chat_min_width = 59;
-const user_min_width = 14;
+const user_min_width = (isMobileBrowser && isLandScapeView) ? 21 : 14;
 const chat_max_width = 79;
 
-const DEFAULT_PANEL_WIDTH = ((screen.width) * default_panel_width) / 100;
+const DEFAULT_PANEL_WIDTH = ((window.innerWidth) * default_panel_width) / 100;
 // Variables for resizing user-list.
-const USERLIST_MIN_WIDTH_PX = ((screen.width) * user_min_width) / 100;
-const USERLIST_MAX_WIDTH_PX = ((screen.width) * user_min_width) / 100;
+const USERLIST_MIN_WIDTH_PX = ((window.innerWidth) * user_min_width) / 100;
+const USERLIST_MAX_WIDTH_PX = ((window.innerWidth) * user_min_width) / 100;
 
 // Variables for resizing chat.
-const CHAT_MIN_WIDTH = ((screen.width) * chat_min_width) / 100;
+const CHAT_MIN_WIDTH = ((window.innerWidth) * chat_min_width) / 100;
 // const CHAT_MAX_WIDTH = DEFAULT_PANEL_WIDTH;
-const CHAT_MAX_WIDTH = ((screen.width) * chat_max_width) / 100;
+const CHAT_MAX_WIDTH = ((window.innerWidth) * chat_max_width) / 100;
 // Variables for resizing poll.
 const POLL_MIN_WIDTH = 320;
 const POLL_MAX_WIDTH = 400;
