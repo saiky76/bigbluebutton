@@ -27,18 +27,17 @@ class MessageDropdown extends PureComponent {
    * @param {number} contentOffsetHeight
    * @return True if the content fit on the screen, false otherwise.
    */
-  static checkIfDropdownIsVisible(contentOffSetTop, contentOffsetHeight, scrollTop) {
-    // return (contentOffSetTop + contentOffsetHeight) < window.innerHeight;
-    console.log("contentOffSetTop" , contentOffSetTop);
-    console.log("our height" , contentOffsetHeight);
-    console.log("window height" , window.innerHeight);
-    console.log("scrollAreaInnerHeight" , scrollTop);
-    
-    return (scrollTop) > 0;
+  static checkIfDropdownIsVisible(domElem) {
+    console.log("rect detail" , domElem.getBoundingClientRect());
+    let rect = domElem.getBoundingClientRect();
+    let heightFromTop = rect.top;
+    return (heightFromTop -180 > rect.height);
   }
 
   constructor(props) {
     super(props);
+
+    this.myRef = React.createRef();
 
     this.state = {
       isActionsOpen: false,
@@ -74,11 +73,9 @@ class MessageDropdown extends PureComponent {
     
     if (dropdown && scrollContainer) {
       const dropdownTrigger = dropdown.children[0];
-      console.log("dropdownTrigger is found" );
       this.setState({
         isActionsOpen: true,
         dropdownVisible: false,
-        // dropdownOffset: dropdownTrigger.offsetTop - scrollContainer.scrollTop,  
         dropdownOffset: dropdownTrigger.offsetTop - 150, 
         dropdownDirection: 'top',
       });
@@ -135,26 +132,17 @@ class MessageDropdown extends PureComponent {
    * Check if the dropdown is visible, if so, check if should be draw on top or bottom direction.
    */
   checkDropdownDirection() {
-    const { scrollArea } = this.props;
     if (this.isDropdownActivedByUser()) {
       const dropdown = this.getDropdownMenuParent();
       const dropdownTrigger = dropdown.children[0];
-
-      const scrollContainer = scrollArea;
 
       const nextState = {
         dropdownVisible: true,
       };
 
-      const isDropdownVisible = MessageDropdown.checkIfDropdownIsVisible(
-        dropdownTrigger.offsetTop,
-        dropdownTrigger.offsetHeight,
-        scrollArea.scrollTop
-      );
+      const isDropdownVisible = MessageDropdown.checkIfDropdownIsVisible(this.myRef.current);
 
       if (!isDropdownVisible) {
-        // const offsetPageTop = (offsetTop + offsetHeight) - scrollContainer.scrollTop;
-        // nextState.dropdownOffset = window.innerHeight - offsetPageTop;
         nextState.dropdownOffset = dropdownTrigger.offsetTop -150;
         nextState.dropdownDirection = 'bottom';
       }
@@ -207,7 +195,7 @@ class MessageDropdown extends PureComponent {
             )
             : (
               <p
-                ref={(ref) => { this.text = ref; }}
+                ref={(ref) => { this.text = ref; }}                
                 dangerouslySetInnerHTML={{ __html: text }}
                 className={className}
               />
@@ -231,7 +219,7 @@ class MessageDropdown extends PureComponent {
             <DropdownTrigger tabIndex={0}>
               {(file != null)
               ? (
-                <div>
+                <div ref={this.myRef}>
                   <ChatFileUploaded
                     text={text}
                     file={file}
@@ -240,8 +228,9 @@ class MessageDropdown extends PureComponent {
                 </div>
               )
               : (
-                <p
-                  ref={(ref) => { this.text = ref; }}
+                <p ref={this.myRef}
+                  // ref={(ref) => { this.text = ref; }}
+                  text={text}
                   dangerouslySetInnerHTML={{ __html: text }}
                   className={className}
                 />
