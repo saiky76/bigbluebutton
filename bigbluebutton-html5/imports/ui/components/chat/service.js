@@ -107,12 +107,12 @@ const reduceGroupMessages = (previous, current) => {
   // Check if the last message is from the same user and time discrepancy
   // between the two messages exceeds window and then group current message
   // with the last one
-  const timeOfLastMessage = lastMessage.content[lastMessage.content.length - 1].time;
-  if (lastMessage.sender === currentMessage.sender
-    && (currentMessage.timestamp - timeOfLastMessage) <= GROUPING_MESSAGES_WINDOW) {
-    lastMessage.content.push(currentMessage.content.pop());
-    return previous;
-  }
+  // const timeOfLastMessage = lastMessage.content[lastMessage.content.length - 1].time;
+  // if (lastMessage.sender === currentMessage.sender
+  //   && (currentMessage.timestamp - timeOfLastMessage) <= GROUPING_MESSAGES_WINDOW) {
+  //   lastMessage.content.push(currentMessage.content.pop());
+  //   return previous;
+  // }
 
   return previous.concat(currentMessage);
 };
