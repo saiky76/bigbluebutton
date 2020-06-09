@@ -7,7 +7,7 @@ import Icon from '/imports/ui/components/icon/component';
 import Auth from '/imports/ui/services/auth';
 // import { Document, Page, pdfjs ,Outline} from "react-pdf";
 //import 'react-pdf/dist/Page/AnnotationLayer.css';
-import { Document, Page, pdfjs ,Outline } from 'react-pdf/dist/entry.parcel';
+ import { Document, Page, pdfjs ,Outline } from 'react-pdf/dist/entry.parcel';
 // import { Document, Page, pdfjs, Outline  } from 'react-pdf/dist/entry.webpack';
 // import pdfjs from "pdfjs-dist/webpack.js";
 const propTypes = {

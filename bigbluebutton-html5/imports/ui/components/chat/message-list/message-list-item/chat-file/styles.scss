@@ -52,6 +52,7 @@
 }
 
 .extensionBox {
+  display: grid;
   img {
     width: 3rem;
     height: 3rem;
@@ -59,13 +60,21 @@
     border-radius: 0.5rem;
     margin: 0.3rem 0 0 0.3rem;
   }
- 
+  iframe{
+    width: 3rem;
+    height: 3rem;
+    background-color: transparent;
+    border-radius: 0.5rem;
+    margin: 0.3rem 0 0 0.3rem;
+    overflow: hidden;
+    position: absolute;
+  }
   i {
     font-size: 3.2rem;
   }
   
   .extension {
-    font-size: 2rem;
+   // font-size: 2rem;
     flex: 1;
     align-items: center;
   }
