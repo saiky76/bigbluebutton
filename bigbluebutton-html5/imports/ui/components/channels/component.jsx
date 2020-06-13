@@ -249,7 +249,7 @@ class Channels extends PureComponent {
                         roving,
                         requestUserInformation,
                         meetingIdentifier: Auth.meetingID,
-                        getScrollContainerRef: scrollContainer,
+                        getScrollContainerRef: this.getScrollContainerRef(),
                       }}
                     />
                   </div>
@@ -278,7 +278,7 @@ class Channels extends PureComponent {
                   requestUserInformation,
                   meetingIdentifier: Auth.meetingID,
                   onlyModerators: true,
-                  getScrollContainerRef: scrollContainer,
+                  getScrollContainerRef: this.getScrollContainerRef(),
                 }}
               />
             </div>
@@ -361,7 +361,7 @@ class Channels extends PureComponent {
         requestUserInformation,
         meetingIdentifier: breakout.breakoutId,
         isbreakoutRoomUser,
-        getScrollContainerRef: scrollContainer,
+        getScrollContainerRef: this.getScrollContainerRef(),
       }}
     />
     </div>
