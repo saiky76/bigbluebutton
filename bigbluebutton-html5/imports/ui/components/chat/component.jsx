@@ -88,6 +88,11 @@ const Chat = (props) => {
                 ghost
                 color="default"
                 hideLabel
+                onClick={() => {
+                  actions.handleClosePrivateChat(chatID);
+                  Session.set('idChatOpen', '');
+                  Session.set('openPanel', 'chat');
+                }}
                 aria-label={intl.formatMessage(intlMessages.closeChatLabel, { 0: title })}
                 label={intl.formatMessage(intlMessages.closeChatLabel, { 0: title })}
                 accessKey={CLOSE_CHAT_AK}

@@ -51,8 +51,12 @@ const messages = defineMessages({
     id: 'app.audio.backLabel',
     description: 'label for option to hide emoji menu',
   },
-  ChatLabel: {
-    id: 'app.userList.menu.chat.label',
+  ChatLabel1: {
+    id: 'app.userList.menu.chat.label1',
+    description: 'Save the changes and close the settings menu',
+  },
+  ChatLabel2: {
+    id: 'app.userList.menu.chat.label2',
     description: 'Save the changes and close the settings menu',
   },
   ClearStatusLabel: {
@@ -198,7 +202,7 @@ class UserDropdown extends PureComponent {
     return Session.set('dropdownOpen', false);
   }
 
-  getUsersActions() {
+  getUsersActions(indicator) {
     const {
       intl,
       currentUser,
@@ -297,7 +301,7 @@ class UserDropdown extends PureComponent {
     if (CHAT_ENABLED && enablePrivateChat && isMeteorConnected) {
       actions.push(this.makeDropdownItem(
         'activeChat',
-        intl.formatMessage(messages.ChatLabel),
+       !indicator ? intl.formatMessage(messages.ChatLabel1) : intl.formatMessage(messages.ChatLabel2),
         () => {
           getGroupChatPrivate(currentUser.userId, user);
           Session.set('openPanel', 'chat');
@@ -522,9 +526,18 @@ class UserDropdown extends PureComponent {
       intl,
       isThisMeetingLocked,
       isMe,
+      isPublicChat,
+      activeChats,
     } = this.props;
+    let indicator=false;
 
-    const {
+if ( user && activeChats )
+ {let privatechat = activeChats.filter(ac=>ac.userId == user.userId)
+   if (privatechat.length > 0)
+   { indicator=privatechat[0].unreadCounter!=0 } 
+  }
+  
+   const {
       isActionsOpen,
       dropdownVisible,
       dropdownDirection,
@@ -532,7 +545,7 @@ class UserDropdown extends PureComponent {
       showNestedOptions,
     } = this.state;
 
-    const actions = this.getUsersActions();
+    const actions = this.getUsersActions(indicator);
 
     const userItemContentsStyle = {};
 
@@ -576,6 +589,9 @@ class UserDropdown extends PureComponent {
               isMe,
             }}
           />}
+          { indicator  ?
+            <div className={styles.indicator}> </div> : null
+          }
           {/* {<UserIcons
             {...{
               user,

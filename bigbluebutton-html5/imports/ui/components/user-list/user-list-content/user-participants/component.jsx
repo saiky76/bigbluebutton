@@ -92,7 +92,9 @@ class UserParticipants extends Component {
       onlyModerators,
       allModerators,
       getScrollContainerRef,
-      unassignedUsersInMasterChannel
+      unassignedUsersInMasterChannel,
+      isPublicChat,
+      activeChats,
     } = this.props;
 
     let index = -1;
@@ -137,7 +139,9 @@ class UserParticipants extends Component {
               compact,
               setEmojiStatus,
               requestUserInformation,
-              currentUser
+              currentUser,
+              isPublicChat,
+              activeChats,
             }}
             user={u}
             getScrollContainerRef={getScrollContainerRef}

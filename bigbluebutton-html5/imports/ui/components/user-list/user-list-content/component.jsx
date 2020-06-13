@@ -78,6 +78,8 @@ class UserContent extends PureComponent {
             intl,
             currentUser,
             setEmojiStatus,
+            isPublicChat,
+            activeChats,
             roving,
             requestUserInformation,
           }}

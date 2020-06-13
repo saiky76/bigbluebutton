@@ -168,7 +168,9 @@ class Channels extends PureComponent {
       roving,
       requestUserInformation,
       currentMeeting,
-      isThereUnassignedUsers
+      isThereUnassignedUsers,
+      isPublicChat,
+      activeChats,
     } = this.props;
 
     logger.info(`auth Id: ${Auth.meetingID}`);
@@ -270,6 +272,8 @@ class Channels extends PureComponent {
                   intl,
                   currentUser,
                   setEmojiStatus,
+                  isPublicChat,
+                  activeChats,
                   roving,
                   requestUserInformation,
                   meetingIdentifier: Auth.meetingID,

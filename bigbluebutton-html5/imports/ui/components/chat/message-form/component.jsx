@@ -308,7 +308,7 @@ class MessageForm extends PureComponent {
           <TextareaAutosize
             className={styles.input}
             id="message-input"
-            placeholder={intl.formatMessage(messages.inputPlaceholder, { 0: RoomName })}
+            placeholder={intl.formatMessage(messages.inputPlaceholder, { 0: chatName == "Public Chat" ? RoomName : chatName })}
             aria-controls={chatAreaId}
             aria-label={intl.formatMessage(messages.inputLabel, { 0: chatTitle })}
             aria-invalid={hasErrors ? 'true' : 'false'}
