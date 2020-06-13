@@ -69,9 +69,21 @@ class FileuploadController {
       log.error("Error in checkFileBeforeUploading.\n" + e.getMessage());
     }
   }
+//
+//  if(isMeetingBreakout(meetingId)){
+//    data.append('parentMeetingId', getParentMeetingId(meetingId));
+//    data.append('breakoutMeetingName', getMeetingName(meetingId));
+//    data.append('breakoutMeetingId', meetingId);
+//  }else{
+//    data.append('meetingId', meetingId);
+
 
   def upload = {
-    def meetingId = params.conference
+    //We are storing all artifacts under the parent meeting (either it is breakout or main meeting)
+    //Just for breakout artificats we will store it under meeting
+    def meetingId = params.meetingId
+    def breakoutMeetingId = params.breakoutMeetingId
+
     def meeting = meetingService.getNotEndedMeetingWithId(meetingId);
     if (meeting == null) {
       flash.message = 'meeting is not running'
@@ -87,7 +99,7 @@ class FileuploadController {
         flash.message = 'Your file has been uploaded'
         def fileName = file.getOriginalFilename()
         def fileId = Util.generateFileId(fileName);
-        File rootMeetngFileDir = Util.createFileUploadDir(meetingId, rootStorageDir, fileId, false)
+        File rootMeetngFileDir = Util.createFileUploadDir(meetingId, breakoutMeetingId, rootStorageDir, fileId, false)
 
         if (rootMeetngFileDir != null) {
           File downloadFileDir = getDownloadFileDirectory(rootMeetngFileDir.absolutePath, true)
@@ -136,12 +148,13 @@ class FileuploadController {
     def fileId = params.fileId
     def fileName = params.fileName
     def meetingId = params.meetingId
+    def breakoutMeetingId = params.breakoutMeetingId
 
     log.debug "Controller: Download request for $fileName"
 
     InputStream is = null;
     try {
-      File rootMeetngFileDir = Util.createFileUploadDir(meetingId, rootStorageDir, fileId, true)
+      File rootMeetngFileDir = Util.createFileUploadDir(meetingId, breakoutMeetingId, rootStorageDir, fileId, true)
       if (rootMeetngFileDir != null) {
         File downloadFileDir = getDownloadFileDirectory(rootMeetngFileDir.absolutePath, false)
         if (downloadFileDir != null) {

@@ -15,6 +15,7 @@ import Icon from '/imports/ui/components/icon/component';
 import Button from '/imports/ui/components/button/component';
 import TextareaAutosize from 'react-autosize-textarea';
 import { styles } from './styles.scss';
+import { isMeetingBreakout, getParentMeetingId } from '/imports/ui/components/app/service';
 
 const propTypes = {
   intl: intlShape.isRequired,

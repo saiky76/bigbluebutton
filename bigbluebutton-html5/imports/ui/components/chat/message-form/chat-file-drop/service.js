@@ -1,6 +1,8 @@
 import Auth from '/imports/ui/services/auth';
 import { makeCall } from '/imports/ui/services/api';
 import _ from 'lodash';
+import { isMeetingBreakout, getParentMeetingId, getMeetingName } from '/imports/ui/components/app/service';
+import { meetingIsBreakout } from '../../../app/service';
 
 // fetch doesn't support progress. So we use xhr which support progress.
 const futch = (url, opts = {}, onProgress) => new Promise((res, rej) => {
@@ -34,7 +36,14 @@ const uploadFile = (
   const data = new FormData();
 
   data.append('fileUpload', file);
-  data.append('conference', meetingId);
+    
+
+  if(isMeetingBreakout(meetingId)){
+    data.append('meetingId', getParentMeetingId(meetingId));
+    data.append('breakoutMeetingId', meetingId);
+  }else{    
+    data.append('meetingId', meetingId);
+  }
 
 
   const opts = {

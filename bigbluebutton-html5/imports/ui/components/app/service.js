@@ -16,6 +16,13 @@ function meetingIsBreakout() {
   return (meeting && meeting.meetingProp.isBreakout);
 }
 
+function getMeetingName(meetingId) {
+  const meeting = Meetings.findOne({ meetingId: meetingId },
+    { fields: { 'meetingProp.isBreakout': 1 } });
+  return (meeting ? meeting.name : null);
+}
+
+
 function isMeetingBreakout(meetingIdentifier) {
   const meeting = Meetings.findOne({ meetingId: meetingIdentifier },
     { fields: { 'meetingProp.isBreakout': 1 } });

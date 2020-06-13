@@ -52,8 +52,15 @@ public final class Util {
 		return null;
 	}
 
-	public static File createFileUploadDir(String meetingId, String fileUploadDir, String fileId, boolean returnOnExists) {
-		String meetingPath = fileUploadDir + File.separatorChar + meetingId + File.separatorChar + meetingId;
+	public static File createFileUploadDir(String meetingId, String breakoutMeetingId,  String fileUploadDir, String fileId, boolean returnOnExists) {
+
+		String meetingPath = fileUploadDir + File.separatorChar;
+
+		if(breakoutMeetingId != null){
+			meetingPath = meetingPath + meetingId + File.separatorChar + breakoutMeetingId;
+		}else{
+			meetingPath = meetingPath + meetingId;
+		}
 		String presPath = meetingPath + File.separatorChar + fileId;
 		File dir = new File(presPath);
 		if (dir.mkdirs()) {
