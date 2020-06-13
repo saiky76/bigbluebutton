@@ -196,7 +196,6 @@ class MessageList extends Component {
 
   renderUnreadNotification() {
     const { intl, hasUnreadMessages, scrollPosition } = this.props;
-
     if (hasUnreadMessages && scrollPosition !== null) {
       return (
         <Button
@@ -253,7 +252,7 @@ class MessageList extends Component {
             />
           ))}
         </div>
-        {/* {this.renderUnreadNotification()} */}
+        {this.renderUnreadNotification()}
       </div>
     );
   }
