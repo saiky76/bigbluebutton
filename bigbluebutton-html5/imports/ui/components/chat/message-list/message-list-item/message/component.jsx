@@ -53,13 +53,8 @@ export default class MessageListItem extends PureComponent {
       isUserOptionsOpen: false,
     };
     this.meetingName = _.uniqueId('meeting-item-');
-
-
-    
     this.renderSharableOption = this.renderSharableOption.bind(this);
-
     this.ticking = false;
-
     this.handleMessageInViewport = _.debounce(this.handleMessageInViewport.bind(this), 50);
   }
 
@@ -108,7 +103,6 @@ export default class MessageListItem extends PureComponent {
           this.removeScrollListeners();
           return;
         }
-
         if (isElementInViewport(node)) {
           handleReadMessage(time);
           this.removeScrollListeners();
@@ -158,15 +152,13 @@ export default class MessageListItem extends PureComponent {
         return;
       }
 
-      if (isElementInViewport(node)) { // no need to listen, the message is already in viewport
+      if (isElementInViewport(node)) { // no need to listen, the message is already in viewport        
         handleReadMessage(time);
       } else {
         this.addScrollListeners();
       }
     });
   }
-
-
 
   
   renderSharableOption() {
@@ -180,7 +172,7 @@ export default class MessageListItem extends PureComponent {
         dangerouslySetInnerHTML={{ __html: text }}
         className={className}
       /> :
-      (<div>
+      (<div ref={(ref) => { this.text = ref; }}>
 
       <MessageDropdown
         {...{
