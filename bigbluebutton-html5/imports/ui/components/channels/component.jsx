@@ -179,7 +179,6 @@ class Channels extends PureComponent {
     const isBreakOutMeeting = meetingIsBreakout();
     const isModerator = currentUser.role === ROLE_MODERATOR;
     const otherUsers = isModerator ? "Unassigned" : "Learning group";
-    const scrollContainer = this.getScrollContainerRef();
 
     return (
 
@@ -249,7 +248,7 @@ class Channels extends PureComponent {
                         roving,
                         requestUserInformation,
                         meetingIdentifier: Auth.meetingID,
-                        getScrollContainerRef: this.getScrollContainerRef(),
+                        getScrollContainerRef: this.getScrollContainerRef,
                       }}
                     />
                   </div>
@@ -278,7 +277,7 @@ class Channels extends PureComponent {
                   requestUserInformation,
                   meetingIdentifier: Auth.meetingID,
                   onlyModerators: true,
-                  getScrollContainerRef: this.getScrollContainerRef(),
+                  getScrollContainerRef: this.getScrollContainerRef,
                 }}
               />
             </div>
@@ -325,7 +324,6 @@ class Channels extends PureComponent {
     } = this.props;
 
     const isBreakOutMeeting = meetingIsBreakout();
-    const scrollContainer = this.getScrollContainerRef();
     return (
       breakoutRooms.map(breakout => (
         
@@ -361,7 +359,7 @@ class Channels extends PureComponent {
         requestUserInformation,
         meetingIdentifier: breakout.breakoutId,
         isbreakoutRoomUser,
-        getScrollContainerRef: this.getScrollContainerRef(),
+        getScrollContainerRef: this.getScrollContainerRef,
       }}
     />
     </div>
