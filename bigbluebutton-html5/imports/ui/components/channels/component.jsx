@@ -168,7 +168,7 @@ class Channels extends PureComponent {
       roving,
       requestUserInformation,
       currentMeeting,
-      isThereUnassignedUsers
+      isThereUnassignedUsers,
     } = this.props;
 
     logger.info(`auth Id: ${Auth.meetingID}`);
@@ -177,7 +177,6 @@ class Channels extends PureComponent {
     const isBreakOutMeeting = meetingIsBreakout();
     const isModerator = currentUser.role === ROLE_MODERATOR;
     const otherUsers = isModerator ? "Unassigned" : "Learning group";
-    const scrollContainer = this.getScrollContainerRef();
 
     return (
 
@@ -188,6 +187,7 @@ class Channels extends PureComponent {
             <Button
               className={styles.master}
               icon="icomoon-Master-Channel"
+              onClick={() => null}
               // label="master channel"
               // hideLabel
             />
@@ -247,7 +247,7 @@ class Channels extends PureComponent {
                         roving,
                         requestUserInformation,
                         meetingIdentifier: Auth.meetingID,
-                        getScrollContainerRef: scrollContainer,
+                        getScrollContainerRef: this.getScrollContainerRef,
                       }}
                     />
                   </div>
@@ -274,7 +274,7 @@ class Channels extends PureComponent {
                   requestUserInformation,
                   meetingIdentifier: Auth.meetingID,
                   onlyModerators: true,
-                  getScrollContainerRef: scrollContainer,
+                  getScrollContainerRef: this.getScrollContainerRef,
                 }}
               />
             </div>
@@ -321,7 +321,6 @@ class Channels extends PureComponent {
     } = this.props;
 
     const isBreakOutMeeting = meetingIsBreakout();
-    const scrollContainer = this.getScrollContainerRef();
     return (
       breakoutRooms.map(breakout => (
         
@@ -357,7 +356,7 @@ class Channels extends PureComponent {
         requestUserInformation,
         meetingIdentifier: breakout.breakoutId,
         isbreakoutRoomUser,
-        getScrollContainerRef: scrollContainer,
+        getScrollContainerRef: this.getScrollContainerRef,
       }}
     />
     </div>
