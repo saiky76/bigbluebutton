@@ -160,7 +160,7 @@ class UserDropdown extends PureComponent {
     Session.set('dropdownOpen', true);
     const { getScrollContainerRef } = this.props;
     const dropdown = this.getDropdownMenuParent();
-    const scrollContainer = getScrollContainerRef;
+    const scrollContainer = getScrollContainerRef();
 
     if (dropdown && scrollContainer) {
       const dropdownTrigger = dropdown.children[0];
@@ -188,7 +188,7 @@ class UserDropdown extends PureComponent {
       showNestedOptions: false,
     });
 
-    const scrollContainer = getScrollContainerRef;
+    const scrollContainer = getScrollContainerRef();
     scrollContainer.removeEventListener('scroll', this.handleScroll, false);
 
     if (callback) {
@@ -444,7 +444,7 @@ class UserDropdown extends PureComponent {
       const dropdownTrigger = dropdown.children[0];
       const dropdownContent = dropdown.children[1];
 
-      const scrollContainer = getScrollContainerRef;
+      const scrollContainer = getScrollContainerRef();
 
       const nextState = {
         dropdownVisible: true,
