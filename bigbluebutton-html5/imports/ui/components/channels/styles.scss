@@ -207,14 +207,14 @@
 
 .usersList {
   padding-left: 10%;
-  width: 90%;
+ // width: 90%;
 }
 
 .breakoutUsersList {
   @extend %flex-column;
   justify-content: center;
   padding: 1% 0% 1% 10%;
-  width: 90%;
+  //width: 90%;
 }
 
 .popup{
