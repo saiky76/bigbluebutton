@@ -14,7 +14,6 @@ class MessageContainer extends PureComponent {
 export default withTracker(() => {
   const targetMeetings = ChatService.getCrossChatTargetMeetings();
   let chattype = Session.get('idChatOpen');
-  if( Session.get('idChatOpen') == "" ){ chattype = "public" }
   return {
     targetMeetings,
     chattype,
