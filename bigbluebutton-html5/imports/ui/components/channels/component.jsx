@@ -189,6 +189,7 @@ class Channels extends PureComponent {
             <Button
               className={styles.master}
               icon="icomoon-Master-Channel"
+              onClick={() => null}
               // label="master channel"
               // hideLabel
             />

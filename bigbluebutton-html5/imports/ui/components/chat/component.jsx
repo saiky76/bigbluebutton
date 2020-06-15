@@ -74,6 +74,7 @@ const Chat = (props) => {
             aria-label={intl.formatMessage(intlMessages.hideChatLabel, { 0: title })}
             accessKey={HIDE_CHAT_AK}
            label="chat"
+           onClick={() => null}
            /*hideBtn styles anr changed to chatTab*/ 
             className={styles.chatTab}
             color="default"
