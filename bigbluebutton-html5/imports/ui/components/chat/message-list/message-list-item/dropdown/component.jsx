@@ -166,7 +166,7 @@ class MessageDropdown extends PureComponent {
 
   render() {
 
-    const {text, file, userid, className, targetMeetings} = this.props;
+    const {text, file, userid, className, targetMeetings, chattype} = this.props;
 
     const {
       isActionsOpen,
@@ -181,7 +181,9 @@ class MessageDropdown extends PureComponent {
     userItemContentsStyle[styles.userListItem] = !isActionsOpen;
     userItemContentsStyle[styles.usertListItemWithMenu] = isActionsOpen;
 
-      if(targetMeetings && targetMeetings.length == 0){
+    let enableShareOption = chattype == "public";
+    
+      if(targetMeetings && targetMeetings.length == 0 || !enableShareOption){
         return(
           (file != null)
             ? (
