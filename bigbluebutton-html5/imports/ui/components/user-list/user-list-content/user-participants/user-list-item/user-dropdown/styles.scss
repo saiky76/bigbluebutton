@@ -118,22 +118,19 @@
     color: #ffc700 !important;
     cursor: default;
   }
-  .indicator{
-    // color: white;
-    // background: red;
-   position: relative;
 
-  &:after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    width: 12px;
-    height: 12px;
-    bottom: var(--border-size);
-    right: 3px;
-    background-color: var(--color-danger);
-    border: var(--border-size) solid var(--color-gray-dark);
-  }
+  .unreadMessagesText {
+    display: flex;
+    flex-flow: column;
+    margin: 0;
+    justify-content: center;
+    color: var(--color-white);
+    line-height: calc(1rem + 1px);
+    padding: 0 0.5rem;
+    text-align: center;
+    border-radius: 0.5rem/50%;
+    font-size: 0.8rem;
+    background-color: var(--unread-messages-bg);
   }
 }
 

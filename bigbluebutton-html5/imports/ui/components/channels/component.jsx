@@ -246,6 +246,8 @@ class Channels extends PureComponent {
                         currentUser,
                         setEmojiStatus,
                         roving,
+                        isPublicChat,
+                        activeChats,
                         requestUserInformation,
                         meetingIdentifier: Auth.meetingID,
                         getScrollContainerRef: this.getScrollContainerRef,
@@ -319,7 +321,8 @@ class Channels extends PureComponent {
       mountModal,
       breakoutRoomUser,
       requestJoinURL,
-      isUserActiveInBreakoutroom
+      isUserActiveInBreakoutroom,
+      activeChats
 
     } = this.props;
 
@@ -360,6 +363,7 @@ class Channels extends PureComponent {
         meetingIdentifier: breakout.breakoutId,
         isbreakoutRoomUser,
         getScrollContainerRef: this.getScrollContainerRef,
+        activeChats,
       }}
     />
     </div>

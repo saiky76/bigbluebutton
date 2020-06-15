@@ -17,7 +17,7 @@ import { Session } from 'meteor/session';
 import { styles } from './styles';
 import UserName from '../user-name/component';
 import UserIcons from '../user-icons/component';
-
+import { meetingIsBreakout } from '/imports/ui/components/app/service';
 const messages = defineMessages({
   presenter: {
     id: 'app.userList.presenter',
@@ -51,12 +51,8 @@ const messages = defineMessages({
     id: 'app.audio.backLabel',
     description: 'label for option to hide emoji menu',
   },
-  ChatLabel1: {
-    id: 'app.userList.menu.chat.label1',
-    description: 'Save the changes and close the settings menu',
-  },
-  ChatLabel2: {
-    id: 'app.userList.menu.chat.label2',
+  ChatLabel: {
+    id: 'app.userList.menu.chat.label',
     description: 'Save the changes and close the settings menu',
   },
   ClearStatusLabel: {
@@ -202,7 +198,7 @@ class UserDropdown extends PureComponent {
     return Session.set('dropdownOpen', false);
   }
 
-  getUsersActions(indicator) {
+  getUsersActions(isMasterChannel) {
     const {
       intl,
       currentUser,
@@ -298,10 +294,10 @@ class UserDropdown extends PureComponent {
       ));
     }
 
-    if (CHAT_ENABLED && enablePrivateChat && isMeteorConnected) {
+    if (CHAT_ENABLED && enablePrivateChat && isMeteorConnected  && isMasterChannel) {
       actions.push(this.makeDropdownItem(
         'activeChat',
-       !indicator ? intl.formatMessage(messages.ChatLabel1) : intl.formatMessage(messages.ChatLabel2),
+        intl.formatMessage(messages.ChatLabel),
         () => {
           getGroupChatPrivate(currentUser.userId, user);
           Session.set('openPanel', 'chat');
@@ -529,13 +525,11 @@ class UserDropdown extends PureComponent {
       isPublicChat,
       activeChats,
     } = this.props;
-    let indicator=false;
-
-if ( user && activeChats )
- {let privatechat = activeChats.filter(ac=>ac.userId == user.userId)
-   if (privatechat.length > 0)
-   { indicator=privatechat[0].unreadCounter!=0 } 
-  }
+    let privatechat = [];
+    if ( user && activeChats )
+    { 
+      privatechat = activeChats.filter(ac=>ac.userId == user.userId)
+     }
   
    const {
       isActionsOpen,
@@ -544,9 +538,8 @@ if ( user && activeChats )
       dropdownOffset,
       showNestedOptions,
     } = this.state;
-
-    const actions = this.getUsersActions(indicator);
-
+    const isMasterChannel = !meetingIsBreakout();
+    const actions = this.getUsersActions(isMasterChannel);
     const userItemContentsStyle = {};
 
     userItemContentsStyle[styles.dropdown] = true;
@@ -589,8 +582,8 @@ if ( user && activeChats )
               isMe,
             }}
           />}
-          { indicator  ?
-            <div className={styles.indicator}> </div> : null
+          {  privatechat.length > 0 && privatechat[0].unreadCounter > 0 ?
+            <div className={styles.unreadMessagesText}> { privatechat[0].unreadCounter } </div> : null
           }
           {/* {<UserIcons
             {...{
