@@ -13,8 +13,10 @@ class MessageContainer extends PureComponent {
 
 export default withTracker(() => {
   const targetMeetings = ChatService.getCrossChatTargetMeetings();
+  let chattype = Session.get('idChatOpen');
   return {
     targetMeetings,
+    chattype,
     getMessageObj: messageId => ChatService.getMessageObject(messageId),
     currentUser: ChatService.getCurrentUser(),
     sendCrossGroupMsg: (msgObj, meetingId, senderName) => {ChatService.sendCrossGroupMessage(msgObj, meetingId, senderName)}

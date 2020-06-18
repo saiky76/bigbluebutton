@@ -17,7 +17,7 @@ import { Session } from 'meteor/session';
 import { styles } from './styles';
 import UserName from '../user-name/component';
 import UserIcons from '../user-icons/component';
-
+import { meetingIsBreakout } from '/imports/ui/components/app/service';
 const messages = defineMessages({
   presenter: {
     id: 'app.userList.presenter',
@@ -160,7 +160,7 @@ class UserDropdown extends PureComponent {
     Session.set('dropdownOpen', true);
     const { getScrollContainerRef } = this.props;
     const dropdown = this.getDropdownMenuParent();
-    const scrollContainer = getScrollContainerRef;
+    const scrollContainer = getScrollContainerRef();
 
     if (dropdown && scrollContainer) {
       const dropdownTrigger = dropdown.children[0];
@@ -188,7 +188,7 @@ class UserDropdown extends PureComponent {
       showNestedOptions: false,
     });
 
-    const scrollContainer = getScrollContainerRef;
+    const scrollContainer = getScrollContainerRef();
     scrollContainer.removeEventListener('scroll', this.handleScroll, false);
 
     if (callback) {
@@ -198,7 +198,7 @@ class UserDropdown extends PureComponent {
     return Session.set('dropdownOpen', false);
   }
 
-  getUsersActions() {
+  getUsersActions(isMasterChannel) {
     const {
       intl,
       currentUser,
@@ -294,7 +294,7 @@ class UserDropdown extends PureComponent {
       ));
     }
 
-    if (CHAT_ENABLED && enablePrivateChat && isMeteorConnected) {
+    if (CHAT_ENABLED && enablePrivateChat && isMeteorConnected  && isMasterChannel) {
       actions.push(this.makeDropdownItem(
         'activeChat',
         intl.formatMessage(messages.ChatLabel),
@@ -444,7 +444,7 @@ class UserDropdown extends PureComponent {
       const dropdownTrigger = dropdown.children[0];
       const dropdownContent = dropdown.children[1];
 
-      const scrollContainer = getScrollContainerRef;
+      const scrollContainer = getScrollContainerRef();
 
       const nextState = {
         dropdownVisible: true,
@@ -522,18 +522,24 @@ class UserDropdown extends PureComponent {
       intl,
       isThisMeetingLocked,
       isMe,
+      isPublicChat,
+      activeChats,
     } = this.props;
-
-    const {
+    let privatechat = [];
+    if ( user && activeChats )
+    { 
+      privatechat = activeChats.filter(ac=>ac.userId == user.userId)
+     }
+  
+   const {
       isActionsOpen,
       dropdownVisible,
       dropdownDirection,
       dropdownOffset,
       showNestedOptions,
     } = this.state;
-
-    const actions = this.getUsersActions();
-
+    const isMasterChannel = !meetingIsBreakout();
+    const actions = this.getUsersActions(isMasterChannel);
     const userItemContentsStyle = {};
 
     userItemContentsStyle[styles.dropdown] = true;
@@ -576,6 +582,9 @@ class UserDropdown extends PureComponent {
               isMe,
             }}
           />}
+          {  privatechat.length > 0 && privatechat[0].unreadCounter > 0 ?
+            <div className={styles.unreadMessagesText}> { privatechat[0].unreadCounter } </div> : null
+          }
           {/* {<UserIcons
             {...{
               user,

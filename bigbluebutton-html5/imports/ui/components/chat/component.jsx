@@ -74,6 +74,7 @@ const Chat = (props) => {
             aria-label={intl.formatMessage(intlMessages.hideChatLabel, { 0: title })}
             accessKey={HIDE_CHAT_AK}
            label="chat"
+           onClick={() => null}
            /*hideBtn styles anr changed to chatTab*/ 
             className={styles.chatTab}
             color="default"
@@ -88,6 +89,11 @@ const Chat = (props) => {
                 ghost
                 color="default"
                 hideLabel
+                onClick={() => {
+                  actions.handleClosePrivateChat(chatID);
+                  Session.set('idChatOpen', 'public');
+                  Session.set('openPanel', 'chat');
+                }}
                 aria-label={intl.formatMessage(intlMessages.closeChatLabel, { 0: title })}
                 label={intl.formatMessage(intlMessages.closeChatLabel, { 0: title })}
                 accessKey={CLOSE_CHAT_AK}
