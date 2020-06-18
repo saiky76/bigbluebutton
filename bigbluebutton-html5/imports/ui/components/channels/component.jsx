@@ -331,7 +331,7 @@ class Channels extends PureComponent {
            <ChannelDropdown
         {...{
           breakout,   
-          getScrollContainerRef: scrollContainer,
+          getScrollContainerRef: this.getScrollContainerRef,
           voiceUser,
           amIModerator,
           isMeteorConnected,

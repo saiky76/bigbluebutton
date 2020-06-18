@@ -47,7 +47,7 @@ const isLandScapeView = window.orientation === 90 || window.orientation === -90;
 
 const default_panel_width = 59;
 const chat_min_width = 59;
-const user_min_width = (isMobileBrowser && isLandScapeView) ? 21 : 14;
+const user_min_width = (isMobileBrowser && isLandScapeView) ? 27 : 14;
 const chat_max_width = 79;
 
 const DEFAULT_PANEL_WIDTH = ((window.innerWidth) * default_panel_width) / 100;

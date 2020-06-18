@@ -12,6 +12,7 @@ import Auth from '/imports/ui/services/auth';
 import VideoProviderContainer from '/imports/ui/components/video-provider/container';
 import UserAvatar from '/imports/ui/components/user-avatar/component';
 import { Session } from 'meteor/session';
+import browser from 'browser-detect';
 
 const intlMessages = defineMessages({
   joinAudio: {
@@ -31,6 +32,10 @@ const intlMessages = defineMessages({
     description: 'Unmute audio button label',
   },
 });
+
+const BROWSER_RESULTS = browser();
+const isMobileBrowser = BROWSER_RESULTS.mobile || BROWSER_RESULTS.os.includes('Android');
+const isLandScapeView = window.orientation === 90 || window.orientation === -90;
 
 class ActionsBar extends PureComponent {
   constructor() {
@@ -103,6 +108,7 @@ class ActionsBar extends PureComponent {
       endCall = true;
     }
 
+    const landscapemode = (isMobileBrowser && isLandScapeView);
     actionBarClasses[styles.centerWithActions] = amIPresenter;
     actionBarClasses[styles.center] = true;
     actionBarClasses[styles.mobileLayoutSwapped] = isLayoutSwapped && amIPresenter;
@@ -113,7 +119,7 @@ class ActionsBar extends PureComponent {
 
     return (
       <div className={cx(actionBarClasses)}>
-        <div className={!toggleChatLayout ? styles.actionsController : styles.toggledActions}>
+        <div className={!toggleChatLayout ? (landscapemode ? styles.landscape : styles.actionsController) : styles.toggledActions}>
           <AudioControlsContainer />
           <div>
             {enableVideo && amIPresenter && !validateMeetingIsBreakout(Auth.meetingID)
@@ -160,8 +166,6 @@ class ActionsBar extends PureComponent {
           <div className={!toggleChatLayout ?
              sideavatars.length > 0 && presenter ? styles.dummy1 : styles.dummy
               : styles.dummy2}>
-
-            {/* <img src="https://miro.medium.com/max/560/1*MccriYX-ciBniUzRKAUsAw.png" alt="" /> */}
 
          {  
          sideavatars[0] ? 
@@ -227,7 +231,7 @@ class ActionsBar extends PureComponent {
             color="default"
             ghost={!inAudio}
             icon={joinIcon}
-            size={!toggleChatLayout ? 'xl' : 'lg'}
+            size={(!toggleChatLayout && !landscapemode) ? 'xl' : 'lg'}
             circle
           />
         </div>

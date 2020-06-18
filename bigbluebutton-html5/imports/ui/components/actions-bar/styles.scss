@@ -1,4 +1,8 @@
 @import "/imports/ui/stylesheets/variables/_all";
+@import "/imports/ui/stylesheets/variables/general";
+@import "/imports/ui/stylesheets/variables/palette";
+@import "/imports/ui/stylesheets/variables/typography";
+@import '/imports/ui/stylesheets/mixins/_indicators';
 
 :root {
   --mobile-swap-offset: 3.5rem;
@@ -18,9 +22,19 @@
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  margin-top: 2rem;
   :nth-child(n){
     margin: 0.3rem;
+  }
+}
+
+.landscape {
+  flex: 3;  
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  padding-top: 1rem;
+  :nth-child(n){
+    margin: 0.15rem;
   }
 }
 
@@ -118,7 +132,7 @@
 .right {
   > * {
     // action bar widgets spacing for various screen sizes
-    margin: 0.5rem;
+    // margin: 0.5rem;
     justify-content: center;
   }
 }

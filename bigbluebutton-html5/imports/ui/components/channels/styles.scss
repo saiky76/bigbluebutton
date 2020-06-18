@@ -154,6 +154,7 @@
     line-height: 1.313rem;
     padding-left: 1rem;
     font-size: var(--font-size-14px);
+    overflow-x: hidden;
     @include mq($small-only) {
       color: #0F4C81;
     }
@@ -185,7 +186,7 @@
 
 .buttonWrapper {
   display: grid;
-  grid-template-columns: 10% 90%;
+  grid-template-columns: 10% 80%;
   align-items: center;
   cursor: pointer;
 }

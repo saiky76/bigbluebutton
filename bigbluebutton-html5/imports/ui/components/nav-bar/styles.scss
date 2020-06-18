@@ -1,5 +1,9 @@
-@import "../../stylesheets/variables/_all";
 @import "/client/stylesheets/fonts.css";
+@import "/imports/ui/stylesheets/variables/_all";
+@import "/imports/ui/stylesheets/variables/general";
+@import "/imports/ui/stylesheets/variables/palette";
+@import "/imports/ui/stylesheets/variables/typography";
+@import '/imports/ui/stylesheets/mixins/_indicators';
 
 :root {
   --mobile-nav-height: 5rem;

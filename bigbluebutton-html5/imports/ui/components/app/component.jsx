@@ -111,8 +111,8 @@ const BROWSER_RESULTS = browser();
 const isMobileBrowser = BROWSER_RESULTS.mobile || BROWSER_RESULTS.os.includes('Android');
 const isLandScapeView = window.orientation === 90 || window.orientation === -90;
 
-const chat_min_width = (isMobileBrowser && isLandScapeView) ? 0.56 : 0.58;
-const chat_max_width = (isMobileBrowser && isLandScapeView) ? 0.7 : 0.8;
+const chat_min_width = (isMobileBrowser && isLandScapeView) ? 0.72 : 0.58;
+const chat_max_width = (isMobileBrowser && isLandScapeView) ? 0.73 : 0.8;
 
 // Variables for resizing chat.
   const CHAT_MIN_WIDTH =  window.innerWidth * chat_min_width;
@@ -352,6 +352,9 @@ class App extends Component {
   toggleChatPanel() {
     const { isThereCurrentPresentation, inAudio } = this.props;
     const { chatWidth } = this.state;
+    if(isMobileBrowser && isLandScapeView) {
+      return;
+    }
     if (chatWidth == CHAT_MIN_WIDTH) {
       if (!isThereCurrentPresentation || (isThereCurrentPresentation && !inAudio) ){
         this.setState({
@@ -379,7 +382,7 @@ class App extends Component {
   }
 
   renderChatResizable() {
-    const { isThereCurrentPresentation, isVideoBroadcasting, isRTL, inAudio } = this.props;
+    const { isThereCurrentPresentation, isVideoBroadcasting, isRTL, inAudio, openPanel } = this.props;
     const { chatWidth } = this.state;
 
     if(!inAudio) {}
@@ -410,7 +413,9 @@ class App extends Component {
         >
           {this.renderChat()}
         </Resizable>
+      {/* <div> */}
         <div className={styles.slide}>
+      { (isMobileBrowser && isLandScapeView && openPanel == 'chat') ? null :
           <Button
             hideLabel
             onClick={() => this.toggleChatPanel()}
@@ -420,7 +425,9 @@ class App extends Component {
             color="default"
             label="toggle"
           />
+        }
         </div>
+      {/* </div> */}
       </div>
     );
   }
@@ -463,25 +470,27 @@ class App extends Component {
                   </div>
                   :  null
                   }
-              { inAudio ?
-                <div className={openPanel ? styles.content : styles.noPanelContent}>
-                  {this.renderMedia()}
-                  {this.renderActionsBar()}
-                </div>
-                 : 
-                <div className={styles.noAudio}>
-                  <Button
-                    className={styles.button}
-                    onClick={handleJoinAudio}
-                    hideLabel
-                    label={intl.formatMessage(intlMessages.joinAudio)}
-                    color="default"
-                    ghost={!inAudio}
-                    icon="icomoon-Join-Call"
-                    size='lg'
-                    circle
-                  />
-                </div>
+              { (isMobileBrowser && isLandScapeView && openPanel == 'chat') 
+                ? null :
+                  (inAudio) ?
+                  <div className={openPanel ? styles.content : styles.noPanelContent}>
+                    {this.renderMedia()}
+                    {this.renderActionsBar()}
+                  </div>
+                  : 
+                  <div className={styles.noAudio}>
+                    <Button
+                      className={styles.button}
+                      onClick={handleJoinAudio}
+                      hideLabel
+                      label={intl.formatMessage(intlMessages.joinAudio)}
+                      color="default"
+                      ghost={!inAudio}
+                      icon="icomoon-Join-Call"
+                      size='lg'
+                      circle
+                    />
+                  </div>
               }
               </div>
               { 

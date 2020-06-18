@@ -9,7 +9,7 @@
   position: relative;
   overflow-x: auto;
   overflow-y: auto;
-  padding-left: 4.5rem;
+  padding-left: 2rem;
   padding-right:  var(--sm-padding-y);
   margin-right: calc(-1 * var(--md-padding-y));
   padding-bottom: var(--md-padding-x);
@@ -23,6 +23,9 @@
   }
   @include mq($small-only) {
     padding-left: 0.75rem;
+  }
+  @include mq($phone-landscape) {
+    padding-left: 1.75rem;
   }
 }
 
