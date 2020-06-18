@@ -29,7 +29,7 @@ const propTypes = {
   handleNo: PropTypes.func.isRequired,
   intl: intlShape.isRequired,
 };
-
+const AUDIO_TEST_NUM_KEY = 'EchoTestNumber';
 class EchoTest extends Component {
   constructor(props) {
     super(props);
@@ -54,6 +54,13 @@ class EchoTest extends Component {
     } = this.props;
     const disableYesButtonClicked = callback => () => {
       this.setState({ disabled: true }, callback);
+      let  checknumber = parseInt(sessionStorage.getItem(AUDIO_TEST_NUM_KEY), 10);
+      if (!checknumber) {
+        checknumber = 0;
+      }
+      checknumber += 1;
+      sessionStorage.setItem(AUDIO_TEST_NUM_KEY, checknumber);
+      return checknumber;
     };
     return (
       <span className={styles.echoTest}>

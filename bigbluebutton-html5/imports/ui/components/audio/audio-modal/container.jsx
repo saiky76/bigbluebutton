@@ -21,7 +21,10 @@ const isRTL = document.documentElement.getAttribute('dir') === 'rtl';
 export default lockContextContainer(withModalMounter(withTracker(({ mountModal, userLocks }) => {
   const listenOnlyMode = getFromUserSettings('bbb_listen_only_mode', APP_CONFIG.listenOnlyMode);
   const forceListenOnly = getFromUserSettings('bbb_force_listen_only', APP_CONFIG.forceListenOnly);
-  const skipCheck = getFromUserSettings('bbb_skip_check_audio', APP_CONFIG.skipCheck);
+  const AUDIO_TEST_NUM_KEY = 'EchoTestNumber';
+  let checknumber = parseInt(sessionStorage.getItem(AUDIO_TEST_NUM_KEY), 10);
+  const skipCheck = !checknumber  ? getFromUserSettings('bbb_skip_check_audio', APP_CONFIG.skipCheck) :
+   !getFromUserSettings('bbb_skip_check_audio', APP_CONFIG.skipCheck);
   const meeting = Meetings.findOne({ meetingId: Auth.meetingID }, { fields: { voiceProp: 1 } });
   let formattedDialNum = '';
   let formattedTelVoice = '';
@@ -107,5 +110,6 @@ export default lockContextContainer(withModalMounter(withTracker(({ mountModal, 
     handleAllowAutoplay: () => Service.handleAllowAutoplay(),
     isRTL,
     AudioError,
+    checknumber,
   });
 })(AudioModalContainer)));
