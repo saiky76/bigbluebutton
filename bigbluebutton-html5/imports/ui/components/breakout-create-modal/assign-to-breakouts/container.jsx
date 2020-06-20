@@ -10,5 +10,6 @@ export default withTracker(() => ({
     createBreakoutRoom: ActionsBarService.createBreakoutRoom,
     users: ChannelsService.getUnassignedUsersInMasterChannel(
             UserListService.getUsersByMeetingWithoutMe(Auth.meetingID)),
-    meetingName: ActionsBarService.meetingName()
+    meetingName: ActionsBarService.meetingName(),
+    breakoutrooms:ChannelsService.findBreakouts(),
 }))(Assign);
