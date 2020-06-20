@@ -14,7 +14,7 @@ const defaultProps = {
   onUncheck: () => {},
 };
 
-const MIN_BREAKOUT_ROOMS = 2;
+const MIN_BREAKOUT_ROOMS = 1;
 const MAX_BREAKOUT_ROOMS = 12;
 
 class Assign extends Component {
@@ -73,7 +73,7 @@ class Assign extends Component {
     let a = breakoutrooms.length;
     for (let i = 0; i < numberOfRooms; i++) {
       a++;
-      newChannels[i]={name:meetingName + " " + a, userId:[]};
+      newChannels[i]={name:"team" + " " + a, userId:[]};
     }
 
     let refreshedUsers = users.map(user => {
