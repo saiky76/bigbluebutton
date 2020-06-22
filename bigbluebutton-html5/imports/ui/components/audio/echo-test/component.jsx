@@ -54,10 +54,9 @@ class EchoTest extends Component {
     } = this.props;
     const disableYesButtonClicked = callback => () => {
       this.setState({ disabled: true }, callback);
-      let  checknumber = sessionStorage.getItem(AUDIO_TEST_NUM_KEY);
-      checknumber = true;
-      sessionStorage.setItem(AUDIO_TEST_NUM_KEY, checknumber);
-      return checknumber;
+      audioTestPassed = true;
+      sessionStorage.setItem(AUDIO_TEST_NUM_KEY, audioTestPassed);
+      return audioTestPassed;
     };
     return (
       <span className={styles.echoTest}>
