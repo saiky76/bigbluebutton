@@ -193,7 +193,7 @@ class Channels extends PureComponent {
               // label="master channel"
               // hideLabel
             />
-            <div className={styles.masterChannel}>
+            <div className={isBreakOutMeeting ? styles.breakoutChannel : styles.masterChannel}>
               {isBreakOutMeeting ? 
                 (currentMeeting.meetingProp.name)
                 : "Master Channel"
