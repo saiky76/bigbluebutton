@@ -184,6 +184,7 @@ export default injectIntl(withModalMounter(withTracker(({ intl, baseControls, mo
     handleNetworkConnection: () => updateNavigatorConnection(navigator.connection),
     talkers,
     voiceUsers,
+    isSharingVideo: PresenterService.isSharingVideo(),
   };
 })(AppContainer)));
 

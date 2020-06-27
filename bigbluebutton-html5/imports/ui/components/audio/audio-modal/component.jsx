@@ -419,6 +419,7 @@ class AudioModal extends Component {
       isEchoTest,
       intl,
       isIOSChrome,
+      audioTestPassed,
     } = this.props;
 
     const { content } = this.state;
@@ -439,7 +440,7 @@ class AudioModal extends Component {
       return (
         <div className={styles.connecting} role="alert">
           <span>
-            {!isEchoTest
+            {!isEchoTest && audioTestPassed
               ? intl.formatMessage(intlMessages.connecting)
               : intl.formatMessage(intlMessages.connectingEchoTest)
             }

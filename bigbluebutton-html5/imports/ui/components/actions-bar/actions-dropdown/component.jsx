@@ -86,6 +86,7 @@ class ActionsDropdown extends PureComponent {
 
     this.handlePresentationClick = this.handlePresentationClick.bind(this);
     this.handleExternalVideoClick = this.handleExternalVideoClick.bind(this);
+    this.presentationoptions = this.presentationoptions.bind(this);
   }
 
   componentWillUpdate(nextProps) {
@@ -121,23 +122,23 @@ class ActionsDropdown extends PureComponent {
     } = intl;
 
     return _.compact([
-      (amIPresenter && isPollingEnabled
-        ? (
-          <DropdownListItem
-            icon="polling"
-            label={formatMessage(pollBtnLabel)}
-            description={formatMessage(pollBtnDesc)}
-            key={this.pollId}
-            onClick={() => {
-              if (Session.equals('pollInitiated', true)) {
-                Session.set('resetPollPanel', true);
-              }
-              Session.set('openPanel', 'poll');
-              Session.set('forcePollOpen', true);
-            }}
-          />
-        )
-        : null),
+      // (amIPresenter && isPollingEnabled
+      //   ? (
+      //     <DropdownListItem
+      //       icon="polling"
+      //       label={formatMessage(pollBtnLabel)}
+      //       description={formatMessage(pollBtnDesc)}
+      //       key={this.pollId}
+      //       onClick={() => {
+      //         if (Session.equals('pollInitiated', true)) {
+      //           Session.set('resetPollPanel', true);
+      //         }
+      //         Session.set('openPanel', 'poll');
+      //         Session.set('forcePollOpen', true);
+      //       }}
+      //     />
+      //   )
+      //   : null),
       (!amIPresenter
         ? (
           <DropdownListItem
@@ -182,9 +183,12 @@ class ActionsDropdown extends PureComponent {
   }
 
   handlePresentationClick() {
-    const { mountModal, handleUnshareScreen, isVideoBroadcasting } = this.props;
+    const { mountModal, handleUnshareScreen, isVideoBroadcasting, stopExternalVideoShare, isSharingVideo } = this.props;
     if(isVideoBroadcasting){
       handleUnshareScreen();
+    }
+    else if (isSharingVideo){
+      stopExternalVideoShare();
     }
     mountModal(<PresentationUploaderContainer />);
   }
@@ -202,7 +206,7 @@ class ActionsDropdown extends PureComponent {
     return (
 
       (amIModerator
-        ? (
+        ? (!amIPresenter ?
           <Button
             hideLabel
             className={styles.button}
@@ -215,22 +219,55 @@ class ActionsDropdown extends PureComponent {
               : intl.formatMessage(intlMessages.takePresenter)}
             onClick={amIPresenter ? this.handlePresentationClick : handleTakePresenter}
           />
+          :
+          this.presentationoptions()
         )
         : ( amIPresenter ?
-            <Button
-              hideLabel
-              className={styles.button}
-              data-test="uploadPresentation"
-              icon="icomoon-Presentation"
-              size="lg"
-              circle
-              label={intl.formatMessage(intlMessages.presentationLabel)}
-              onClick={this.handlePresentationClick}
-            />
+          this.presentationoptions()
           : null
         )
       )
     );
+  }
+  presentationoptions(){
+    const {
+      intl,
+      amIPresenter,
+      amIModerator,
+      shortcuts: OPEN_ACTIONS_AK,
+      isMeteorConnected,
+      handleTakePresenter,
+    } = this.props;
+
+    const availableActions = this.getAvailableActions();
+
+    if ((!amIPresenter && !amIModerator)
+      || availableActions.length === 0
+      || !isMeteorConnected) {
+      return null;
+    }
+    return(
+        <Dropdown ref={(ref) => { this._dropdown = ref; }}>
+          <DropdownTrigger tabIndex={0} accessKey={OPEN_ACTIONS_AK}>
+            <Button
+              
+              hideLabel
+              aria-label={intl.formatMessage(intlMessages.presentationLabel)}
+              className={styles.button}
+              label= {intl.formatMessage(intlMessages.presentationLabel)}
+              icon="icomoon-Presentation"
+              size="lg"
+              circle
+              onClick={() => null}
+            />
+          </DropdownTrigger>
+          <DropdownContent placement="bottom right">
+            <DropdownList>
+              {availableActions}
+            </DropdownList>
+          </DropdownContent>
+        </Dropdown>
+    )
   }
 }
 
