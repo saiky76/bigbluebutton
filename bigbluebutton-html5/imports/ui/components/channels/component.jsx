@@ -295,12 +295,12 @@ class Channels extends PureComponent {
                 <div 
                   className={styles.createBreakouts}
                   onClick={()=>{
-                    if( confirm("Are you sure u want to leave this WORKSHOP") ) { window.close() }}
+                    if( confirm("Are you sure u want to leave this WORKSPACE") ) { window.close() }}
                   }
                   role="button"
                   cursor="pointer"
                 >
-                  <span>Switch Workshop</span>
+                  <span>Switch Workspace</span>
                 </div> 
                 : null }
       </div>
