@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { defineMessages, injectIntl } from 'react-intl';
+import { defineMessages, injectIntl,FormattedDate } from 'react-intl';
 import _ from 'lodash';
 import fastdom from 'fastdom';
 import Button from '/imports/ui/components/button/component';
@@ -216,7 +216,23 @@ class MessageList extends Component {
     const {
       messages, intl, id, lastReadMessageTime, handleReadMessage, currentUserId, isBreakoutMeeting, getBreakoutNameByUserId, currentUser
     } = this.props;
-
+    const dateTime = new Date(messages[0].time);
+    let array = [];
+for (let i = 0; i < messages.length-1; i++) {
+  let j=i+1;
+   let a =new Date(messages[i].time).toLocaleDateString(undefined, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+     })
+   let b =new Date(messages[j].time).toLocaleDateString(undefined, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+     })
+ if (a!=b){ array.push(messages[j].content[0].id) } 
+  
+}
     const {
       scrollArea,
     } = this.state;
@@ -234,6 +250,7 @@ class MessageList extends Component {
           aria-relevant="additions"
           aria-label={isEmpty ? intl.formatMessage(intlMessages.emptyLogLabel) : ''}
         >
+          <FormattedDate value={dateTime}  day="2-digit"month="long" year="numeric"/>
           {messages.map(message => (
             <MessageListItem
               handleReadMessage={handleReadMessage}
@@ -249,6 +266,7 @@ class MessageList extends Component {
               lastReadMessageTime={lastReadMessageTime}
               scrollArea={scrollArea}
               isBreakoutMeeting={isBreakoutMeeting}
+              array={array}
             />
           ))}
         </div>
