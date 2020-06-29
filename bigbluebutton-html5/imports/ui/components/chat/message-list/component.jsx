@@ -216,7 +216,6 @@ class MessageList extends Component {
     const {
       messages, intl, id, lastReadMessageTime, handleReadMessage, currentUserId, isBreakoutMeeting, getBreakoutNameByUserId, currentUser
     } = this.props;
-    const dateTime = new Date(messages[0].time);
     let array = [];
 for (let i = 0; i < messages.length-1; i++) {
   let j=i+1;
@@ -250,7 +249,7 @@ for (let i = 0; i < messages.length-1; i++) {
           aria-relevant="additions"
           aria-label={isEmpty ? intl.formatMessage(intlMessages.emptyLogLabel) : ''}
         >
-          <FormattedDate value={dateTime}  day="2-digit"month="long" year="numeric"/>
+         {!isEmpty ? <FormattedDate value={new Date(messages[0].time)}  day="2-digit"month="long" year="numeric"/> : null}
           {messages.map(message => (
             <MessageListItem
               handleReadMessage={handleReadMessage}
