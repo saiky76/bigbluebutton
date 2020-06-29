@@ -11,6 +11,11 @@
   overflow-y: auto;
   border-style: none;
   border-bottom: none;
+  
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 85%;
 }
 
 .autoPlayWarning {
@@ -25,4 +30,13 @@
   text-align: center;
   pointer-events: none;
 
+}
+
+.stopPresentation {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  >span {
+    color: #36a1ff;
+  }
 }
