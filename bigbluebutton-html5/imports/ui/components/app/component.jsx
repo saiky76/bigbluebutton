@@ -350,13 +350,10 @@ class App extends Component {
   }
 
   toggleChatPanel() {
-    const { isThereCurrentPresentation, inAudio } = this.props;
+    const { isThereCurrentPresentation, isSharingVideo, inAudio } = this.props;
     const { chatWidth } = this.state;
-    if(isMobileBrowser && isLandScapeView) {
-      return;
-    }
     if (chatWidth == CHAT_MIN_WIDTH) {
-      if (!isThereCurrentPresentation || (isThereCurrentPresentation && !inAudio) ){
+      if (!isThereCurrentPresentation || isSharingVideo || (isThereCurrentPresentation && !inAudio) ){
         this.setState({
           chatWidth:CHAT_MAX_WIDTH,
           toggleChatLayout:true
@@ -382,11 +379,11 @@ class App extends Component {
   }
 
   renderChatResizable() {
-    const { isThereCurrentPresentation, isVideoBroadcasting, isRTL, inAudio, openPanel } = this.props;
+    const { isThereCurrentPresentation, isVideoBroadcasting, isSharingVideo, isRTL, inAudio } = this.props;
     const { chatWidth } = this.state;
 
     if(!inAudio) {}
-    else if((isThereCurrentPresentation || isVideoBroadcasting) && chatWidth == CHAT_MAX_WIDTH) {
+    else if((isThereCurrentPresentation || isVideoBroadcasting || isSharingVideo) && chatWidth == CHAT_MAX_WIDTH) {
       this.toggleChatPanel();
     }
 
@@ -473,7 +470,7 @@ class App extends Component {
               { (isMobileBrowser && isLandScapeView && openPanel == 'chat') 
                 ? null :
                   (inAudio) ?
-                  <div className={openPanel ? styles.content : styles.noPanelContent}>
+                  <div className={(isMobileBrowser && isLandScapeView) ? styles.landscapePanel : styles.verticalPanel}>
                     {this.renderMedia()}
                     {this.renderActionsBar()}
                   </div>

@@ -11,6 +11,7 @@ import VideoPreviewContainer from '/imports/ui/components/video-preview/containe
 import lockContextContainer from '/imports/ui/components/lock-viewers/context/container';
 import Service from './service';
 import AudioModalContainer from './audio-modal/container';
+import Auth from '/imports/ui/services/auth/index';
 
 const APP_CONFIG = Meteor.settings.public.app;
 const KURENTO_CONFIG = Meteor.settings.public.kurento;
@@ -106,10 +107,15 @@ const messages = {
 
 export default lockContextContainer(withModalMounter(injectIntl(withTracker(({ mountModal, intl, userLocks }) => {
   const autoJoin = getFromUserSettings('bbb_auto_join_audio', APP_CONFIG.autoJoin);
+  const AUDIO_TEST_NUM_KEY = 'EchoTestNumber';
+  let audioTestPassed = sessionStorage.getItem(AUDIO_TEST_NUM_KEY);
   const { userWebcam, userMic } = userLocks;
   const openAudioModal = () => new Promise((resolve) => {
-    mountModal(<AudioModalContainer resolve={resolve} />);
+    mountModal( audioTestPassed ? null : <AudioModalContainer resolve={resolve} />);
   });
+  const voicsUserID = localStorage.getItem("VOICE_USER_ID");
+  if(voicsUserID == Auth.userID)
+    localStorage.removeItem("VOICE_USER_ID")
 
   const openVideoPreviewModal = () => new Promise((resolve) => {
     if (userWebcam) return resolve();

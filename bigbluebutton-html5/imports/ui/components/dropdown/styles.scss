@@ -51,6 +51,7 @@
 
   &[aria-expanded="true"] {
     display: block;
+    min-width: max-content;
   }
 
   @include mq($small-only) {

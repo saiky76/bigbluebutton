@@ -127,20 +127,23 @@
   }
 }
 
-.content, .noPanelContent {
+.verticalPanel {
   @extend %full-page;
-  // top: 2;
-  
+
   @include mq($medium-up) {
     flex: 100%;
   }
 }
 
-.content{
-  margin:0 0 0 var(--panel-margin-left);
+.landscapePanel {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  overflow-y: auto;
+  overflow-x: hidden;
 
-  [dir="rtl"] & {
-    margin:0 var(--panel-margin-left) 0 0;
+  @include mq($medium-up) {
+    flex: 100%;
   }
 }
 

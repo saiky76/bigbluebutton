@@ -88,7 +88,7 @@ export default class Media extends Component {
         <div
           className={!swapLayout ? contentClassName : null}
           style={{
-            maxHeight: usersVideo.length < 1 ? '100%' : '80%',
+            maxHeight: usersVideo.length < 1 ? '70%' : '80%',
             minHeight: '20%',
           }}
         >

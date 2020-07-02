@@ -14,7 +14,7 @@ const defaultProps = {
   onUncheck: () => {},
 };
 
-const MIN_BREAKOUT_ROOMS = 2;
+const MIN_BREAKOUT_ROOMS = 1;
 const MAX_BREAKOUT_ROOMS = 12;
 
 class Assign extends Component {
@@ -67,12 +67,13 @@ class Assign extends Component {
 
   resetChannels(numberOfRooms) {
     const {users} = this.state;
-    const {meetingName} = this.props;
+    const {meetingName, breakoutrooms} = this.props;
     //clearing all channels
     let newChannels = [];
+    let a = breakoutrooms.length;
     for (let i = 0; i < numberOfRooms; i++) {
-     let a=i+1;
-      newChannels[i]={name:meetingName + " " + a, userId:[]};
+      a++;
+      newChannels[i]={name:"team" + " " + a, userId:[]};
     }
 
     let refreshedUsers = users.map(user => {
@@ -183,17 +184,29 @@ class Assign extends Component {
 
 
   createchannels(){
-    const {createBreakoutRoom, closeModal} = this.props;
+    const {createBreakoutRoom, closeModal, breakoutrooms} = this.props;
     const {channels} = this.state;
     let seq = 1;
+    let samename = 0;
+    for (let i = 0; i < channels.length; i++) {
+      if(breakoutrooms.find(br=> br.name==channels[i].name) !== undefined){
+        samename++;
+      }
+      for (let j = i+1; j < channels.length; j++) {
+      if(channels[i].name == channels[j].name){ samename++ }
+      }
+    }
     let rooms = channels.map(ch => ({
                               name: ch.name,
                               sequence: seq++,
                               freeJoin: false,
                               users: ch.userId
                             }));
+   if(samename==0) {
     createBreakoutRoom(rooms, 525600, false);
     closeModal();
+  }
+    else{ alert("breakout names are not unique") }
   }
 
   renderUserAvatar() {

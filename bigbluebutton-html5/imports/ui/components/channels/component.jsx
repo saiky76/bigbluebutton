@@ -18,6 +18,8 @@ import { meetingIsBreakout } from '/imports/ui/components/app/service';
 import ChannelAvatar from './channelAvatar/component';
 import ChannelDropdown from './dropdown/component';
 
+const BROWSER_RESULTS = browser();
+const isMobileBrowser = BROWSER_RESULTS.mobile || BROWSER_RESULTS.os.includes('Android');
 const ROLE_MODERATOR = Meteor.settings.public.user.role_moderator;
 
 const intlMessages = defineMessages({
@@ -193,7 +195,7 @@ class Channels extends PureComponent {
               // label="master channel"
               // hideLabel
             />
-            <div className={styles.masterChannel}>
+            <div className={isBreakOutMeeting ? styles.breakoutChannel : styles.masterChannel}>
               {isBreakOutMeeting ? 
                 (currentMeeting.meetingProp.name)
                 : "Master Channel"
@@ -289,7 +291,18 @@ class Channels extends PureComponent {
 
           </div>
         </div>
-
+  { isBreakOutMeeting && isMobileBrowser ?
+                <div 
+                  className={styles.createBreakouts}
+                  onClick={()=>{
+                    if( confirm("Are you sure u want to leave this WORKSHOP") ) { window.close() }}
+                  }
+                  role="button"
+                  cursor="pointer"
+                >
+                  <span>Switch Workshop</span>
+                </div> 
+                : null }
       </div>
     );
   }
