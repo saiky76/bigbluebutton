@@ -70,10 +70,10 @@ const intlMessages = defineMessages({
 });
 
 class Channels extends PureComponent {
-
   static checkIfDropdownIsVisible(contentOffSetTop, contentOffsetHeight) {
     return (contentOffSetTop + contentOffsetHeight) < window.innerHeight;
   }
+
   static sortById(a, b) {
     if (a.userId > b.userId) {
       return 1;
@@ -180,7 +180,7 @@ class Channels extends PureComponent {
     const { channelId, hideUsers } = this.state;
     const isBreakOutMeeting = meetingIsBreakout();
     const isModerator = currentUser.role === ROLE_MODERATOR;
-    const otherUsers = isModerator ? "Unassigned" : "Learning group";
+    const otherUsers = isModerator ? 'Unassigned' : 'Learning group';
 
     return (
 
@@ -196,9 +196,9 @@ class Channels extends PureComponent {
               // hideLabel
             />
             <div className={isBreakOutMeeting ? styles.breakoutChannel : styles.masterChannel}>
-              {isBreakOutMeeting ? 
-                (currentMeeting.meetingProp.name)
-                : "Master Channel"
+              {isBreakOutMeeting
+                ? (currentMeeting.meetingProp.name)
+                : 'Master Channel'
               }
             </div>
           </div>
@@ -220,10 +220,10 @@ class Channels extends PureComponent {
           ref={(ref) => { this.refScrollContainer = ref; }}
         >
           <div className={styles.channelList}>
-            
+
             {!isBreakOutMeeting && isModerator
               ? (
-                <div 
+                <div
                   className={styles.createBreakouts}
                   onClick={this.newCreateBreakouts}
                   role="button"
@@ -233,13 +233,13 @@ class Channels extends PureComponent {
                 </div>
               )
               : null }
-            
+
             {isBreakOutMeeting || !isThereUnassignedUsers ? null
               : (
                 <Fragment>
                   <div className={styles.contentWrapper}>
                     {this.renderChannelAvatar(otherUsers)}
-                  <span className={styles.unassigned}>{otherUsers}</span>
+                    <span className={styles.unassigned}>{otherUsers}</span>
                   </div>
                   <div className={styles.usersList}>
                     <UserParticipantsContainer
@@ -263,49 +263,55 @@ class Channels extends PureComponent {
             {/* {isMobileBrowser ? this.renderMobile() : this.renderDesktop()} */}
             {this.renderBreakoutRooms()}
 
-          {isBreakOutMeeting ? null :
-          <div>
-            <div className={styles.contentWrapper}>
-              {this.renderChannelAvatar("Moderator")}
-              <div className={styles.moderator}>Moderator(s)</div>
-            </div>
-            <div className={styles.allModerators}>
-              <UserParticipantsContainer
-                {...{
-                  compact,
-                  intl,
-                  currentUser,
-                  setEmojiStatus,
-                  isPublicChat,
-                  activeChats,
-                  roving,
-                  requestUserInformation,
-                  meetingIdentifier: Auth.meetingID,
-                  onlyModerators: true,
-                  getScrollContainerRef: this.getScrollContainerRef,
-                }}
-              />
-            </div>
-          </div>
+            {isBreakOutMeeting ? null
+              : (
+                <div>
+                  <div className={styles.contentWrapper}>
+                    {this.renderChannelAvatar('Moderator')}
+                    <div className={styles.moderator}>Moderator(s)</div>
+                  </div>
+                  <div className={styles.allModerators}>
+                    <UserParticipantsContainer
+                      {...{
+                        compact,
+                        intl,
+                        currentUser,
+                        setEmojiStatus,
+                        isPublicChat,
+                        activeChats,
+                        roving,
+                        requestUserInformation,
+                        meetingIdentifier: Auth.meetingID,
+                        onlyModerators: true,
+                        getScrollContainerRef: this.getScrollContainerRef,
+                      }}
+                    />
+                  </div>
+                </div>
+              )
           }
 
           </div>
         </div>
-  { isBreakOutMeeting && isMobileBrowser ?
-                <div 
-                  className={styles.createBreakouts}
-                  onClick={()=>{
-                    if( confirm("Are you sure u want to leave this WORKSHOP") ) { window.close() }}
+        { isBreakOutMeeting && isMobileBrowser
+          ? (
+            <div
+              className={styles.createBreakouts}
+              onClick={() => {
+                if (confirm('Are you sure u want to leave this WORKSHOP')) { window.close(); }
+              }
                   }
-                  role="button"
-                  cursor="pointer"
-                >
-                  <span>Switch Workshop</span>
-                </div> 
-                : null }
+              role="button"
+              cursor="pointer"
+            >
+              <span>Switch Workshop</span>
+            </div>
+          )
+          : null }
       </div>
     );
   }
+
   renderChannelAvatar(channelName) {
     const roomIcon = channelName.toLowerCase().slice(0, 2);
 
@@ -327,7 +333,7 @@ class Channels extends PureComponent {
       roving,
       requestUserInformation,
       isbreakoutRoomUser,
-      normalizeEmojiName,          
+      normalizeEmojiName,
       user,
       voiceUser,
       amIModerator,
@@ -336,55 +342,57 @@ class Channels extends PureComponent {
       breakoutRoomUser,
       requestJoinURL,
       isUserActiveInBreakoutroom,
-      activeChats
+      activeChats,
 
     } = this.props;
 
     const isBreakOutMeeting = meetingIsBreakout();
     return (
       breakoutRooms.map(breakout => (
-        
+
         <div>
 
-          {isBreakOutMeeting ? null :
-           <ChannelDropdown
-        {...{
-          breakout,   
-          getScrollContainerRef: this.getScrollContainerRef,
-          voiceUser,
-          amIModerator,
-          isMeteorConnected,
-          exitAudio,
-          isBreakOutMeeting, 
-          mountModal,
-          breakoutRoomUser,
-          requestJoinURL,
-          isUserActiveInBreakoutroom
-        }}
-      />
+          {isBreakOutMeeting ? null
+            : (
+              <ChannelDropdown
+                {...{
+                  breakout,
+                  getScrollContainerRef: this.getScrollContainerRef,
+                  voiceUser,
+                  amIModerator,
+                  isMeteorConnected,
+                  exitAudio,
+                  isBreakOutMeeting,
+                  mountModal,
+                  breakoutRoomUser,
+                  requestJoinURL,
+                  isUserActiveInBreakoutroom,
+                }}
+              />
+            )
         }
-  
 
-    <div className={styles.breakoutUsersList}>
-    <UserParticipantsContainer
-      {...{
-        compact,
-        intl,
-        currentUser,
-        setEmojiStatus,
-        roving,
-        requestUserInformation,
-        meetingIdentifier: breakout.breakoutId,
-        isbreakoutRoomUser,
-        getScrollContainerRef: this.getScrollContainerRef,
-        activeChats,
-      }}
-    />
-    </div>
-    </div>
-       
 
-  )));
+          <div className={styles.breakoutUsersList}>
+            <UserParticipantsContainer
+              {...{
+                compact,
+                intl,
+                currentUser,
+                setEmojiStatus,
+                roving,
+                requestUserInformation,
+                meetingIdentifier: breakout.breakoutId,
+                isbreakoutRoomUser,
+                getScrollContainerRef: this.getScrollContainerRef,
+                activeChats,
+              }}
+            />
+          </div>
+        </div>
+
+
+      )));
   }
 
   editBreakoutRoom(breakoutId, usersToRemove, usersToAdd) {
@@ -413,5 +421,5 @@ class Channels extends PureComponent {
     });
   }
 }
-//Channels.propTypes = PropTypes;
+// Channels.propTypes = PropTypes;
 export default withModalMounter(injectIntl(Channels));

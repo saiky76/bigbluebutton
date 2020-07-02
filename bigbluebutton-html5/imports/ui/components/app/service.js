@@ -11,16 +11,15 @@ const getFontSize = () => {
 const getBreakoutRooms = () => Breakouts.find().fetch();
 
 function canUserJoinAudio() {
-  const userid = localStorage.getItem("VOICE_USER_ID");
+  const userid = localStorage.getItem('VOICE_USER_ID');
   if (userid == null) {
     return true;
   }
-  else if (userid != Auth.userID) {
+  if (userid != Auth.userID) {
     return false;
   }
-  else {
-    return true;
-  }
+
+  return true;
 }
 
 function meetingIsBreakout() {
@@ -47,9 +46,8 @@ const validIOSVersion = () => {
 };
 
 function getParentMeetingId(breakoutId) {
-  const meeting = Breakouts.findOne({breakoutId: breakoutId}, 
-    { fields: {parentMeetingId: 1}}
-  )
+  const meeting = Breakouts.findOne({ breakoutId },
+    { fields: { parentMeetingId: 1 } });
 
   return meeting ? meeting.parentMeetingId : null;
 }
@@ -61,5 +59,5 @@ export {
   getBreakoutRooms,
   validIOSVersion,
   getParentMeetingId,
-  canUserJoinAudio
+  canUserJoinAudio,
 };

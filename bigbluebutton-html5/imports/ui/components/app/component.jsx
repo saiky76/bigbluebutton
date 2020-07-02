@@ -11,6 +11,8 @@ import ActivityCheckContainer from '/imports/ui/components/activity-check/contai
 import UserInfoContainer from '/imports/ui/components/user-info/container';
 import BreakoutRoomInvitation from '/imports/ui/components/channels/invitation/container';
 import Resizable from 're-resizable';
+import { Session } from 'meteor/session';
+import { is } from 'useragent';
 import ToastContainer from '../toast/container';
 import ModalContainer from '../modal/container';
 import NotificationsBarContainer from '../notifications-bar/container';
@@ -24,12 +26,10 @@ import MediaService from '/imports/ui/components/media/service';
 import ManyWebcamsNotifier from '/imports/ui/components/video-provider/many-users-notify/container';
 import { styles } from './styles';
 import ChatContainer from '/imports/ui/components/chat/container';
-import { Session } from 'meteor/session';
 
 // import Resizable from 're-resizable';
 import Button from '/imports/ui/components/button/component';
 import ActionsBarContainer from '../actions-bar/container';
-import { is } from 'useragent';
 
 const MOBILE_MEDIA = 'only screen and (max-width: 53em)';
 const APP_CONFIG = Meteor.settings.public.app;
@@ -115,8 +115,8 @@ const chat_min_width = (isMobileBrowser && isLandScapeView) ? 0.72 : 0.58;
 const chat_max_width = (isMobileBrowser && isLandScapeView) ? 0.73 : 0.8;
 
 // Variables for resizing chat.
-  const CHAT_MIN_WIDTH =  window.innerWidth * chat_min_width;
-  const CHAT_MAX_WIDTH =  window.innerWidth * chat_max_width;
+const CHAT_MIN_WIDTH = window.innerWidth * chat_min_width;
+const CHAT_MAX_WIDTH = window.innerWidth * chat_max_width;
 
 class App extends Component {
   constructor() {
@@ -321,7 +321,7 @@ class App extends Component {
         aria-label={intl.formatMessage(intlMessages.actionsBarLabel)}
         aria-hidden={this.shouldAriaHide()}
       >
-        <ActionsBarContainer toggleChatLayout={isMobileBrowser ? !toggleChatLayout : toggleChatLayout} talkers={talkers} voiceUsers={voiceUsers}/>
+        <ActionsBarContainer toggleChatLayout={isMobileBrowser ? !toggleChatLayout : toggleChatLayout} talkers={talkers} voiceUsers={voiceUsers} />
       </section>
     );
   }
@@ -353,18 +353,18 @@ class App extends Component {
     const { isThereCurrentPresentation, isSharingVideo, inAudio } = this.props;
     const { chatWidth } = this.state;
     if (chatWidth == CHAT_MIN_WIDTH) {
-      if (!isThereCurrentPresentation || isSharingVideo || (isThereCurrentPresentation && !inAudio) ){
+      if (!isThereCurrentPresentation || isSharingVideo || (isThereCurrentPresentation && !inAudio)) {
         this.setState({
-          chatWidth:CHAT_MAX_WIDTH,
-          toggleChatLayout:true
-        })
+          chatWidth: CHAT_MAX_WIDTH,
+          toggleChatLayout: true,
+        });
       }
     }
-    if(chatWidth == CHAT_MAX_WIDTH){
+    if (chatWidth == CHAT_MAX_WIDTH) {
       this.setState({
-        chatWidth:CHAT_MIN_WIDTH,
-        toggleChatLayout:false
-      })
+        chatWidth: CHAT_MIN_WIDTH,
+        toggleChatLayout: false,
+      });
     }
   }
 
@@ -379,11 +379,12 @@ class App extends Component {
   }
 
   renderChatResizable() {
-    const { isThereCurrentPresentation, isVideoBroadcasting, isSharingVideo, isRTL, inAudio } = this.props;
+    const {
+      isThereCurrentPresentation, isVideoBroadcasting, isSharingVideo, isRTL, inAudio,
+    } = this.props;
     const { chatWidth } = this.state;
 
-    if(!inAudio) {}
-    else if((isThereCurrentPresentation || isVideoBroadcasting || isSharingVideo) && chatWidth == CHAT_MAX_WIDTH) {
+    if (!inAudio) {} else if ((isThereCurrentPresentation || isVideoBroadcasting || isSharingVideo) && chatWidth == CHAT_MAX_WIDTH) {
       this.toggleChatPanel();
     }
 
@@ -399,32 +400,34 @@ class App extends Component {
     };
 
     return (
-    <div className={styles.chatWrapper}>
+      <div className={styles.chatWrapper}>
         <Resizable
           minWidth={CHAT_MIN_WIDTH}
           maxWidth={CHAT_MAX_WIDTH}
-         enable={resizableEnableOptions}
+          enable={resizableEnableOptions}
           size={{ width: chatWidth }}
           onResize={dispatchResizeEvent}
           className={styles.chatChannel}
         >
           {this.renderChat()}
         </Resizable>
-      {/* <div> */}
+        {/* <div> */}
         <div className={styles.slide}>
-      { (isMobileBrowser && isLandScapeView && openPanel == 'chat') ? null :
-          <Button
-            hideLabel
-            onClick={() => this.toggleChatPanel()}
-            size="sm"
-            icon={(chatWidth !== CHAT_MAX_WIDTH) ? 'icomoon-Collapse-Call-Panel' : 'icomoon-Expand-Call-Panel'}
-            className={styles.hide}
-            color="default"
-            label="toggle"
-          />
+          { (isMobileBrowser && isLandScapeView && openPanel == 'chat') ? null
+            : (
+              <Button
+                hideLabel
+                onClick={() => this.toggleChatPanel()}
+                size="sm"
+                icon={(chatWidth !== CHAT_MAX_WIDTH) ? 'icomoon-Collapse-Call-Panel' : 'icomoon-Expand-Call-Panel'}
+                className={styles.hide}
+                color="default"
+                label="toggle"
+              />
+            )
         }
         </div>
-      {/* </div> */}
+        {/* </div> */}
       </div>
     );
   }
@@ -444,63 +447,66 @@ class App extends Component {
           {this.renderPanel()}
           <div className={styles.container}>
             { isMobileBrowser
-             ?  Session.get('openPanel') == 'chat'   ?  this.renderNavBar()  : null
-            : this.renderNavBar()
+              ? Session.get('openPanel') == 'chat' ? this.renderNavBar() : null
+              : this.renderNavBar()
             }
             <div className={styles.panelContainer}>
               <div className={styles.presentationPanel}>
-               { isMobileBrowser && Session.get('openPanel') == '' ? 
-               <div className={styles.togglechat} > 
-               <Button
-                    onClick={()=>{
-                      Session.set('idChatOpen', '');
-                      Session.set('openPanel', 'chat');
-                    } }
-                    hideLabel
-                    label="toggle chat"
-                    color="default"
+                { isMobileBrowser && Session.get('openPanel') == ''
+                  ? (
+                    <div className={styles.togglechat}>
+                      <Button
+                        onClick={() => {
+                          Session.set('idChatOpen', '');
+                          Session.set('openPanel', 'chat');
+                        }}
+                        hideLabel
+                        label="toggle chat"
+                        color="default"
                    // ghost={!inAudio}
-                    icon="icomoon-Chat"
-                    size='lg'
-                    circle
-                  /> 
-                  </div>
-                  :  null
+                        icon="icomoon-Chat"
+                        size="lg"
+                        circle
+                      />
+                    </div>
+                  )
+                  : null
                   }
-              { (isMobileBrowser && isLandScapeView && openPanel == 'chat') 
-                ? null :
-                  (inAudio) ?
-                  <div className={(isMobileBrowser && isLandScapeView) ? styles.landscapePanel : styles.verticalPanel}>
-                    {this.renderMedia()}
-                    {this.renderActionsBar()}
-                  </div>
-                  : 
-                  <div className={styles.noAudio}>
-                    <Button
-                      className={styles.button}
-                      onClick={handleJoinAudio}
-                      hideLabel
-                      label={intl.formatMessage(intlMessages.joinAudio)}
-                      color="default"
-                      ghost={!inAudio}
-                      icon="icomoon-Join-Call"
-                      size='lg'
-                      circle
-                    />
-                  </div>
+                { (isMobileBrowser && isLandScapeView && openPanel == 'chat')
+                  ? null
+                  : (inAudio)
+                    ? (
+                      <div className={(isMobileBrowser && isLandScapeView) ? styles.landscapePanel : styles.verticalPanel}>
+                        {this.renderMedia()}
+                        {this.renderActionsBar()}
+                      </div>
+                    )
+                    : (
+                      <div className={styles.noAudio}>
+                        <Button
+                          className={styles.button}
+                          onClick={handleJoinAudio}
+                          hideLabel
+                          label={intl.formatMessage(intlMessages.joinAudio)}
+                          color="default"
+                          ghost={!inAudio}
+                          icon="icomoon-Join-Call"
+                          size="lg"
+                          circle
+                        />
+                      </div>
+                    )
               }
               </div>
-              { 
-              (openPanel !== '' && !isMobileBrowser ) ? (
-                 (enableResize) ?  this.renderChatResizable() :  null
-               
-              ) :
+              {
+              (openPanel !== '' && !isMobileBrowser) ? (
+                (enableResize) ? this.renderChatResizable() : null
 
-             ( (openPanel == 'chat')
-               ?
-               (enableResize) ? this.renderChatResizable() : this.renderChat()
-              :
-               null)
+              )
+
+                : ((openPanel == 'chat')
+                  ? (enableResize) ? this.renderChatResizable() : this.renderChat()
+                  : null)
                }
             </div>
           </div>

@@ -7,9 +7,10 @@ import UserListService from '/imports/ui/components/user-list/service';
 import Auth from '/imports/ui/services/auth';
 
 export default withTracker(() => ({
-    createBreakoutRoom: ActionsBarService.createBreakoutRoom,
-    users: ChannelsService.getUnassignedUsersInMasterChannel(
-            UserListService.getUsersByMeetingWithoutMe(Auth.meetingID)),
-    meetingName: ActionsBarService.meetingName(),
-    breakoutrooms:ChannelsService.findBreakouts(),
+  createBreakoutRoom: ActionsBarService.createBreakoutRoom,
+  users: ChannelsService.getUnassignedUsersInMasterChannel(
+    UserListService.getUsersByMeetingWithoutMe(Auth.meetingID),
+  ),
+  meetingName: ActionsBarService.meetingName(),
+  breakoutrooms: ChannelsService.findBreakouts(),
 }))(Assign);

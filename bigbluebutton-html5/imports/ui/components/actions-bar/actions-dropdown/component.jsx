@@ -183,11 +183,12 @@ class ActionsDropdown extends PureComponent {
   }
 
   handlePresentationClick() {
-    const { mountModal, handleUnshareScreen, isVideoBroadcasting, stopExternalVideoShare, isSharingVideo } = this.props;
-    if(isVideoBroadcasting){
+    const {
+      mountModal, handleUnshareScreen, isVideoBroadcasting, stopExternalVideoShare, isSharingVideo,
+    } = this.props;
+    if (isVideoBroadcasting) {
       handleUnshareScreen();
-    }
-    else if (isSharingVideo){
+    } else if (isSharingVideo) {
       stopExternalVideoShare();
     }
     mountModal(<PresentationUploaderContainer />);
@@ -206,30 +207,32 @@ class ActionsDropdown extends PureComponent {
     return (
 
       (amIModerator
-        ? (!amIPresenter ?
-          <Button
-            hideLabel
-            className={styles.button}
-            data-test="uploadPresentation"
-            icon="icomoon-Presentation"
-            size="lg"
-            circle
-            label={amIPresenter ?
-              intl.formatMessage(intlMessages.presentationLabel)
-              : intl.formatMessage(intlMessages.takePresenter)}
-            onClick={amIPresenter ? this.handlePresentationClick : handleTakePresenter}
-          />
-          :
-          this.presentationoptions()
+        ? (!amIPresenter
+          ? (
+            <Button
+              hideLabel
+              className={styles.button}
+              data-test="uploadPresentation"
+              icon="icomoon-Presentation"
+              size="lg"
+              circle
+              label={amIPresenter
+                ? intl.formatMessage(intlMessages.presentationLabel)
+                : intl.formatMessage(intlMessages.takePresenter)}
+              onClick={amIPresenter ? this.handlePresentationClick : handleTakePresenter}
+            />
+          )
+          : this.presentationoptions()
         )
-        : ( amIPresenter ?
-          this.presentationoptions()
+        : (amIPresenter
+          ? this.presentationoptions()
           : null
         )
       )
     );
   }
-  presentationoptions(){
+
+  presentationoptions() {
     const {
       intl,
       amIPresenter,
@@ -246,28 +249,28 @@ class ActionsDropdown extends PureComponent {
       || !isMeteorConnected) {
       return null;
     }
-    return(
-        <Dropdown ref={(ref) => { this._dropdown = ref; }}>
-          <DropdownTrigger tabIndex={0} accessKey={OPEN_ACTIONS_AK}>
-            <Button
-              
-              hideLabel
-              aria-label={intl.formatMessage(intlMessages.presentationLabel)}
-              className={styles.button}
-              label= {intl.formatMessage(intlMessages.presentationLabel)}
-              icon="icomoon-Presentation"
-              size="lg"
-              circle
-              onClick={() => null}
-            />
-          </DropdownTrigger>
-          <DropdownContent placement="bottom right">
-            <DropdownList>
-              {availableActions}
-            </DropdownList>
-          </DropdownContent>
-        </Dropdown>
-    )
+    return (
+      <Dropdown ref={(ref) => { this._dropdown = ref; }}>
+        <DropdownTrigger tabIndex={0} accessKey={OPEN_ACTIONS_AK}>
+          <Button
+
+            hideLabel
+            aria-label={intl.formatMessage(intlMessages.presentationLabel)}
+            className={styles.button}
+            label={intl.formatMessage(intlMessages.presentationLabel)}
+            icon="icomoon-Presentation"
+            size="lg"
+            circle
+            onClick={() => null}
+          />
+        </DropdownTrigger>
+        <DropdownContent placement="bottom right">
+          <DropdownList>
+            {availableActions}
+          </DropdownList>
+        </DropdownContent>
+      </Dropdown>
+    );
   }
 }
 

@@ -34,6 +34,7 @@ import MediaContainer from '../media/container';
 import VoiceUsers from '/imports/api/voice-users';
 import VoiceService from '/imports/ui/components/nav-bar/talking-indicator/service';
 import PresenterService from '/imports/ui/components/actions-bar/service';
+
 const propTypes = {
   navbar: PropTypes.node,
   actionsbar: PropTypes.node,
@@ -143,15 +144,15 @@ export default injectIntl(withModalMounter(withTracker(({ intl, baseControls, mo
       } = usersTalking[i];
 
 
-     if( (PresenterService.getPresenter() && PresenterService.getPresenter().userId != intId) || !PresenterService.getPresenter()) {  
-      talkers[`${intId}`] = {
-        color,
-        talking,
-        voiceUserId,
-        muted,
-        callerName,
-        intId,
-      };
+      if ((PresenterService.getPresenter() && PresenterService.getPresenter().userId != intId) || !PresenterService.getPresenter()) {
+        talkers[`${intId}`] = {
+          color,
+          talking,
+          voiceUserId,
+          muted,
+          callerName,
+          intId,
+        };
       }
     }
   }
