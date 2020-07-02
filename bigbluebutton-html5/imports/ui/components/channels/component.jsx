@@ -293,21 +293,18 @@ class Channels extends PureComponent {
 
           </div>
         </div>
-        { isBreakOutMeeting && isMobileBrowser
-          ? (
-            <div
-              className={styles.createBreakouts}
-              onClick={() => {
-                if (confirm('Are you sure u want to leave this WORKSHOP')) { window.close(); }
-              }
+  { isBreakOutMeeting && isMobileBrowser ?
+                <div 
+                  className={styles.createBreakouts}
+                  onClick={()=>{
+                    if( confirm("Are you sure u want to leave this WORKSHOP") ) { window.close() }}
                   }
-              role="button"
-              cursor="pointer"
-            >
-              <span>Switch Workshop</span>
-            </div>
-          )
-          : null }
+                  role="button"
+                  cursor="pointer"
+                >
+                  <span>Switch Workshop</span>
+                </div> 
+                : null }
       </div>
     );
   }
@@ -342,7 +339,7 @@ class Channels extends PureComponent {
       breakoutRoomUser,
       requestJoinURL,
       isUserActiveInBreakoutroom,
-      activeChats,
+      activeChats
 
     } = this.props;
 
@@ -352,47 +349,45 @@ class Channels extends PureComponent {
 
         <div>
 
-          {isBreakOutMeeting ? null
-            : (
-              <ChannelDropdown
-                {...{
-                  breakout,
-                  getScrollContainerRef: this.getScrollContainerRef,
-                  voiceUser,
-                  amIModerator,
-                  isMeteorConnected,
-                  exitAudio,
-                  isBreakOutMeeting,
-                  mountModal,
-                  breakoutRoomUser,
-                  requestJoinURL,
-                  isUserActiveInBreakoutroom,
-                }}
-              />
-            )
+          {isBreakOutMeeting ? null :
+           <ChannelDropdown
+        {...{
+          breakout,   
+          getScrollContainerRef:this.getScrollContainerRef,
+          voiceUser,
+          amIModerator,
+          isMeteorConnected,
+          exitAudio,
+          isBreakOutMeeting, 
+          mountModal,
+          breakoutRoomUser,
+          requestJoinURL,
+          isUserActiveInBreakoutroom
+        }}
+      />
         }
+  
 
+    <div className={styles.breakoutUsersList}>
+    <UserParticipantsContainer
+      {...{
+        compact,
+        intl,
+        currentUser,
+        setEmojiStatus,
+        roving,
+        requestUserInformation,
+        meetingIdentifier: breakout.breakoutId,
+        isbreakoutRoomUser,
+        getScrollContainerRef: this.getScrollContainerRef,
+        activeChats,
+      }}
+    />
+    </div>
+    </div>
+       
 
-          <div className={styles.breakoutUsersList}>
-            <UserParticipantsContainer
-              {...{
-                compact,
-                intl,
-                currentUser,
-                setEmojiStatus,
-                roving,
-                requestUserInformation,
-                meetingIdentifier: breakout.breakoutId,
-                isbreakoutRoomUser,
-                getScrollContainerRef: this.getScrollContainerRef,
-                activeChats,
-              }}
-            />
-          </div>
-        </div>
-
-
-      )));
+  )));
   }
 
   editBreakoutRoom(breakoutId, usersToRemove, usersToAdd) {

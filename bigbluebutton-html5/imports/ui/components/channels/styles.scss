@@ -176,6 +176,22 @@
     }
 }
 
+.breakoutChannel {
+  @extend %no-margin;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+    font-style: normal;
+    color: #ffc700;
+    letter-spacing: 0.025em;
+    font-weight: 800;
+    line-height: 1.313rem;
+    padding-left: 1.5rem;
+    font-size: var(--font-size-14px);
+    @include mq($small-only) {
+      color: #0F4C81;
+    }
+}
+
 .master {
   padding: 0 !important;
   i {

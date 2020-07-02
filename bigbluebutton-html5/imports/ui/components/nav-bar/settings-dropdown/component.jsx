@@ -110,7 +110,7 @@ const defaultProps = {
 };
 
 const ALLOW_FULLSCREEN = Meteor.settings.public.app.allowFullscreen;
-const AUDIO_TEST_NUM_KEY = 'EchoTestNumber';
+const AUDIO_TEST_NUM_KEY = 'EchoTestNumber'; 
 class SettingsDropdown extends PureComponent {
   constructor(props) {
     super(props);

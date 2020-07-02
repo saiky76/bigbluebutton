@@ -353,11 +353,11 @@ class App extends Component {
     const { isThereCurrentPresentation, isSharingVideo, inAudio } = this.props;
     const { chatWidth } = this.state;
     if (chatWidth == CHAT_MIN_WIDTH) {
-      if (!isThereCurrentPresentation || isSharingVideo || (isThereCurrentPresentation && !inAudio)) {
+      if (!isThereCurrentPresentation || isSharingVideo || (isThereCurrentPresentation && !inAudio) ){
         this.setState({
-          chatWidth: CHAT_MAX_WIDTH,
-          toggleChatLayout: true,
-        });
+          chatWidth:CHAT_MAX_WIDTH,
+          toggleChatLayout:true
+        })
       }
     }
     if (chatWidth == CHAT_MAX_WIDTH) {
@@ -379,12 +379,11 @@ class App extends Component {
   }
 
   renderChatResizable() {
-    const {
-      isThereCurrentPresentation, isVideoBroadcasting, isSharingVideo, isRTL, inAudio,
-    } = this.props;
+    const { isThereCurrentPresentation, isVideoBroadcasting, isSharingVideo, isRTL, inAudio } = this.props;
     const { chatWidth } = this.state;
 
-    if (!inAudio) {} else if ((isThereCurrentPresentation || isVideoBroadcasting || isSharingVideo) && chatWidth == CHAT_MAX_WIDTH) {
+    if(!inAudio) {}
+    else if((isThereCurrentPresentation || isVideoBroadcasting || isSharingVideo) && chatWidth == CHAT_MAX_WIDTH) {
       this.toggleChatPanel();
     }
 

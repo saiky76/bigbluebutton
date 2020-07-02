@@ -4,6 +4,7 @@ import { Session } from 'meteor/session';
 import Button from '/imports/ui/components/button/component';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { styles } from './styles';
+import { log } from 'winston';
 
 const intlMessages = defineMessages({
   confirmLabel: {
