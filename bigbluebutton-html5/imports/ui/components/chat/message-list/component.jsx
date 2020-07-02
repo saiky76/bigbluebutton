@@ -214,7 +214,7 @@ class MessageList extends Component {
 
   render() {
     const {
-      messages, intl, id, lastReadMessageTime, handleReadMessage, currentUserId, isBreakoutMeeting, getBreakoutNameByUserId, currentUser
+      messages, intl, id, lastReadMessageTime, handleReadMessage, currentUserId, isBreakoutMeeting, getBreakoutNameByUserId, currentUser, chatId
     } = this.props;
     let array = [];
 for (let i = 0; i < messages.length-1; i++) {
@@ -249,7 +249,9 @@ for (let i = 0; i < messages.length-1; i++) {
           aria-relevant="additions"
           aria-label={isEmpty ? intl.formatMessage(intlMessages.emptyLogLabel) : ''}
         >
-         {!isEmpty ? <FormattedDate value={new Date(messages[0].time)}  day="2-digit"month="long" year="numeric"/> : null}
+         { (chatId != "public" && !isEmpty) || ( chatId == "public" && messages.length > 2 ) ? 
+         <FormattedDate value={new Date(messages[0].time)}  day="2-digit"month="long" year="numeric"/> 
+         : null}
           {messages.map(message => (
             <MessageListItem
               handleReadMessage={handleReadMessage}
