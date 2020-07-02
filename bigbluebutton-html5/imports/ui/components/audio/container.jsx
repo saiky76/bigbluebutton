@@ -111,7 +111,7 @@ export default lockContextContainer(withModalMounter(injectIntl(withTracker(({ m
   let audioTestPassed = sessionStorage.getItem(AUDIO_TEST_NUM_KEY);
   const { userWebcam, userMic } = userLocks;
   const openAudioModal = () => new Promise((resolve) => {
-    mountModal(audioTestPassed ? null : <AudioModalContainer resolve={resolve} />);
+    mountModal( audioTestPassed ? null : <AudioModalContainer resolve={resolve} />);
   });
   const voicsUserID = localStorage.getItem('VOICE_USER_ID');
   if (voicsUserID == Auth.userID) localStorage.removeItem('VOICE_USER_ID');

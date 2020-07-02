@@ -180,7 +180,7 @@ class Channels extends PureComponent {
     const { channelId, hideUsers } = this.state;
     const isBreakOutMeeting = meetingIsBreakout();
     const isModerator = currentUser.role === ROLE_MODERATOR;
-    const otherUsers = isModerator ? 'Unassigned' : 'Learning group';
+    const otherUsers = isModerator ? "Unassigned" : "Learning group";
 
     return (
 
@@ -196,9 +196,9 @@ class Channels extends PureComponent {
               // hideLabel
             />
             <div className={isBreakOutMeeting ? styles.breakoutChannel : styles.masterChannel}>
-              {isBreakOutMeeting
-                ? (currentMeeting.meetingProp.name)
-                : 'Master Channel'
+              {isBreakOutMeeting ? 
+                (currentMeeting.meetingProp.name)
+                : "Master Channel"
               }
             </div>
           </div>
@@ -262,33 +262,30 @@ class Channels extends PureComponent {
             }
             {/* {isMobileBrowser ? this.renderMobile() : this.renderDesktop()} */}
             {this.renderBreakoutRooms()}
-
-            {isBreakOutMeeting ? null
-              : (
-                <div>
-                  <div className={styles.contentWrapper}>
-                    {this.renderChannelAvatar('Moderator')}
-                    <div className={styles.moderator}>Moderator(s)</div>
-                  </div>
-                  <div className={styles.allModerators}>
-                    <UserParticipantsContainer
-                      {...{
-                        compact,
-                        intl,
-                        currentUser,
-                        setEmojiStatus,
-                        isPublicChat,
-                        activeChats,
-                        roving,
-                        requestUserInformation,
-                        meetingIdentifier: Auth.meetingID,
-                        onlyModerators: true,
-                        getScrollContainerRef: this.getScrollContainerRef,
-                      }}
-                    />
-                  </div>
-                </div>
-              )
+          {isBreakOutMeeting ? null :
+          <div>
+            <div className={styles.contentWrapper}>
+              {this.renderChannelAvatar("Moderator")}
+              <div className={styles.moderator}>Moderator(s)</div>
+            </div>
+            <div className={styles.allModerators}>
+              <UserParticipantsContainer
+                {...{
+                  compact,
+                  intl,
+                  currentUser,
+                  setEmojiStatus,
+                  isPublicChat,
+                  activeChats,
+                  roving,
+                  requestUserInformation,
+                  meetingIdentifier: Auth.meetingID,
+                  onlyModerators: true,
+                  getScrollContainerRef: this.getScrollContainerRef,
+                }}
+              />
+            </div>
+          </div>
           }
 
           </div>
