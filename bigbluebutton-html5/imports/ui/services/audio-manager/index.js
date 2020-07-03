@@ -263,6 +263,7 @@ class AudioManager {
   }
 
   exitAudio() {
+    localStorage.removeItem("VOICE_USER_ID");
     if (!this.isConnected) return Promise.resolve();
 
     const bridge = (this.useKurento && this.isListenOnly) ? this.listenOnlyBridge : this.bridge;
@@ -322,6 +323,7 @@ class AudioManager {
     this.autoplayBlocked = false;
     this.failedMediaElements = [];
 
+    localStorage.removeItem("VOICE_USER_ID");
     if (this.inputStream) {
       window.defaultInputStream.forEach(track => track.stop());
       this.inputStream.getTracks().forEach(track => track.stop());

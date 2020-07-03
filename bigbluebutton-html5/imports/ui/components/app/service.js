@@ -22,6 +22,19 @@ function isMeetingBreakout(meetingIdentifier) {
   return (meeting && meeting.meetingProp.isBreakout);
 }
 
+function canUserJoinAudio() {
+  const userid = localStorage.getItem("VOICE_USER_ID");
+  if (userid == null) {
+    return true;
+  }
+  else if (userid != Auth.userID) {
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
 const validIOSVersion = () => {
   const SUPPORTED_OS_VERSION = 12.2;
   const iosMatch = navigator.userAgent.match(/OS (\d+)_(\d+)/);
@@ -38,7 +51,7 @@ function getParentMeetingId(breakoutId) {
     { fields: {parentMeetingId: 1}}
   )
 
-  return meeting.parentMeetingId;
+  return meeting ? meeting.parentMeetingId : null;
 }
 
 export {
@@ -48,4 +61,5 @@ export {
   getBreakoutRooms,
   validIOSVersion,
   getParentMeetingId,
+  canUserJoinAudio
 };
