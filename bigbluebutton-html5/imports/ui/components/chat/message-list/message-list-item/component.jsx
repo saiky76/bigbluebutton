@@ -105,7 +105,7 @@ class MessageListItem extends Component {
       senderEmail,
       senderGroup,
       currentUser,
-      array,
+      DateChangeList,
     } = this.props;
 
     const dateTime = new Date(time);
@@ -131,7 +131,7 @@ class MessageListItem extends Component {
     return (
       <div>
         {' '}
-       { array.find(id => id == messages[0].id) ? <FormattedDate value={dateTime}  day="2-digit"month="long" year="numeric"/> : null }
+       { DateChangeList.find(id => id == messages[0].id) ? <FormattedDate value={dateTime}  day="2-digit"month="long" year="numeric"/> : null }
         {(senderEmail !== currentUser.email) ? (
           <div className={styles.item}>
             <div className={styles.wrapperleft} ref={(ref) => { this.item = ref; }}>

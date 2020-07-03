@@ -216,20 +216,20 @@ class MessageList extends Component {
     const {
       messages, intl, id, lastReadMessageTime, handleReadMessage, currentUserId, isBreakoutMeeting, getBreakoutNameByUserId, currentUser, chatId
     } = this.props;
-    let array = [];
+    let DateChangeList = [];
 for (let i = 0; i < messages.length-1; i++) {
   let j=i+1;
-   let a =new Date(messages[i].time).toLocaleDateString(undefined, {
+   let presentMsgDate = new Date(messages[i].time).toLocaleDateString(undefined, {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
      })
-   let b =new Date(messages[j].time).toLocaleDateString(undefined, {
+   let nextMsgDate = new Date(messages[j].time).toLocaleDateString(undefined, {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
      })
- if (a!=b){ array.push(messages[j].content[0].id) } 
+ if ( presentMsgDate != nextMsgDate ) { DateChangeList.push(messages[j].content[0].id) } 
   
 }
     const {
@@ -267,7 +267,7 @@ for (let i = 0; i < messages.length-1; i++) {
               lastReadMessageTime={lastReadMessageTime}
               scrollArea={scrollArea}
               isBreakoutMeeting={isBreakoutMeeting}
-              array={array}
+              DateChangeList={DateChangeList}
             />
           ))}
         </div>
