@@ -440,7 +440,7 @@ class AudioModal extends Component {
       return (
         <div className={styles.connecting} role="alert">
           <span>
-            {!isEchoTest && audioTestPassed
+            {!isEchoTest || audioTestPassed
               ? intl.formatMessage(intlMessages.connecting)
               : intl.formatMessage(intlMessages.connectingEchoTest)
             }

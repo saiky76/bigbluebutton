@@ -8,6 +8,7 @@ import logger from '/imports/startup/client/logger';
 import ArcPlayer from './custom-players/arc-player';
 
 import { styles } from './styles';
+import Button from '/imports/ui/components/button/component';
 
 const intlMessages = defineMessages({
   autoPlayWarning: {
@@ -303,7 +304,7 @@ class VideoPlayer extends Component {
   }
 
   render() {
-    const { videoUrl, intl } = this.props;
+    const { videoUrl, intl, isPresenter, stopExternalVideoShare } = this.props;
     const {
       playing, playbackRate, mutedByEchoTest, autoPlayBlocked,
     } = this.state;
@@ -334,6 +335,14 @@ class VideoPlayer extends Component {
           onPause={this.handleOnPause}
           ref={(ref) => { this.player = ref; }}
         />
+        { isPresenter ?
+        <Button 
+          onClick={stopExternalVideoShare}
+          className={styles.stopPresentation}
+          label="stop presentation"
+        />
+        : null
+      }
       </div>
     );
   }

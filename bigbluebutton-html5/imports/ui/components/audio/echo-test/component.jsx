@@ -4,7 +4,6 @@ import { Session } from 'meteor/session';
 import Button from '/imports/ui/components/button/component';
 import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import { styles } from './styles';
-import { log } from 'winston';
 
 const intlMessages = defineMessages({
   confirmLabel: {
@@ -30,7 +29,7 @@ const propTypes = {
   handleNo: PropTypes.func.isRequired,
   intl: intlShape.isRequired,
 };
-const AUDIO_TEST_NUM_KEY = 'EchoTestNumber';
+const AUDIO_TEST_PASSED_KEY = 'EchoTestNumber';
 class EchoTest extends Component {
   constructor(props) {
     super(props);
@@ -55,8 +54,7 @@ class EchoTest extends Component {
     } = this.props;
     const disableYesButtonClicked = callback => () => {
       this.setState({ disabled: true }, callback);
-      sessionStorage.setItem(AUDIO_TEST_NUM_KEY, true);
-      return audioTestPassed;
+      sessionStorage.setItem(AUDIO_TEST_PASSED_KEY, true);
     };
     return (
       <span className={styles.echoTest}>
