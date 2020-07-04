@@ -106,8 +106,8 @@ const messages = {
 
 export default lockContextContainer(withModalMounter(injectIntl(withTracker(({ mountModal, intl, userLocks }) => {
   const autoJoin = getFromUserSettings('bbb_auto_join_audio', APP_CONFIG.autoJoin);
-  const AUDIO_TEST_NUM_KEY = 'EchoTestNumber';
-  let audioTestPassed = sessionStorage.getItem(AUDIO_TEST_NUM_KEY);
+  const AUDIO_TEST_PASSED_KEY = 'EchoTestNumber';
+  let audioTestPassed = sessionStorage.getItem(AUDIO_TEST_PASSED_KEY);
   const { userWebcam, userMic } = userLocks;
   const openAudioModal = () => new Promise((resolve) => {
     mountModal( audioTestPassed ? null : <AudioModalContainer resolve={resolve} />);

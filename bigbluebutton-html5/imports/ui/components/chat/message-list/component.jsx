@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { defineMessages, injectIntl } from 'react-intl';
+import { defineMessages, injectIntl,FormattedDate } from 'react-intl';
 import _ from 'lodash';
 import fastdom from 'fastdom';
 import Button from '/imports/ui/components/button/component';
@@ -214,9 +214,24 @@ class MessageList extends Component {
 
   render() {
     const {
-      messages, intl, id, lastReadMessageTime, handleReadMessage, currentUserId, isBreakoutMeeting, getBreakoutNameByUserId, currentUser
+      messages, intl, id, lastReadMessageTime, handleReadMessage, currentUserId, isBreakoutMeeting, getBreakoutNameByUserId, currentUser, chatId
     } = this.props;
-
+    let DateChangeList = [];
+for (let i = 0; i < messages.length-1; i++) {
+  let j=i+1;
+   let presentMsgDate = new Date(messages[i].time).toLocaleDateString(undefined, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+     })
+   let nextMsgDate = new Date(messages[j].time).toLocaleDateString(undefined, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+     })
+ if ( presentMsgDate != nextMsgDate ) { DateChangeList.push(messages[j].content[0].id) } 
+  
+}
     const {
       scrollArea,
     } = this.state;
@@ -234,6 +249,9 @@ class MessageList extends Component {
           aria-relevant="additions"
           aria-label={isEmpty ? intl.formatMessage(intlMessages.emptyLogLabel) : ''}
         >
+         { (chatId != "public" && !isEmpty) || ( chatId == "public" && messages.length > 2 ) ? 
+         <FormattedDate value={new Date(messages[0].time)}  day="2-digit"month="long" year="numeric"/> 
+         : null}
           {messages.map(message => (
             <MessageListItem
               handleReadMessage={handleReadMessage}
@@ -249,6 +267,7 @@ class MessageList extends Component {
               lastReadMessageTime={lastReadMessageTime}
               scrollArea={scrollArea}
               isBreakoutMeeting={isBreakoutMeeting}
+              DateChangeList={DateChangeList}
             />
           ))}
         </div>

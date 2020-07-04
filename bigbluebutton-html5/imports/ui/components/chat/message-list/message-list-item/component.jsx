@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { FormattedTime, defineMessages, injectIntl } from 'react-intl';
+import { FormattedTime, defineMessages, injectIntl, FormattedDate } from 'react-intl';
 import _ from 'lodash';
 import Auth from '/imports/ui/services/auth';
 import UserAvatar from '/imports/ui/components/user-avatar/component';
@@ -104,7 +104,8 @@ class MessageListItem extends Component {
       isBreakoutMeeting,
       senderEmail,
       senderGroup,
-      currentUser
+      currentUser,
+      DateChangeList,
     } = this.props;
 
     const dateTime = new Date(time);
@@ -130,6 +131,7 @@ class MessageListItem extends Component {
     return (
       <div>
         {' '}
+       { DateChangeList.find(id => id == messages[0].id) ? <FormattedDate value={dateTime}  day="2-digit"month="long" year="numeric"/> : null }
         {(senderEmail !== currentUser.email) ? (
           <div className={styles.item}>
             <div className={styles.wrapperleft} ref={(ref) => { this.item = ref; }}>

@@ -110,7 +110,7 @@ const defaultProps = {
 };
 
 const ALLOW_FULLSCREEN = Meteor.settings.public.app.allowFullscreen;
-const AUDIO_TEST_NUM_KEY = 'EchoTestNumber'; 
+const AUDIO_TEST_PASSED_KEY = 'EchoTestNumber'; 
 class SettingsDropdown extends PureComponent {
   constructor(props) {
     super(props);
@@ -190,7 +190,7 @@ class SettingsDropdown extends PureComponent {
 
   leaveSession() {
     document.dispatchEvent(new Event('exitVideo'));
-    sessionStorage.removeItem(AUDIO_TEST_NUM_KEY);
+    sessionStorage.removeItem(AUDIO_TEST_PASSED_KEY);
     makeCall('userLeftMeeting');
     // we don't check askForFeedbackOnLogout here,
     // it is checked in meeting-ended component
