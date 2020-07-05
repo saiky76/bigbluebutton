@@ -250,7 +250,7 @@ for (let i = 0; i < messages.length-1; i++) {
           aria-label={isEmpty ? intl.formatMessage(intlMessages.emptyLogLabel) : ''}
         >
          { (chatId != "public" && !isEmpty) || ( chatId == "public" && messages.length > 2 ) ? 
-         <FormattedDate value={new Date(messages[0].time)}  day="2-digit"month="long" year="numeric"/> 
+        <div className={styles.date}> <FormattedDate value={new Date(messages[0].time)}  day="2-digit"month="long" year="numeric" /> </div>
          : null}
           {messages.map(message => (
             <MessageListItem
