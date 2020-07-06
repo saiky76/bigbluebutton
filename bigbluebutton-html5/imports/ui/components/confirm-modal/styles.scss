@@ -1,0 +1,30 @@
+@import "/imports/ui/stylesheets/variables/_all";
+@import "/imports/ui/components/modal/simple/styles";
+
+:root {
+  --audioDial-margin-left: 2rem;
+}
+
+
+.overlay {
+  @extend .overlay;
+}
+
+.modal {
+  @extend .modal;
+  padding: 1.5rem;
+  min-height: auto;
+ margin: 2rem;
+ max-width: fit-content;
+}
+
+.btn{
+   flex: 0;
+   float: right;
+   color:#36A1FF;
+   border-radius: 1.25rem;
+   background: white;
+   border: 1px solid #36A1FF;
+   margin:2.5rem 0.625rem 0rem 0.625rem ;
+   padding: 0.313rem 1.5rem 0.313rem 1.5rem;
+}
