@@ -56,6 +56,7 @@ export default lockContextContainer(withModalMounter(withTracker(({ mountModal, 
     joinMicrophone: () => {
       const call = new Promise((resolve, reject) => {
         if (!canJoinAudio) {
+          mountModal(null);
           notifyUser(ERROR_MESSAGE, true, "mute");
           reject(() => {
             Service.exitAudio();
@@ -97,6 +98,7 @@ export default lockContextContainer(withModalMounter(withTracker(({ mountModal, 
         });
       }
       else {
+        mountModal(null);
         notifyUser(ERROR_MESSAGE, true, "listen_filled");
       }
       });
