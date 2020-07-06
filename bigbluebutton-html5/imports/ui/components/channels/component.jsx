@@ -17,6 +17,7 @@ import UserOptionsContainer from '/imports/ui/components/user-list/user-list-con
 import { meetingIsBreakout } from '/imports/ui/components/app/service';
 import ChannelAvatar from './channelAvatar/component';
 import ChannelDropdown from './dropdown/component';
+import ConfirmModal from '/imports/ui/components/confirm-modal/container';
 
 const BROWSER_RESULTS = browser();
 const isMobileBrowser = BROWSER_RESULTS.mobile || BROWSER_RESULTS.os.includes('Android');
@@ -107,6 +108,7 @@ class Channels extends PureComponent {
     this.getScrollContainerRef = this.getScrollContainerRef.bind(this);
     this.newCreateBreakouts = this.newCreateBreakouts.bind(this);
     this.editBreakoutRoom = this.editBreakoutRoom.bind(this);
+    this.confirm = this.confirm.bind(this);
     this.state = {
       joinedAudioOnly: false,
       breakoutId: '',
@@ -158,6 +160,10 @@ class Channels extends PureComponent {
   newCreateBreakouts() {
     const { mountModal } = this.props;
     return mountModal(<BreakoutCreateModalContainer />);
+  }
+  confirm() {
+    const { mountModal } = this.props;
+    return mountModal(<ConfirmModal />);
   }
 
   render() {
@@ -294,9 +300,7 @@ class Channels extends PureComponent {
   { isBreakOutMeeting && isMobileBrowser ?
                 <div 
                   className={styles.createBreakouts}
-                  onClick={()=>{
-                    if( confirm("Are you sure you want to leave this WORKSPACE") ) { window.close() }}
-                  }
+                  onClick={ this.confirm}
                   role="button"
                   cursor="pointer"
                 >
