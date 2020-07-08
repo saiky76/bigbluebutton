@@ -54,7 +54,7 @@ const handleClickToggleChat = (id) => {
   if (Session.equals('openPanel', 'chat')) {
     Session.set('idChatOpen', id);
   } else {
-    Session.set('idChatOpen', '');
+    Session.set('idChatOpen', 'public');
   }
 };
 

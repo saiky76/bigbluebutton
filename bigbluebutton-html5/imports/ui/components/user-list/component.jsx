@@ -55,7 +55,7 @@ class UserList extends PureComponent {
              :
              <Button
              onClick = {() => {
-                Session.set('idChatOpen', '');
+                Session.set('idChatOpen', 'public');
                 Session.set('openPanel', 'chat');
               }}
             //circle

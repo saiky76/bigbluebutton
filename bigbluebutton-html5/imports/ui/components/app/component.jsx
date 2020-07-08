@@ -450,7 +450,7 @@ class App extends Component {
                <div className={styles.togglechat} > 
                <Button
                     onClick={()=>{
-                      Session.set('idChatOpen', '');
+                      Session.set('idChatOpen', 'public');
                       Session.set('openPanel', 'chat');
                     } }
                     hideLabel
