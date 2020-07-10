@@ -55,7 +55,7 @@ const handleClickToggleChat = (id) => {
     Session.set('idChatOpen', id);
   
   } else {
-    Session.set('idChatOpen', 'public');
+    Session.set('idChatOpen', '');
   }
 };
 
@@ -107,7 +107,7 @@ class NavBar extends PureComponent {
               data-test="chatButton"
               className={styles.master}
               onClick={() => {
-                  Session.set('idChatOpen', 'public');
+                  Session.set('idChatOpen', '');
                   Session.set('openPanel', 'userlist');
                 }}
               circle
@@ -129,7 +129,7 @@ class NavBar extends PureComponent {
           { (isMobileBrowser) ? 
             <Button
               data-test="chatButton"
-              onClick={() => handleClickToggleChat('')}
+              onClick={() => handleClickToggleChat('public')}
               circle
               hideLabel
               className={styles.button}

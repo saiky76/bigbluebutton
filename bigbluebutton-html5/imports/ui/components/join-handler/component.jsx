@@ -183,10 +183,10 @@ class JoinHandler extends Component {
         Session.set('openPanel', 'userlist');
         if (CHAT_ENABLED) {
           Session.set('openPanel', 'chat');
-          Session.set('idChatOpen', 'public');
+          Session.set('idChatOpen', '');
         }
       } else {
-        Session.set('openPanel', 'public');
+        Session.set('openPanel', '');
       }
 
       logger.info({
