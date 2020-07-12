@@ -30,7 +30,7 @@
   text-align: center;
  >span{
   border-radius: 1.25rem;
-  border: 1px solid #000000;
+  border: 0.5px solid #0F4C81;
   box-sizing: border-box;
   padding: 0.313rem;
  }
@@ -43,7 +43,7 @@
   display: block;
   content: "";
   flex-grow: 1;
-  border-top: 1px solid rgba(0, 0, 0, 0.788);
+  border-top: 0.1px solid rgb(186, 223, 255);
   margin: auto;
 }
 .messageList {
