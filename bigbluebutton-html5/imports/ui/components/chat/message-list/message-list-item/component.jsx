@@ -69,10 +69,19 @@ class MessageListItem extends Component {
       messages,
       chatAreaId,
       handleReadMessage,
+      DateChangeList,
+      time,
     } = this.props;
-
+    const dateTime = new Date(time);
     return (
       <div>
+         { DateChangeList.find(id => id == messages[0].id) ?
+       <div className={styles.row}>
+         <div className={styles.line}></div>
+         <div className={styles.date}> <FormattedDate value={dateTime}  day="2-digit"month="long" year="numeric"/> </div>
+         <div className={styles.line}></div>
+         </div>
+       : null }
         {messages.map(message => (
           message.text !== ''
             ? (
@@ -131,7 +140,13 @@ class MessageListItem extends Component {
     return (
       <div>
         {' '}
-       { DateChangeList.find(id => id == messages[0].id) ?<div className={styles.date}> <FormattedDate value={dateTime}  day="2-digit"month="long" year="numeric"/> </div>: null }
+       { DateChangeList.find(id => id == messages[0].id) ?
+       <div className={styles.row}>
+         <div className={styles.line}></div>
+         <div className={styles.date}> <FormattedDate value={dateTime}  day="2-digit"month="long" year="numeric"/> </div>
+         <div className={styles.line}></div>
+         </div>
+       : null }
         {(senderEmail !== currentUser.email) ? (
           <div className={styles.item}>
             <div className={styles.wrapperleft} ref={(ref) => { this.item = ref; }}>

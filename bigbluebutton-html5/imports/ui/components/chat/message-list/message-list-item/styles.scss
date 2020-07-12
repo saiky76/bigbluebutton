@@ -29,6 +29,17 @@
   padding: 0.313rem;
  }
 }
+.row{
+  display: flex;
+
+}
+.line{
+  display: block;
+  content: "";
+  flex-grow: 1;
+  border-top: 1px solid rgba(0, 0, 0, 0.788);
+  margin: auto;
+}
 .shareButton {
   padding: 0.45rem 0.5rem;
   i {
