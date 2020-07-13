@@ -11,6 +11,7 @@ import VideoPreviewContainer from '/imports/ui/components/video-preview/containe
 import lockContextContainer from '/imports/ui/components/lock-viewers/context/container';
 import Service from './service';
 import AudioModalContainer from './audio-modal/container';
+import Auth from '/imports/ui/services/auth/index';
 
 const APP_CONFIG = Meteor.settings.public.app;
 const KURENTO_CONFIG = Meteor.settings.public.kurento;
@@ -112,6 +113,10 @@ export default lockContextContainer(withModalMounter(injectIntl(withTracker(({ m
   const openAudioModal = () => new Promise((resolve) => {
     mountModal( audioTestPassed ? null : <AudioModalContainer resolve={resolve} />);
   });
+
+  const voicsUserID = localStorage.getItem("VOICE_USER_ID");
+  if(voicsUserID == Auth.userID)
+    localStorage.removeItem("VOICE_USER_ID")
 
   const openVideoPreviewModal = () => new Promise((resolve) => {
     if (userWebcam) return resolve();
