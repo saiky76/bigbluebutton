@@ -19,7 +19,7 @@ const APP_CONFIG = Meteor.settings.public.app;
 
 const invalidDialNumbers = ['0', '613-555-1212', '613-555-1234', '0000'];
 const isRTL = document.documentElement.getAttribute('dir') === 'rtl';
-const ERROR_MESSAGE = "You already joined audio in another channel, Disconnect it and try again";
+const ERROR_MESSAGE = 'You already joined audio in another channel, Disconnect it and try again';
 
 function notifyUser(message, error = false, icon) {
   notify(
@@ -32,8 +32,8 @@ export default lockContextContainer(withModalMounter(withTracker(({ mountModal, 
   const listenOnlyMode = getFromUserSettings('bbb_listen_only_mode', APP_CONFIG.listenOnlyMode);
   const forceListenOnly = getFromUserSettings('bbb_force_listen_only', APP_CONFIG.forceListenOnly);
   const AUDIO_TEST_PASSED_KEY = 'EchoTestNumber';
-  let audioTestPassed = sessionStorage.getItem(AUDIO_TEST_PASSED_KEY);
-  const skipCheck = !audioTestPassed  ? getFromUserSettings('bbb_skip_check_audio', APP_CONFIG.skipCheck) : true;
+  const audioTestPassed = sessionStorage.getItem(AUDIO_TEST_PASSED_KEY);
+  const skipCheck = !audioTestPassed ? getFromUserSettings('bbb_skip_check_audio', APP_CONFIG.skipCheck) : true;
   const meeting = Meetings.findOne({ meetingId: Auth.meetingID }, { fields: { voiceProp: 1 } });
   let formattedDialNum = '';
   let formattedTelVoice = '';
@@ -49,7 +49,7 @@ export default lockContextContainer(withModalMounter(withTracker(({ mountModal, 
 
   const canJoinAudio = canUserJoinAudio();
   return ({
-    canJoinAudio: canJoinAudio,
+    canJoinAudio,
     closeModal: () => {
       if (!Service.isConnecting()) mountModal(null);
     },
@@ -57,20 +57,26 @@ export default lockContextContainer(withModalMounter(withTracker(({ mountModal, 
       const call = new Promise((resolve, reject) => {
         if (!canJoinAudio) {
           mountModal(null);
-          notifyUser(ERROR_MESSAGE, true, "mute");
+          notifyUser(ERROR_MESSAGE, true, 'mute');
           reject(() => {
             Service.exitAudio();
           });
           return;
         }
-        else {
+
         if (skipCheck) {
           resolve(Service.joinMicrophone());
-          localStorage.setItem("VOICE_USER_ID", Auth.userID);
+          const currentUser = { userid: Auth.userID, status: true, timeStamp: Date.now() };
+          let voiceUsers = [];
+          const prevUsers = JSON.parse(localStorage.getItem('VOICE_USERS'));
+          if (prevUsers != null) voiceUsers = prevUsers;
+          voiceUsers.push(currentUser);
+
+          localStorage.setItem('VOICE_USERS', JSON.stringify(voiceUsers));
         } else {
           resolve(Service.transferCall());
         }
-        }
+
         reject(() => {
           Service.exitAudio();
         });
@@ -84,23 +90,22 @@ export default lockContextContainer(withModalMounter(withTracker(({ mountModal, 
     },
     joinListenOnly: () => {
       const call = new Promise((resolve) => {
-        if(canJoinAudio) {
-        Service.joinListenOnly().then(() => {
+        if (canJoinAudio) {
+          Service.joinListenOnly().then(() => {
           // Autoplay block wasn't triggered. Close the modal. If autoplay was
           // blocked, that'll be handled in the modal component when then
           // prop transitions to a state where it was handled OR the user opts
           // to close the modal.
-          localStorage.setItem("VOICE_USER_ID", Auth.userID);
-          if (!Service.autoplayBlocked()) {
-            mountModal(null);
-          }
-          resolve();
-        });
-      }
-      else {
-        mountModal(null);
-        notifyUser(ERROR_MESSAGE, true, "listen_filled");
-      }
+            localStorage.setItem('VOICE_USER_ID', Auth.userID);
+            if (!Service.autoplayBlocked()) {
+              mountModal(null);
+            }
+            resolve();
+          });
+        } else {
+          mountModal(null);
+          notifyUser(ERROR_MESSAGE, true, 'listen_filled');
+        }
       });
       return call.catch((error) => {
         throw error;

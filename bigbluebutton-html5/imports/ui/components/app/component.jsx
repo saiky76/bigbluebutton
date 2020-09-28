@@ -11,6 +11,8 @@ import ActivityCheckContainer from '/imports/ui/components/activity-check/contai
 import UserInfoContainer from '/imports/ui/components/user-info/container';
 import BreakoutRoomInvitation from '/imports/ui/components/channels/invitation/container';
 import Resizable from 're-resizable';
+import { Session } from 'meteor/session';
+import { is } from 'useragent';
 import ToastContainer from '../toast/container';
 import ModalContainer from '../modal/container';
 import NotificationsBarContainer from '../notifications-bar/container';
@@ -24,18 +26,17 @@ import MediaService from '/imports/ui/components/media/service';
 import ManyWebcamsNotifier from '/imports/ui/components/video-provider/many-users-notify/container';
 import { styles } from './styles';
 import ChatContainer from '/imports/ui/components/chat/container';
-import { Session } from 'meteor/session';
+import Auth from '/imports/ui/services/auth';
 
 // import Resizable from 're-resizable';
 import Button from '/imports/ui/components/button/component';
 import ActionsBarContainer from '../actions-bar/container';
-import { is } from 'useragent';
 
 
 // Variables for resizing chat.
-  const CHAT_MIN_WIDTH =  window.innerWidth * 0.58;
+const CHAT_MIN_WIDTH = window.innerWidth * 0.58;
 // // // const CHAT_MAX_WIDTH = DEFAULT_PANEL_WIDTH;
-  const CHAT_MAX_WIDTH =  window.innerWidth * 0.8;
+const CHAT_MAX_WIDTH = window.innerWidth * 0.8;
 
 const chat_min_width = CHAT_MIN_WIDTH;
 const chat_max_width = CHAT_MAX_WIDTH;
@@ -145,6 +146,20 @@ class App extends Component {
     document.getElementsByTagName('html')[0].lang = locale;
     document.getElementsByTagName('html')[0].style.fontSize = isMobileBrowser ? MOBILE_FONT_SIZE : DESKTOP_FONT_SIZE;
 
+
+    this.interval = setInterval(() => {
+      const prevAudioUsers = JSON.parse(localStorage.getItem('VOICE_USERS'));
+
+      if (prevAudioUsers) {
+        prevAudioUsers.map((user) => {
+          if (user.userid == Auth.userID) {
+            user.timeStamp = Date.now();
+          }
+        });
+        localStorage.setItem('VOICE_USERS', JSON.stringify(prevAudioUsers));
+      }
+    }, 10000);
+
     const body = document.getElementsByTagName('body')[0];
     if (BROWSER_RESULTS && BROWSER_RESULTS.name) {
       body.classList.add(`browser-${BROWSER_RESULTS.name}`);
@@ -216,6 +231,7 @@ class App extends Component {
     if (navigator.connection) {
       navigator.connection.addEventListener('change', handleNetworkConnection, false);
     }
+    clearInterval(this.interval);
   }
 
   handleWindowResize() {
@@ -322,7 +338,7 @@ class App extends Component {
         aria-label={intl.formatMessage(intlMessages.actionsBarLabel)}
         aria-hidden={this.shouldAriaHide()}
       >
-        <ActionsBarContainer toggleChatLayout={isMobileBrowser ? !toggleChatLayout : toggleChatLayout} talkers={talkers} voiceUsers={voiceUsers}/>
+        <ActionsBarContainer toggleChatLayout={isMobileBrowser ? !toggleChatLayout : toggleChatLayout} talkers={talkers} voiceUsers={voiceUsers} />
       </section>
     );
   }
@@ -354,18 +370,18 @@ class App extends Component {
     const { isThereCurrentPresentation, isSharingVideo, inAudio } = this.props;
     const { chatWidth } = this.state;
     if (chatWidth == CHAT_MIN_WIDTH) {
-      if (!isThereCurrentPresentation || isSharingVideo || (isThereCurrentPresentation && !inAudio) ){
+      if (!isThereCurrentPresentation || isSharingVideo || (isThereCurrentPresentation && !inAudio)) {
         this.setState({
-          chatWidth:CHAT_MAX_WIDTH,
-          toggleChatLayout:true
-        })
+          chatWidth: CHAT_MAX_WIDTH,
+          toggleChatLayout: true,
+        });
       }
     }
-    if(chatWidth == CHAT_MAX_WIDTH){
+    if (chatWidth == CHAT_MAX_WIDTH) {
       this.setState({
-        chatWidth:CHAT_MIN_WIDTH,
-        toggleChatLayout:false
-      })
+        chatWidth: CHAT_MIN_WIDTH,
+        toggleChatLayout: false,
+      });
     }
   }
 
@@ -380,11 +396,12 @@ class App extends Component {
   }
 
   renderChatResizable() {
-    const { isThereCurrentPresentation, isVideoBroadcasting, isSharingVideo, isRTL, inAudio } = this.props;
+    const {
+      isThereCurrentPresentation, isVideoBroadcasting, isSharingVideo, isRTL, inAudio,
+    } = this.props;
     const { chatWidth } = this.state;
 
-    if(!inAudio) {}
-    else if((isThereCurrentPresentation || isVideoBroadcasting || isSharingVideo) && chatWidth == CHAT_MAX_WIDTH) {
+    if (!inAudio) {} else if ((isThereCurrentPresentation || isVideoBroadcasting || isSharingVideo) && chatWidth == CHAT_MAX_WIDTH) {
       this.toggleChatPanel();
     }
 
@@ -400,11 +417,11 @@ class App extends Component {
     };
 
     return (
-    <div className={styles.chatWrapper}>
+      <div className={styles.chatWrapper}>
         <Resizable
           minWidth={CHAT_MIN_WIDTH}
           maxWidth={CHAT_MAX_WIDTH}
-         enable={resizableEnableOptions}
+          enable={resizableEnableOptions}
           size={{ width: chatWidth }}
           onResize={dispatchResizeEvent}
           className={styles.chatChannel}
@@ -441,61 +458,64 @@ class App extends Component {
           {this.renderPanel()}
           <div className={styles.container}>
             { isMobileBrowser
-             ?  Session.get('openPanel') == 'chat'   ?  this.renderNavBar()  : null
-            : this.renderNavBar()
+              ? Session.get('openPanel') == 'chat' ? this.renderNavBar() : null
+              : this.renderNavBar()
             }
             <div className={styles.panelContainer}>
               <div className={styles.presentationPanel}>
-               { isMobileBrowser && Session.get('openPanel') !== 'userlist' ? 
-               <div className={styles.togglechat} > 
-               <Button
-                    onClick={()=>{
-                      Session.set('idChatOpen', '');
-                      Session.set('openPanel', 'chat');
-                    } }
-                    hideLabel
-                    label="toggle chat"
-                    color="default"
+                { isMobileBrowser && Session.get('openPanel') !== 'userlist'
+                  ? (
+                    <div className={styles.togglechat}>
+                      <Button
+                        onClick={() => {
+                          Session.set('idChatOpen', '');
+                          Session.set('openPanel', 'chat');
+                        }}
+                        hideLabel
+                        label="toggle chat"
+                        color="default"
                    // ghost={!inAudio}
-                    icon="icomoon-Chat"
-                    size='lg'
-                    circle
-                  /> 
-                  </div>
-                  :  null
+                        icon="icomoon-Chat"
+                        size="lg"
+                        circle
+                      />
+                    </div>
+                  )
+                  : null
                   }
-              { inAudio ?
-                <div className={openPanel ? styles.content : styles.noPanelContent}>
-                  {this.renderMedia()}
-                  {this.renderActionsBar()}
-                </div>
-                 : 
-                <div className={styles.noAudio}>
-                  <Button
-                    className={styles.button}
-                    onClick={handleJoinAudio}
-                    hideLabel
-                    label={intl.formatMessage(intlMessages.joinAudio)}
-                    color="default"
-                    ghost={!inAudio}
-                    icon="icomoon-Join-Call"
-                    size='lg'
-                    circle
-                  />
-                </div>
+                { inAudio
+                  ? (
+                    <div className={openPanel ? styles.content : styles.noPanelContent}>
+                      {this.renderMedia()}
+                      {this.renderActionsBar()}
+                    </div>
+                  )
+                  : (
+                    <div className={styles.noAudio}>
+                      <Button
+                        className={styles.button}
+                        onClick={handleJoinAudio}
+                        hideLabel
+                        label={intl.formatMessage(intlMessages.joinAudio)}
+                        color="default"
+                        ghost={!inAudio}
+                        icon="icomoon-Join-Call"
+                        size="lg"
+                        circle
+                      />
+                    </div>
+                  )
               }
               </div>
-              { 
-              (openPanel !== '' && !isMobileBrowser ) ? (
-                 (enableResize) ?  this.renderChatResizable() :  null
-               
-              ) :
+              {
+              (openPanel !== '' && !isMobileBrowser) ? (
+                (enableResize) ? this.renderChatResizable() : null
 
-             ( (openPanel == 'chat')
-               ?
-               (enableResize) ? null : this.renderChat()
-              :
-               null)
+              )
+
+                : ((openPanel == 'chat')
+                  ? (enableResize) ? null : this.renderChat()
+                  : null)
                }
             </div>
           </div>

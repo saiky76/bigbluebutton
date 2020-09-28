@@ -263,7 +263,10 @@ class AudioManager {
   }
 
   exitAudio() {
-    localStorage.removeItem("VOICE_USER_ID");
+    const prevUsers = JSON.parse(localStorage.getItem('VOICE_USERS'));
+    const voiceUsers = prevUsers.filter(user => user.userid != Auth.userID);
+    localStorage.setItem('VOICE_USERS', JSON.stringify(voiceUsers));
+
     if (!this.isConnected) return Promise.resolve();
 
     const bridge = (this.useKurento && this.isListenOnly) ? this.listenOnlyBridge : this.bridge;
@@ -323,7 +326,9 @@ class AudioManager {
     this.autoplayBlocked = false;
     this.failedMediaElements = [];
 
-    localStorage.removeItem("VOICE_USER_ID");
+    const prevUsers = JSON.parse(localStorage.getItem('VOICE_USERS'));
+    const voiceUsers = prevUsers.filter(user => user.userid != Auth.userID);
+    localStorage.setItem('VOICE_USERS', JSON.stringify(voiceUsers));
     if (this.inputStream) {
       window.defaultInputStream.forEach(track => track.stop());
       this.inputStream.getTracks().forEach(track => track.stop());

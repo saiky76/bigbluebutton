@@ -9,6 +9,7 @@ import VideoListItemContainer from './video-list-item/container';
 import AutoplayOverlay from '../../media/autoplay-overlay/component';
 import logger from '/imports/startup/client/logger';
 import playAndRetry from '/imports/utils/mediaElementPlayRetry';
+import UserAvatar from '/imports/ui/components/user-avatar/component';
 
 const propTypes = {
   users: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -207,12 +208,12 @@ class VideoList extends Component {
     } = this.props;
     const { focusedId } = this.state;
 
-    let user = users.shift();
-    
+    const user = users.shift();
+
     const isFocused = focusedId === user.userId;
     const isFocusedIntlKey = !isFocused ? 'focus' : 'unfocus';
-    let actions = [];
-  
+    const actions = [];
+
     return (
       <div
         key={user.userId}
@@ -236,59 +237,75 @@ class VideoList extends Component {
         />
       </div>
     );
-
   }
 
-  // renderVideoList() {
-  //   const {
-  //     intl,
-  //     users,
-  //     onMount,
-  //     getStats,
-  //     stopGettingStats,
-  //     enableVideoStats,
-  //     swapLayout,
-  //   } = this.props;
-  //   const { focusedId } = this.state;
+  renderVideoList() {
+    const {
+      intl,
+      users,
+      onMount,
+      getStats,
+      stopGettingStats,
+      enableVideoStats,
+      swapLayout,
+      voiceUsers,
+    } = this.props;
+    const { focusedId } = this.state;
 
-  //   return users.map((user) => {
-  //     const isFocused = focusedId === user.userId;
-  //     const isFocusedIntlKey = !isFocused ? 'focus' : 'unfocus';
-  //     let actions = [];
+    const nonVideoUsers = voiceUsers.filter(user1 => users.filter(user2 => user2.userId == user1.intId).length == 0);
 
-  //     if (users.length > 2) {
-  //       actions = [{
-  //         label: intl.formatMessage(intlMessages[`${isFocusedIntlKey}Label`]),
-  //         description: intl.formatMessage(intlMessages[`${isFocusedIntlKey}Desc`]),
-  //         onClick: () => this.handleVideoFocus(user.userId),
-  //       }];
-  //     }
+    const usersToRender = [];
+    if (users.length == 1) {
+      usersToRender.push(nonVideoUsers.pop());
+      users.map((user) => { usersToRender.push(user); });
+      usersToRender.push(nonVideoUsers.pop());
+    } else if (users.length == 2) {
+      usersToRender.push(nonVideoUsers.pop());
+      users.map((user) => { usersToRender.push(user); });
+    } else {
+      users.slice(0, 3).map((user) => { usersToRender.push(user); });
+    }
+    console.log(usersToRender);
 
-  //     return (
-  //       <div
-  //         key={user.userId}
-  //         className={cx({
-  //           [styles.videoListItem]: true,
-  //           [styles.focused]: focusedId === user.userId && users.length > 2,
-  //         })}
-  //       >
-  //         <VideoListItemContainer
-  //           numOfUsers={users.length}
-  //           user={user}
-  //           actions={actions}
-  //           onMount={(videoRef) => {
-  //             this.handleCanvasResize();
-  //             onMount(user.userId, videoRef);
-  //           }}
-  //           getStats={(videoRef, callback) => getStats(user.userId, videoRef, callback)}
-  //           stopGettingStats={() => stopGettingStats(user.userId)}
-  //           enableVideoStats={enableVideoStats}
-  //           swapLayout={swapLayout}
-  //         />
-  //       </div>
-  //     );
-  //   });
-  // }
+    return usersToRender.map((user) => {
+      const actions = [];
+      return ((user)
+        ? ((user.userId)
+          ? (
+            <div
+              key={user.userId}
+              className={cx({
+                [styles.videoListItem]: true,
+                [styles.focused]: focusedId === user.userId && usersToRender.length > 2,
+              })}
+            >
+              <VideoListItemContainer
+                numOfUsers={3}
+                user={user}
+                actions={actions}
+                onMount={(videoRef) => {
+                  // this.handleCanvasResize();
+                  onMount(user.userId, videoRef);
+                }}
+                getStats={(videoRef, callback) => getStats(user.userId, videoRef, callback)}
+                stopGettingStats={() => stopGettingStats(user.userId)}
+                enableVideoStats={enableVideoStats}
+                swapLayout={swapLayout}
+              />
+            </div>
+          )
+          : (
+            <UserAvatar
+              key="user-avatar-"
+          // moderator={u.role === 'MODERATOR'}
+              color={user.color}
+            >
+              {user.callerName.slice(0, 2).toLowerCase()}
+            </UserAvatar>
+          )
+        ) : null);
+    });
+  }
 
   renderOneVideo() {
     const {
@@ -302,11 +319,11 @@ class VideoList extends Component {
     } = this.props;
     const { focusedId } = this.state;
 
-    let user = users.shift();
-    
+    const user = users.shift();
 
-    let actions = [];
-  
+
+    const actions = [];
+
     return (
       <div
         key={user.userId}
@@ -330,7 +347,6 @@ class VideoList extends Component {
         />
       </div>
     );
-
   }
 
   render() {
@@ -346,41 +362,41 @@ class VideoList extends Component {
     });
 
     return (
-      // <div
-      //   ref={(ref) => {
-      //     this.canvas = ref;
-      //   }}
-      //   className={canvasClassName}
-      // >
-      //   {!users.length ? null : (
-      //     <div
-      //       ref={(ref) => {
-      //         this.grid = ref;
-      //       }}
-      //       className={videoListClassName}
-      //       style={{
-      //         width: `${optimalGrid.width}px`,
-      //         height: `${optimalGrid.height}px`,
-      //         gridTemplateColumns: `repeat(${optimalGrid.columns}, 1fr)`,
-      //         gridTemplateRows: `repeat(${optimalGrid.rows}, 1fr)`,
-      //       }}
-      //     >
+    // <div
+    //   ref={(ref) => {
+    //     this.canvas = ref;
+    //   }}
+    //   className={canvasClassName}
+    // >
+    //   {!users.length ? null : (
+    //     <div
+    //       ref={(ref) => {
+    //         this.grid = ref;
+    //       }}
+    //       className={videoListClassName}
+    //       style={{
+    //         width: `${optimalGrid.width}px`,
+    //         height: `${optimalGrid.height}px`,
+    //         gridTemplateColumns: `repeat(${optimalGrid.columns}, 1fr)`,
+    //         gridTemplateRows: `repeat(${optimalGrid.rows}, 1fr)`,
+    //       }}
+    //     >
 
-      <div>
-            {this.renderOneVideo()}
-          </div>
-        )
-        {/* { !autoplayBlocked ? null : (
+      <div className={styles.videoList}>
+        {this.renderVideoList()}
+        {/* {this.renderOneVideo()} */}
+      </div>
+    );
+    { /* { !autoplayBlocked ? null : (
           <AutoplayOverlay
             autoplayBlockedDesc={intl.formatMessage(intlMessages.autoplayBlockedDesc)}
             autoplayAllowLabel={intl.formatMessage(intlMessages.autoplayAllowLabel)}
             handleAllowAutoplay={this.handleAllowAutoplay}
           />
-        )} */}
-      // </div>
+        )} */ }
+    // </div>
     // );
   }
-
 }
 
 

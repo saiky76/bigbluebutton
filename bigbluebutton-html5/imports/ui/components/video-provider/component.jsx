@@ -910,7 +910,6 @@ class VideoProvider extends Component {
   }
 
   createVideoTag(id, video) {
-
     const peer = this.webRtcPeers[id];
     this.videoTags[id] = video;
 
@@ -1224,7 +1223,7 @@ class VideoProvider extends Component {
   }
 
   render() {
-    const { swapLayout } = this.props;
+    const { swapLayout, voiceUsers } = this.props;
     const { socketOpen } = this.state;
     if (!socketOpen) return null;
 
@@ -1240,6 +1239,7 @@ class VideoProvider extends Component {
         stopGettingStats={this.stopGettingStats}
         enableVideoStats={enableVideoStats}
         swapLayout={swapLayout}
+        voiceUsers={voiceUsers}
       />
     );
   }

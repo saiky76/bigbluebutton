@@ -23,16 +23,22 @@ function isMeetingBreakout(meetingIdentifier) {
 }
 
 function canUserJoinAudio() {
-  const userid = localStorage.getItem("VOICE_USER_ID");
-  if (userid == null) {
+  const prevUsers = JSON.parse(localStorage.getItem('VOICE_USERS'));
+  let voiceUsers = prevUsers ? prevUsers.filter(user => user.userid != Auth.userID) : [];
+
+  if (voiceUsers.length == 0) {
     return true;
   }
-  else if (userid != Auth.userID) {
-    return false;
-  }
-  else {
-    return true;
-  }
+
+  let status = true;
+  voiceUsers.map((user) => {
+    if (Date.now() - user.timeStamp <= 10000) {
+      status = false;
+    } else {
+      voiceUsers = voiceUsers.filter(user2 => user2.userid != user.userid);
+    }
+  });
+  return status;
 }
 
 const validIOSVersion = () => {
@@ -47,9 +53,8 @@ const validIOSVersion = () => {
 };
 
 function getParentMeetingId(breakoutId) {
-  const meeting = Breakouts.findOne({breakoutId: breakoutId}, 
-    { fields: {parentMeetingId: 1}}
-  )
+  const meeting = Breakouts.findOne({ breakoutId },
+    { fields: { parentMeetingId: 1 } });
 
   return meeting ? meeting.parentMeetingId : null;
 }
@@ -61,5 +66,5 @@ export {
   getBreakoutRooms,
   validIOSVersion,
   getParentMeetingId,
-  canUserJoinAudio
+  canUserJoinAudio,
 };
